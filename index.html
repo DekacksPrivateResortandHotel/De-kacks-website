@@ -986,6 +986,7 @@
 
     async function saveBookingRecord(collectionName, booking) {
       const normalizedBooking = serializeBooking(booking);
+      normalizedBooking.id = String(normalizedBooking.id || `${collectionName}_${Date.now()}`);
 
       if (!db) {
         if (collectionName === BOOKINGS_COLLECTION) {
@@ -1337,7 +1338,8 @@
         return true;
       } catch (error) {
         console.error("Pending reservation submission failed:", error);
-        alert("Unable to submit reservation right now. Please try again after checking your Firebase rules.");
+        const errorCode = error && error.code ? ` (${error.code})` : "";
+        alert(`Unable to submit reservation right now${errorCode}. Please try again after checking your Firebase rules.`);
         return false;
       }
     }
