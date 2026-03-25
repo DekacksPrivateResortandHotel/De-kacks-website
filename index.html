@@ -640,9 +640,9 @@
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
   <script>
-    const ADMIN_PASSWORD = "admin123";
     const STORAGE_KEY = "bookings";
     const PENDING_STORAGE_KEY = "pendingBookings";
     const BOOKINGS_COLLECTION = "bookings";
@@ -824,9 +824,12 @@
     let pendingReservation = null;
     let logoDataCache = "";
     let db = null;
+    let auth = null;
     let approvedBookingsCache = [];
     let pendingBookingsCache = [];
     let adminPanelOpen = false;
+    let approvedBookingsUnsubscribe = null;
+    let pendingBookingsUnsubscribe = null;
 
     async function getLogoDataUrl() {
       if (logoDataCache) return logoDataCache;
@@ -913,6 +916,16 @@
       if (adminPanelOpen) viewBookings();
     }
 
+    function isAdminAuthenticated() {
+      return !!(auth && auth.currentUser);
+    }
+
+    function requireAdminAuth() {
+      if (isAdminAuthenticated()) return true;
+      alert("Please log in with your Firebase admin account first.");
+      return false;
+    }
+
     function initializeFirebase() {
       if (typeof firebase === "undefined") return false;
 
@@ -920,13 +933,23 @@
         if (!firebase.apps.length) {
           firebase.initializeApp(FIREBASE_CONFIG);
         }
+        auth = firebase.auth();
         db = firebase.firestore();
         return true;
       } catch (error) {
         console.error("Firebase initialization failed:", error);
+        auth = null;
         db = null;
         return false;
       }
+    }
+
+    function stopPendingBookingSync() {
+      if (pendingBookingsUnsubscribe) {
+        pendingBookingsUnsubscribe();
+        pendingBookingsUnsubscribe = null;
+      }
+      pendingBookingsCache = [];
     }
 
     function startCloudBookingSync() {
@@ -937,18 +960,27 @@
         return;
       }
 
-      db.collection(BOOKINGS_COLLECTION).onSnapshot((snapshot) => {
+      if (approvedBookingsUnsubscribe) approvedBookingsUnsubscribe();
+      approvedBookingsUnsubscribe = db.collection(BOOKINGS_COLLECTION).onSnapshot((snapshot) => {
         approvedBookingsCache = normalizeSnapshotBookings(snapshot);
         afterBookingCacheUpdate();
       }, (error) => {
         console.error("Approved bookings sync failed:", error);
       });
 
-      db.collection(PENDING_BOOKINGS_COLLECTION).onSnapshot((snapshot) => {
+      stopPendingBookingSync();
+      if (!isAdminAuthenticated()) {
+        afterBookingCacheUpdate();
+        return;
+      }
+
+      pendingBookingsUnsubscribe = db.collection(PENDING_BOOKINGS_COLLECTION).onSnapshot((snapshot) => {
         pendingBookingsCache = normalizeSnapshotBookings(snapshot);
         afterBookingCacheUpdate();
       }, (error) => {
         console.error("Pending bookings sync failed:", error);
+        stopPendingBookingSync();
+        afterBookingCacheUpdate();
       });
     }
 
@@ -1004,14 +1036,15 @@
       if (localApproved.length === 0 && localPending.length === 0) return;
 
       try {
-        const [approvedSnapshot, pendingSnapshot] = await Promise.all([
-          db.collection(BOOKINGS_COLLECTION).limit(1).get(),
-          db.collection(PENDING_BOOKINGS_COLLECTION).limit(1).get(),
-        ]);
+        const approvedSnapshot = await db.collection(BOOKINGS_COLLECTION).limit(1).get();
 
         if (approvedSnapshot.empty && localApproved.length > 0) {
           await Promise.all(localApproved.map((booking) => saveBookingRecord(BOOKINGS_COLLECTION, booking)));
         }
+
+        if (!isAdminAuthenticated()) return;
+
+        const pendingSnapshot = await db.collection(PENDING_BOOKINGS_COLLECTION).limit(1).get();
         if (pendingSnapshot.empty && localPending.length > 0) {
           await Promise.all(localPending.map((booking) => saveBookingRecord(PENDING_BOOKINGS_COLLECTION, booking)));
         }
@@ -1298,8 +1331,14 @@
         createdAt: new Date().toISOString(),
       };
 
-      await saveBookingRecord(PENDING_BOOKINGS_COLLECTION, booking);
-      return true;
+      try {
+        await saveBookingRecord(PENDING_BOOKINGS_COLLECTION, booking);
+        return true;
+      } catch (error) {
+        console.error("Pending reservation submission failed:", error);
+        alert("Unable to submit reservation right now. Please try again after checking your Firebase rules.");
+        return false;
+      }
     }
 
     function getCurrentAvailability() {
@@ -2702,6 +2741,8 @@
     }
 
     async function applyManagementDiscount(collectionType, index) {
+      if (!requireAdminAuth()) return;
+
       const inputId = `${collectionType}DiscountInput_${index}`;
       const input = document.getElementById(inputId);
       if (!input) return;
@@ -2720,6 +2761,8 @@
     }
 
     async function markBookingFullyPaid(index) {
+      if (!requireAdminAuth()) return;
+
       const bookings = getBookings();
       if (!bookings[index]) return;
 
@@ -2734,6 +2777,11 @@
     }
 
     function viewBookings() {
+      if (!isAdminAuthenticated()) {
+        document.getElementById("quotation").innerHTML = "<h3>Admin login required.</h3><p>Use Ctrl + A, then sign in with your Firebase Authentication email and password.</p>";
+        return;
+      }
+
       const pending = getPendingBookings();
       const approved = getBookings();
 
@@ -2743,6 +2791,8 @@
       }
 
       let output = `<h3>Admin Booking Panel</h3>`;
+      output += `<p><strong>Signed in as:</strong> ${auth.currentUser.email || "Admin"}</p>`;
+      output += `<button onclick="adminLogout()" style="background:#455a64;color:#fff;width:auto;padding:8px 12px;">Log Out</button>`;
       output += `<p><strong>Pending Approval:</strong> ${pending.length} | <strong>Approved:</strong> ${approved.length}</p><hr>`;
 
       output += `<h3>Pending Reservations</h3>`;
@@ -2861,6 +2911,8 @@
     }
 
     async function approvePendingBooking(index) {
+      if (!requireAdminAuth()) return;
+
       const pending = getPendingBookings();
       const req = pending[index];
       if (!req) return;
@@ -2899,6 +2951,8 @@
     }
 
     async function rejectPendingBooking(index) {
+      if (!requireAdminAuth()) return;
+
       const pending = getPendingBookings();
       if (!pending[index]) return;
       if (confirm("Reject this pending reservation request?")) {
@@ -2908,6 +2962,8 @@
     }
 
     async function deleteApprovedBooking(index) {
+      if (!requireAdminAuth()) return;
+
       const bookings = getBookings();
       if (!bookings[index]) return;
 
@@ -2917,14 +2973,45 @@
       }
     }
 
-    function adminLogin() {
-      const password = prompt("Enter admin password:");
-      if (password === ADMIN_PASSWORD) {
+    async function adminLogin() {
+      if (!auth) {
+        alert("Firebase Auth is not ready.");
+        return;
+      }
+
+      if (isAdminAuthenticated()) {
         adminPanelOpen = true;
         viewBookings();
-      } else {
-        alert("Access denied!");
+        return;
       }
+
+      const email = prompt("Enter Firebase admin email:");
+      if (!email) return;
+      const password = prompt("Enter Firebase admin password:");
+      if (!password) return;
+
+      try {
+        await auth.signInWithEmailAndPassword(email.trim(), password);
+        adminPanelOpen = true;
+        viewBookings();
+      } catch (error) {
+        console.error("Admin login failed:", error);
+        alert("Admin login failed. Check your Firebase Authentication email and password.");
+      }
+    }
+
+    async function adminLogout() {
+      if (!auth) return;
+
+      try {
+        await auth.signOut();
+      } catch (error) {
+        console.error("Admin logout failed:", error);
+      }
+
+      adminPanelOpen = false;
+      stopPendingBookingSync();
+      afterBookingCacheUpdate();
     }
 
     // Show admin panel only when Ctrl + A is pressed
@@ -2940,6 +3027,13 @@
       initializeFirebase();
       startCloudBookingSync();
       migrateLocalStorageToCloudIfNeeded();
+      if (auth) {
+        auth.onAuthStateChanged(() => {
+          startCloudBookingSync();
+          migrateLocalStorageToCloudIfNeeded();
+          if (adminPanelOpen) viewBookings();
+        });
+      }
       initializeDatePicker();
       renderCateringChoices();
       updateHallFields();
