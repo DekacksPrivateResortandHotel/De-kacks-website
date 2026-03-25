@@ -95,6 +95,7 @@
     right: -80px;
     background: radial-gradient(circle, rgba(240, 164, 58, 0.35), rgba(240, 164, 58, 0));
     filter: blur(10px);
+    animation: floatGlow 9s ease-in-out infinite;
   }
 
   body::after {
@@ -106,6 +107,87 @@
       radial-gradient(circle at 20% 30%, rgba(27, 139, 157, 0.2), rgba(27, 139, 157, 0) 55%),
       linear-gradient(180deg, rgba(77, 143, 81, 0.18), rgba(77, 143, 81, 0));
     border-radius: 55% 45% 0 0;
+    animation: waveRise 12s ease-in-out infinite;
+  }
+
+  .weather-scene {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+  }
+
+  .weather-sun,
+  .weather-cloud,
+  .weather-rain,
+  .weather-glow {
+    position: absolute;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+  }
+
+  .weather-sun {
+    top: 74px;
+    right: 110px;
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 214, 111, 0.95) 0%, rgba(255, 184, 79, 0.85) 42%, rgba(255, 184, 79, 0) 72%);
+    filter: blur(1px);
+    animation: sunPulse 7s ease-in-out infinite;
+  }
+
+  .weather-cloud {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(226, 237, 242, 0.75));
+    border-radius: 999px;
+    box-shadow: 30px 10px 0 4px rgba(255, 255, 255, 0.7), 62px -8px 0 10px rgba(245, 250, 252, 0.78);
+  }
+
+  .weather-cloud.cloud-a {
+    top: 110px;
+    left: 70px;
+    width: 96px;
+    height: 28px;
+    animation: cloudDriftA 18s linear infinite;
+  }
+
+  .weather-cloud.cloud-b {
+    top: 168px;
+    right: 210px;
+    width: 110px;
+    height: 32px;
+    animation: cloudDriftB 24s linear infinite;
+  }
+
+  .weather-rain {
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: repeating-linear-gradient(110deg, rgba(110, 156, 182, 0) 0 16px, rgba(110, 156, 182, 0.34) 16px 18px, rgba(110, 156, 182, 0) 18px 34px);
+    animation: rainFall 0.9s linear infinite;
+  }
+
+  .weather-glow {
+    right: 70px;
+    top: 56px;
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 164, 98, 0.42), rgba(255, 164, 98, 0));
+    filter: blur(6px);
+    animation: floatGlow 8s ease-in-out infinite;
+  }
+
+  body[data-weather="sunny"] .weather-sun,
+  body[data-weather="sunny"] .weather-cloud.cloud-a,
+  body[data-weather="sunset"] .weather-glow,
+  body[data-weather="sunset"] .weather-cloud.cloud-b,
+  body[data-weather="cloudy"] .weather-cloud,
+  body[data-weather="rainy"] .weather-rain,
+  body[data-weather="rainy"] .weather-cloud {
+    opacity: 1;
   }
 
   .container {
@@ -182,45 +264,6 @@
     color: #47615d;
     font-size: 13px;
     font-weight: 600;
-  }
-
-  .mindoro-banner {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin: 0 0 18px;
-  }
-
-  .mindoro-chip {
-    padding: 9px 14px;
-    border-radius: 999px;
-    background: linear-gradient(135deg, rgba(14, 77, 89, 0.1), rgba(240, 164, 58, 0.16));
-    border: 1px solid rgba(14, 77, 89, 0.08);
-    color: var(--primary-2);
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-  }
-
-  .weather-chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    margin-top: 10px;
-    padding: 8px 12px;
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.72);
-    border: 1px solid rgba(14, 77, 89, 0.08);
-    color: var(--primary);
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-  }
-
-  body[data-weather="rainy"] .weather-chip {
-    background: rgba(231, 241, 245, 0.88);
   }
 
   label {
@@ -553,6 +596,36 @@
     margin-top: 8px;
   }
 
+  @keyframes floatGlow {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(12px) scale(1.04); }
+  }
+
+  @keyframes waveRise {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-12px); }
+  }
+
+  @keyframes sunPulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.08); opacity: 0.92; }
+  }
+
+  @keyframes cloudDriftA {
+    0% { transform: translateX(-40px); }
+    100% { transform: translateX(42vw); }
+  }
+
+  @keyframes cloudDriftB {
+    0% { transform: translateX(30px); }
+    100% { transform: translateX(-45vw); }
+  }
+
+  @keyframes rainFall {
+    0% { transform: translateY(-24px); }
+    100% { transform: translateY(24px); }
+  }
+
   @media (max-width: 640px) {
     body {
       padding: 14px;
@@ -579,6 +652,13 @@
 </style>
 </head>
 <body>
+  <div class="weather-scene" aria-hidden="true">
+    <span class="weather-sun"></span>
+    <span class="weather-cloud cloud-a"></span>
+    <span class="weather-cloud cloud-b"></span>
+    <span class="weather-rain"></span>
+    <span class="weather-glow"></span>
+  </div>
   <div class="container">
     <div class="brand-head">
       <img src="./logo.png" alt="Dekack logo" class="brand-logo" />
@@ -586,14 +666,7 @@
         <h1>Dekack's Private Resort &amp; Hotel</h1>
         <h3>Reservation Quotation</h3>
         <p class="brand-location">Adela, Rizal, Occidental Mindoro</p>
-        <span id="weatherMood" class="weather-chip">Mindoro Mood</span>
       </div>
-    </div>
-
-    <div class="mindoro-banner">
-      <span class="mindoro-chip">Tropical Escape</span>
-      <span class="mindoro-chip">Mindoro Warm Season Ready</span>
-      <span class="mindoro-chip">Pool, Rooms &amp; Catering</span>
     </div>
 
     <label for="name">Name:</label>
@@ -1065,17 +1138,14 @@
 
     function applyRandomWeatherTheme() {
       const weatherThemes = [
-        { key: "sunny", label: "Sunny Mindoro" },
-        { key: "cloudy", label: "Coastal Clouds" },
-        { key: "rainy", label: "Tropical Rain" },
-        { key: "sunset", label: "Golden Sunset" },
+        { key: "sunny" },
+        { key: "cloudy" },
+        { key: "rainy" },
+        { key: "sunset" },
       ];
 
       const selectedTheme = weatherThemes[Math.floor(Math.random() * weatherThemes.length)];
       document.body.dataset.weather = selectedTheme.key;
-
-      const weatherMood = document.getElementById("weatherMood");
-      if (weatherMood) weatherMood.textContent = selectedTheme.label;
     }
 
     function isAdminAuthenticated() {
