@@ -53,6 +53,32 @@
     min-height: 100vh;
   }
 
+  body[data-weather="sunny"] {
+    background:
+      radial-gradient(circle at 82% 14%, rgba(255, 205, 96, 0.72), rgba(255, 205, 96, 0) 18%),
+      radial-gradient(circle at top left, rgba(255, 248, 214, 0.95), rgba(255, 248, 214, 0) 32%),
+      linear-gradient(145deg, #fff3d6, #dff6f0);
+  }
+
+  body[data-weather="cloudy"] {
+    background:
+      radial-gradient(circle at 18% 16%, rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0) 20%),
+      radial-gradient(circle at 78% 20%, rgba(232, 239, 243, 0.82), rgba(232, 239, 243, 0) 22%),
+      linear-gradient(145deg, #edf4f7, #dfece8);
+  }
+
+  body[data-weather="rainy"] {
+    background:
+      linear-gradient(180deg, rgba(26, 74, 93, 0.18), rgba(26, 74, 93, 0) 24%),
+      linear-gradient(145deg, #dceaf1, #d6e4db);
+  }
+
+  body[data-weather="sunset"] {
+    background:
+      radial-gradient(circle at 84% 18%, rgba(255, 155, 93, 0.55), rgba(255, 155, 93, 0) 18%),
+      linear-gradient(145deg, #ffe5d0, #ffeecf 35%, #def2ec);
+  }
+
   body::before,
   body::after {
     content: "";
@@ -175,6 +201,26 @@
     font-weight: 700;
     letter-spacing: 0.04em;
     text-transform: uppercase;
+  }
+
+  .weather-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.72);
+    border: 1px solid rgba(14, 77, 89, 0.08);
+    color: var(--primary);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  body[data-weather="rainy"] .weather-chip {
+    background: rgba(231, 241, 245, 0.88);
   }
 
   label {
@@ -540,6 +586,7 @@
         <h1>Dekack's Private Resort &amp; Hotel</h1>
         <h3>Reservation Quotation</h3>
         <p class="brand-location">Adela, Rizal, Occidental Mindoro</p>
+        <span id="weatherMood" class="weather-chip">Mindoro Mood</span>
       </div>
     </div>
 
@@ -1014,6 +1061,21 @@
     function afterBookingCacheUpdate() {
       checkDateAvailability();
       if (adminPanelOpen) viewBookings();
+    }
+
+    function applyRandomWeatherTheme() {
+      const weatherThemes = [
+        { key: "sunny", label: "Sunny Mindoro" },
+        { key: "cloudy", label: "Coastal Clouds" },
+        { key: "rainy", label: "Tropical Rain" },
+        { key: "sunset", label: "Golden Sunset" },
+      ];
+
+      const selectedTheme = weatherThemes[Math.floor(Math.random() * weatherThemes.length)];
+      document.body.dataset.weather = selectedTheme.key;
+
+      const weatherMood = document.getElementById("weatherMood");
+      if (weatherMood) weatherMood.textContent = selectedTheme.label;
     }
 
     function isAdminAuthenticated() {
@@ -3127,6 +3189,7 @@
     });
 
     document.addEventListener("DOMContentLoaded", () => {
+      applyRandomWeatherTheme();
       initializeFirebase();
       startCloudBookingSync();
       migrateLocalStorageToCloudIfNeeded();
