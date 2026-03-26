@@ -1156,6 +1156,10 @@
     <input type="date" id="date" onchange="checkDateAvailability()" />
     <div class="helper-note">Tap a date from the calendar first. The form will use that date as your check-in date.</div>
 
+    <label for="checkOutDatePicker">Check-out Date:</label>
+    <input type="date" id="checkOutDatePicker" onchange="syncStayDaysFromDateRange(); checkDateAvailability();" />
+    <div class="helper-note">For longer bookings, choose the final check-out date here.</div>
+
     <label for="preferStay">Prefer to Stay:</label>
     <select id="preferStay">
       <option value="day-tour">Day</option>
@@ -1299,7 +1303,7 @@
       <select id="pool-select">
         <option value="0">None</option>
         <option value="4800">Day Tour (8:00 AM - 5:00 PM) - PHP 4,800</option>
-        <option value="6500">Overnight Stay (Check-in from 5:00 PM, Check-out at 7:00 AM) - PHP 6,500</option>
+        <option value="6500">Overnight Stay (Check-in from 6:00 PM, Check-out at 7:00 AM) - PHP 6,500</option>
         <option value="10000">Day and Night Tour - PHP 10,000 / day</option>
       </select>
     </div>
@@ -1889,7 +1893,9 @@
       if (selectedAvailabilityDate) {
         document.getElementById("date").value = selectedAvailabilityDate;
       }
+      document.getElementById("checkOutDatePicker").min = document.getElementById("date").value || document.getElementById("checkOutDatePicker").min;
       syncStayPreferenceFields();
+      syncStayDaysFromDateRange();
       applyPoolScheduleRules();
       updateCheckoutPreview();
       checkDateAvailability();
@@ -1929,6 +1935,13 @@
       if (stayMode === "day-tour") poolSelect.value = "4800";
       if (stayMode === "overnight") poolSelect.value = "6500";
       if (stayMode === "day-night") poolSelect.value = "10000";
+
+      const checkInDate = document.getElementById("date").value;
+      const checkOutDatePicker = document.getElementById("checkOutDatePicker");
+      if (checkOutDatePicker && checkInDate) {
+        checkOutDatePicker.min = checkInDate;
+        checkOutDatePicker.value = getDefaultCheckOutDate(checkInDate, stayMode);
+      }
     }
 
     function syncPreferenceFromPoolSelection() {
@@ -1941,36 +1954,75 @@
       document.getElementById("stayDays").value = "1";
     }
 
-    function getOccupiedDates(checkInDate, stayDays, poolMode, specialEventSelected) {
+    function getDateDifferenceInDays(startDate, endDate) {
+      if (!startDate || !endDate) return 0;
+      const start = toLocalDate(startDate);
+      const end = toLocalDate(endDate);
+      const diffMs = end.getTime() - start.getTime();
+      return Math.round(diffMs / 86400000);
+    }
+
+    function getDefaultCheckOutDate(checkInDate, mode) {
+      if (!checkInDate) return "";
+      if (mode === "day-tour") return checkInDate;
+      return addDays(checkInDate, 1);
+    }
+
+    function syncStayDaysFromDateRange() {
+      const checkInDate = document.getElementById("date").value;
+      const checkOutDatePicker = document.getElementById("checkOutDatePicker");
+      const checkOutDate = checkOutDatePicker ? checkOutDatePicker.value : "";
+      const stayMode = getPreferredStayMode();
+      const stayDaysInput = document.getElementById("stayDays");
+      if (!checkInDate || !checkOutDate || !stayDaysInput) return;
+
+      let diffDays = getDateDifferenceInDays(checkInDate, checkOutDate);
+      if (stayMode === "day-tour") {
+        diffDays = Math.max(0, diffDays);
+        stayDaysInput.value = String(diffDays + 1);
+      } else {
+        diffDays = Math.max(1, diffDays);
+        stayDaysInput.value = String(diffDays);
+      }
+    }
+
+    function getOccupiedDates(checkInDate, stayDays, poolMode, specialEventSelected, checkOutDate = "") {
       if (!checkInDate) return [];
       const mode = getBookingMode(poolMode, specialEventSelected);
-      if (mode === "day-tour") return [checkInDate];
-      if (mode === "overnight" || mode === "day-night") return [checkInDate, addDays(checkInDate, 1)];
+      if (mode === "day-tour") {
+        const endDate = checkOutDate || checkInDate;
+        return getStayDates(checkInDate, Math.max(1, getDateDifferenceInDays(checkInDate, endDate) + 1));
+      }
+      if (mode === "overnight" || mode === "day-night") {
+        const endDate = checkOutDate || addDays(checkInDate, 1);
+        return getStayDates(checkInDate, Math.max(2, getDateDifferenceInDays(checkInDate, endDate) + 1));
+      }
       return getStayDates(checkInDate, Math.max(stayDays || 1, 1));
     }
 
-    function getScheduleFromRules(checkInDate, stayDays, checkInTime, poolMode, specialEventSelected) {
+    function getScheduleFromRules(checkInDate, stayDays, checkInTime, poolMode, specialEventSelected, selectedCheckOutDate = "") {
       const safeDate = checkInDate || "";
       const safeCheckIn = checkInTime || "08:00";
       const mode = getBookingMode(poolMode, specialEventSelected);
+      const safeEndDate = selectedCheckOutDate || getDefaultCheckOutDate(safeDate, mode);
 
       if (mode === "day-tour") {
         return {
           mode,
           checkInTime: safeCheckIn < "08:00" ? "08:00" : (safeCheckIn > "17:00" ? "17:00" : safeCheckIn),
-          checkOutDate: safeDate,
+          checkOutDate: safeEndDate,
           checkOutTime: "17:00",
-          occupiedDates: safeDate ? [safeDate] : [],
+          occupiedDates: safeDate ? getOccupiedDates(safeDate, stayDays, poolMode, specialEventSelected, safeEndDate) : [],
         };
       }
 
       if (mode === "overnight") {
         return {
           mode,
-          checkInTime: safeCheckIn < "17:00" ? "17:00" : safeCheckIn,
-          checkOutDate: safeDate ? addDays(safeDate, 1) : "",
+          checkInTime: safeCheckIn < "18:00" ? "18:00" : safeCheckIn,
+          checkOutDate: safeEndDate,
           checkOutTime: "07:00",
-          occupiedDates: safeDate ? [safeDate, addDays(safeDate, 1)] : [],
+          occupiedDates: safeDate ? getOccupiedDates(safeDate, stayDays, poolMode, specialEventSelected, safeEndDate) : [],
         };
       }
 
@@ -1978,18 +2030,18 @@
         return {
           mode,
           checkInTime: safeCheckIn,
-          checkOutDate: safeDate ? addDays(safeDate, 1) : "",
+          checkOutDate: safeEndDate,
           checkOutTime: safeCheckIn,
-          occupiedDates: safeDate ? [safeDate, addDays(safeDate, 1)] : [],
+          occupiedDates: safeDate ? getOccupiedDates(safeDate, stayDays, poolMode, specialEventSelected, safeEndDate) : [],
         };
       }
 
       return {
         mode,
         checkInTime: safeCheckIn,
-        checkOutDate: safeDate ? addDays(safeDate, Math.max(stayDays || 1, 1)) : "",
+        checkOutDate: safeEndDate,
         checkOutTime: document.getElementById("checkOutTime").value || "17:00",
-        occupiedDates: getOccupiedDates(safeDate, stayDays, poolMode, specialEventSelected),
+        occupiedDates: getOccupiedDates(safeDate, stayDays, poolMode, specialEventSelected, safeEndDate),
       };
     }
 
@@ -2015,8 +2067,8 @@
         checkOutTimeInput.value = "17:00";
         checkOutTimeInput.disabled = true;
       } else if (poolValue === 6500) {
-        if ((checkInTimeInput.value || "17:00") < "17:00") checkInTimeInput.value = "17:00";
-        checkInTimeInput.min = "17:00";
+        if ((checkInTimeInput.value || "18:00") < "18:00") checkInTimeInput.value = "18:00";
+        checkInTimeInput.min = "18:00";
         checkInTimeInput.max = "23:59";
         checkInTimeInput.disabled = false;
         checkOutTimeInput.value = "07:00";
@@ -2038,6 +2090,8 @@
       if ((parseInt(stayDaysInput.value, 10) || 0) < 1) {
         stayDaysInput.value = "1";
       }
+
+      syncStayDaysFromDateRange();
 
       updateCheckoutPreview();
     }
@@ -2211,9 +2265,18 @@
       selectedAvailabilityDate = dateString;
       const dateInput = document.getElementById("date");
       if (dateInput) dateInput.value = dateString;
+      const checkOutDatePicker = document.getElementById("checkOutDatePicker");
+      if (checkOutDatePicker) {
+        checkOutDatePicker.min = dateString;
+        if (!checkOutDatePicker.value || checkOutDatePicker.value < dateString) {
+          checkOutDatePicker.value = getDefaultCheckOutDate(dateString, getPreferredStayMode());
+        }
+      }
       if (!detailsEl) return;
 
       const summary = getDateAvailabilitySummary(dateString);
+      const nextDateString = addDays(dateString, 1);
+      const nextDateSummary = getDateAvailabilitySummary(nextDateString);
       const availableItems = [];
       if ((summary.roomAvailabilityWithPending.couple || 0) > 0) availableItems.push(`Couple ${summary.roomAvailabilityWithPending.couple}`);
       if ((summary.roomAvailabilityWithPending.attic || 0) > 0) availableItems.push(`Attic ${summary.roomAvailabilityWithPending.attic}`);
@@ -2222,9 +2285,23 @@
       if ((summary.roomAvailabilityWithPending.vip || 0) > 0) availableItems.push(`VIP ${summary.roomAvailabilityWithPending.vip}`);
       if ((summary.roomAvailabilityWithPending.mattress || 0) > 0) availableItems.push(`Mattress ${summary.roomAvailabilityWithPending.mattress}`);
 
+      const availablePools = [];
+      if (summary.amStatus === "available" && summary.pmStatus === "available") {
+        availablePools.push("Day Tour Pool");
+      }
+      if (summary.pmStatus === "available" && nextDateSummary.amStatus === "available") {
+        availablePools.push("Overnight Pool");
+      }
+      if (summary.amStatus === "available" && summary.pmStatus === "available" && nextDateSummary.amStatus === "available") {
+        availablePools.push("Whole Day and Night Pool");
+      }
+
       const poolAvailabilityText = summary.poolRemainingWithPending > 0
         ? "Pool is available on this date."
         : "Pool is not available on this date.";
+      const availablePoolTypesText = availablePools.length > 0
+        ? `Available pool type: ${availablePools.join(", ")}.`
+        : "No pool type is available for a new booking on this date.";
       const accommodationText = availableItems.length > 0
         ? `Available accommodation: ${availableItems.join(", ")}.`
         : "No accommodation is available on this date.";
@@ -2235,10 +2312,12 @@
       detailsEl.innerHTML = `
         <h4>${formatDateLong(dateString)}</h4>
         <p>${poolAvailabilityText}</p>
+        <p>${availablePoolTypesText}</p>
         <p>${accommodationText}</p>
         <p>${bookingNote}</p>
       `;
 
+      syncStayDaysFromDateRange();
       updateCheckoutPreview();
       checkDateAvailability();
       updateLiveBookingSummary();
@@ -2343,8 +2422,8 @@
       }));
     }
 
-    function calculateRangeAvailabilityFromSources(checkInDate, stayDays, sources, poolMode = "standard", specialEventSelected = false) {
-      const days = getOccupiedDates(checkInDate, stayDays, poolMode, specialEventSelected);
+    function calculateRangeAvailabilityFromSources(checkInDate, stayDays, sources, poolMode = "standard", specialEventSelected = false, checkOutDate = "") {
+      const days = getOccupiedDates(checkInDate, stayDays, poolMode, specialEventSelected, checkOutDate);
       const remainingRooms = { ...ROOM_LIMITS };
       let poolRemaining = POOL_LIMIT_PER_DAY;
       const bookings = Array.isArray(sources) ? sources : [];
@@ -2383,12 +2462,13 @@
       };
     }
 
-    function getRangeAvailability(checkInDate, stayDays, poolMode = "standard", specialEventSelected = false) {
-      return calculateRangeAvailabilityFromSources(checkInDate, stayDays, getBookings(), poolMode, specialEventSelected);
+    function getRangeAvailability(checkInDate, stayDays, poolMode = "standard", specialEventSelected = false, checkOutDate = "") {
+      return calculateRangeAvailabilityFromSources(checkInDate, stayDays, getBookings(), poolMode, specialEventSelected, checkOutDate);
     }
 
     function renderAvailabilityInfo(checkInDate, stayDays) {
       const panel = document.getElementById("availabilityInfo");
+      const selectedCheckOutDate = document.getElementById("checkOutDatePicker").value;
       if (!panel) return;
       if (!checkInDate || stayDays < 1) {
         panel.textContent = "";
@@ -2398,7 +2478,7 @@
       const specialEventDetails = getSpecialEventDetails();
       const poolDetails = getPoolDetails(stayDays, specialEventDetails);
       if (!specialEventDetails.selected) poolDetails.mode = getPreferredStayMode();
-      const availability = getRangeAvailability(checkInDate, stayDays, poolDetails.mode, specialEventDetails.selected);
+      const availability = getRangeAvailability(checkInDate, stayDays, poolDetails.mode, specialEventDetails.selected, selectedCheckOutDate);
       const currentSelection = getSpecialEventDetails().selected ? [] : getSelectedRooms();
       const selectedCounts = getRequestedRoomCounts(currentSelection);
       const remainingCouple = Math.max(0, (availability.rooms.couple || 0) - (selectedCounts.couple || 0));
@@ -2412,12 +2492,13 @@
       panel.textContent = `${roomText} | ${poolText}`;
     }
 
-    function validateSelectionAgainstAvailability(checkInDate, stayDays, rooms, poolDetails, specialEventDetails = null) {
+    function validateSelectionAgainstAvailability(checkInDate, stayDays, rooms, poolDetails, specialEventDetails = null, selectedCheckOutDate = "") {
       const availability = getRangeAvailability(
         checkInDate,
         stayDays,
         poolDetails && poolDetails.mode ? poolDetails.mode : getPreferredStayMode(),
-        !!(specialEventDetails && specialEventDetails.selected)
+        !!(specialEventDetails && specialEventDetails.selected),
+        selectedCheckOutDate
       );
       const requestedRooms = getRequestedRoomCounts(rooms);
 
@@ -2441,6 +2522,7 @@
       const checkInTime = document.getElementById("checkInTime").value || "08:00";
       const preview = document.getElementById("checkoutPreview");
       const checkOutDateInput = document.getElementById("checkOutDate");
+      const selectedCheckOutDate = document.getElementById("checkOutDatePicker").value;
       const dateRangeDisplay = document.getElementById("bookingDateRangeDisplay");
       const poolDetails = getPoolDetails(stayDays, getSpecialEventDetails());
       if (!getSpecialEventDetails().selected) poolDetails.mode = getPreferredStayMode();
@@ -2452,8 +2534,9 @@
         return;
       }
 
-      const schedule = getScheduleFromRules(checkInDate, stayDays, checkInTime, poolDetails.mode, getSpecialEventDetails().selected);
+      const schedule = getScheduleFromRules(checkInDate, stayDays, checkInTime, poolDetails.mode, getSpecialEventDetails().selected, selectedCheckOutDate);
       checkOutDateInput.value = schedule.checkOutDate;
+      document.getElementById("checkOutDatePicker").value = schedule.checkOutDate;
       const checkInReadable = new Date(`${checkInDate}T00:00:00`).toLocaleDateString("en-PH", {
         year: "numeric",
         month: "long",
@@ -2476,7 +2559,8 @@
 
     function initializeDatePicker() {
       const dateInput = document.getElementById("date");
-      if (!dateInput) return;
+      const checkOutDatePicker = document.getElementById("checkOutDatePicker");
+      if (!dateInput || !checkOutDatePicker) return;
 
       const today = new Date();
       const maxDate = new Date();
@@ -2485,6 +2569,11 @@
       const toISO = (d) => d.toISOString().split("T")[0];
       dateInput.min = toISO(today);
       dateInput.max = toISO(maxDate);
+      checkOutDatePicker.min = toISO(today);
+      checkOutDatePicker.max = toISO(maxDate);
+      if (!checkOutDatePicker.value && !dateInput.value) {
+        checkOutDatePicker.value = toISO(today);
+      }
       updateCheckoutPreview();
       const initialDate = dateInput.value;
       const initialStay = parseInt(document.getElementById("stayDays").value, 10) || 0;
@@ -2499,11 +2588,11 @@
       if (!checkInDate || stayDays < 1) return;
     }
 
-    async function savePendingBooking(reservationReference, name, contactNumber, checkInDate, stayDays, guests, roomGuests, checkInTime, checkOutTime, rooms, roomHours, poolDetails, cateringDetails, hallDetails, specialEventDetails) {
-      const error = validateSelectionAgainstAvailability(checkInDate, stayDays, rooms, poolDetails, specialEventDetails);
+    async function savePendingBooking(reservationReference, name, contactNumber, checkInDate, selectedCheckOutDate, stayDays, guests, roomGuests, checkInTime, checkOutTime, rooms, roomHours, poolDetails, cateringDetails, hallDetails, specialEventDetails) {
+      const error = validateSelectionAgainstAvailability(checkInDate, stayDays, rooms, poolDetails, specialEventDetails, selectedCheckOutDate);
       if (error) return false;
 
-      const schedule = getScheduleFromRules(checkInDate, stayDays, checkInTime, poolDetails.mode, specialEventDetails.selected);
+      const schedule = getScheduleFromRules(checkInDate, stayDays, checkInTime, poolDetails.mode, specialEventDetails.selected, selectedCheckOutDate);
       const inquirySubtotal =
         Number(specialEventDetails.baseCost || 0) +
         rooms.reduce((sum, room) => sum + (Number(room.computedPrice) || Number(room.price) || 0), 0) +
@@ -2570,6 +2659,7 @@
 
     function getCurrentAvailability() {
       const checkInDate = document.getElementById("date").value;
+      const selectedCheckOutDate = document.getElementById("checkOutDatePicker").value;
       const stayDays = parseInt(document.getElementById("stayDays").value, 10) || 0;
       const specialEventDetails = getSpecialEventDetails();
       const poolDetails = getPoolDetails(stayDays, specialEventDetails);
@@ -2577,7 +2667,7 @@
       if (!checkInDate || stayDays < 1) {
         return { rooms: { ...ROOM_LIMITS }, poolRemaining: POOL_LIMIT_PER_DAY, days: [] };
       }
-      return getRangeAvailability(checkInDate, stayDays, poolDetails.mode, specialEventDetails.selected);
+      return getRangeAvailability(checkInDate, stayDays, poolDetails.mode, specialEventDetails.selected, selectedCheckOutDate);
     }
 
     function getVisibleRoomSlotCount() {
@@ -2754,7 +2844,7 @@
         schedule = "8:00 AM - 5:00 PM";
         mode = "day-tour";
       } else if (baseCost === 6500) {
-        schedule = "Check-in from 5:00 PM, automatic check-out at 7:00 AM next day";
+        schedule = "Check-in from 6:00 PM, automatic check-out at 7:00 AM next day";
         mode = "overnight";
       } else if (baseCost === 10000) {
         const days = Math.max(stayDays || 1, 1);
@@ -3222,6 +3312,7 @@
 
     function clearForm() {
       document.getElementById("date").value = "";
+      document.getElementById("checkOutDatePicker").value = "";
       document.getElementById("preferStay").value = "day-tour";
       document.getElementById("stayDays").value = "1";
       document.getElementById("checkInTime").value = "08:00";
@@ -3275,6 +3366,7 @@
       const name = getGuestNameValue();
       const contactNumber = getContactNumberValue();
       const checkInDate = document.getElementById("date").value;
+      const selectedCheckOutDate = document.getElementById("checkOutDatePicker").value;
       const stayDays = parseInt(document.getElementById("stayDays").value, 10) || 0;
       const guests = parseInt(document.getElementById("guests").value, 10) || 0;
       const roomGuests = Math.max(0, parseInt(document.getElementById("roomGuests").value, 10) || 0);
@@ -3301,6 +3393,16 @@
 
       if (!checkInDate) {
         alert("Please select a check-in date.");
+        return;
+      }
+
+      if (!selectedCheckOutDate) {
+        alert("Please select a check-out date.");
+        return;
+      }
+
+      if (selectedCheckOutDate < checkInDate) {
+        alert("Check-out date cannot be earlier than check-in date.");
         return;
       }
 
@@ -3341,7 +3443,8 @@
         stayDays,
         document.getElementById("checkInTime").value || "08:00",
         poolDetails.mode,
-        specialEventDetails.selected
+        specialEventDetails.selected,
+        selectedCheckOutDate
       );
       const cateringDetails = getCateringDetails();
       const hallDetails = getFunctionHallDetails(cateringDetails, specialEventDetails);
@@ -3367,7 +3470,7 @@
         return;
       }
 
-      const selectionError = validateSelectionAgainstAvailability(checkInDate, stayDays, rooms, poolDetails, specialEventDetails);
+      const selectionError = validateSelectionAgainstAvailability(checkInDate, stayDays, rooms, poolDetails, specialEventDetails, selectedCheckOutDate);
       if (selectionError) {
         alert(selectionError);
         return;
@@ -3502,6 +3605,7 @@
         reservationReference,
         contactNumber,
         checkInDate,
+        selectedCheckOutDate,
         stayDays,
         stayLabel,
         guests,
@@ -3531,6 +3635,7 @@
         name,
         contactNumber,
         checkInDate,
+        selectedCheckOutDate,
         stayDays,
         guests,
         roomGuests,
@@ -3544,7 +3649,7 @@
         specialEventDetails,
       } = pendingReservation;
 
-      const latestCheck = validateSelectionAgainstAvailability(checkInDate, stayDays, rooms, poolDetails, specialEventDetails);
+      const latestCheck = validateSelectionAgainstAvailability(checkInDate, stayDays, rooms, poolDetails, specialEventDetails, selectedCheckOutDate);
       if (latestCheck) {
         alert(latestCheck);
         return;
@@ -3555,6 +3660,7 @@
         name,
         contactNumber,
         checkInDate,
+        selectedCheckOutDate,
         stayDays,
         guests,
         roomGuests,
@@ -4226,7 +4332,8 @@
         {
           selected: !!req.specialEventSelected,
           baseCost: req.specialEventCost || 0,
-        }
+        },
+        req.checkOutDate || ""
       );
 
       if (validationError) {
@@ -4358,22 +4465,41 @@
     });
     document.getElementById("preferStay").addEventListener("change", () => {
       syncStayPreferenceFields();
+      syncStayDaysFromDateRange();
       applyPoolScheduleRules();
       updateCheckoutPreview();
       checkDateAvailability();
       updateLiveBookingSummary();
     });
     document.getElementById("date").addEventListener("change", () => {
+      const checkInDate = document.getElementById("date").value;
+      const checkOutDatePicker = document.getElementById("checkOutDatePicker");
+      if (checkOutDatePicker && checkInDate) {
+        checkOutDatePicker.min = checkInDate;
+        if (!checkOutDatePicker.value || checkOutDatePicker.value < checkInDate) {
+          checkOutDatePicker.value = getDefaultCheckOutDate(checkInDate, getPreferredStayMode());
+        }
+      }
+      syncStayDaysFromDateRange();
       applyPoolScheduleRules();
       updateCheckoutPreview();
+      checkDateAvailability();
+      updateLiveBookingSummary();
+    });
+    document.getElementById("checkOutDatePicker").addEventListener("change", () => {
+      syncStayDaysFromDateRange();
+      updateCheckoutPreview();
+      checkDateAvailability();
       updateLiveBookingSummary();
     });
     document.getElementById("checkInTime").addEventListener("change", () => {
       updateCheckoutPreview();
+      checkDateAvailability();
       updateLiveBookingSummary();
     });
     document.getElementById("checkOutTime").addEventListener("change", () => {
       updateCheckoutPreview();
+      checkDateAvailability();
       updateLiveBookingSummary();
     });
     document.getElementById("stayDays").addEventListener("change", () => {
@@ -4384,6 +4510,8 @@
     });
     document.getElementById("pool-select").addEventListener("change", () => {
       syncPreferenceFromPoolSelection();
+      syncStayPreferenceFields();
+      syncStayDaysFromDateRange();
       applyPoolScheduleRules();
       checkDateAvailability();
       updateLiveBookingSummary();
