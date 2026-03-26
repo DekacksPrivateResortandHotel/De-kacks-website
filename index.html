@@ -1054,13 +1054,6 @@
     <label for="guests">Total Guests:</label>
     <input type="number" id="guests" min="1" value="1" />
 
-    <label for="roomGuests">Guests Staying in Rooms:</label>
-    <input type="number" id="roomGuests" min="0" value="1" />
-    <div id="roomGuideInfo" class="room-guide-card">
-      <strong>Room Guide</strong>
-      <p>Tell us how many guests will stay in rooms so we can suggest how many rooms you may need.</p>
-    </div>
-
     <label for="roomHours">Room Usage Hours (minimum 12 hours):</label>
     <input type="number" id="roomHours" min="12" step="1" value="12" />
 
@@ -1087,6 +1080,13 @@
     <div id="roomSelectionSection" style="display:none;">
       <h3>Room Accommodation (Up to 6 selections)</h3>
       <div id="availabilityInfo" style="margin:8px 0 12px;color:#1f3a5f;font-weight:600;"></div>
+
+      <label for="roomGuests">Guests Staying in Rooms:</label>
+      <input type="number" id="roomGuests" min="0" value="1" />
+      <div id="roomGuideInfo" class="room-guide-card">
+        <strong>Room Guide</strong>
+        <p>Tell us how many guests will stay in rooms so we can suggest how many rooms you may need.</p>
+      </div>
 
       <div class="room-slot" data-room-slot="1">
         <label>Room 1:</label>
