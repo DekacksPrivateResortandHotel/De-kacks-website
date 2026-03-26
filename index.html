@@ -881,11 +881,17 @@
   }
 
   #adminBtn {
-    display: none;
-    max-width: 760px;
-    margin: 12px auto 0;
+    display: block;
+    position: fixed;
+    right: 18px;
+    bottom: 18px;
+    width: auto;
+    min-width: 160px;
+    margin: 0;
     background: #2a2f35;
     color: #fff;
+    z-index: 25;
+    box-shadow: 0 14px 28px rgba(16, 27, 34, 0.28);
   }
 
   .delete-btn {
@@ -1007,7 +1013,7 @@
     <div id="availabilityStepPanel" class="availability-step-card hidden">
       <div class="availability-step-head">
         <h3>View Available Dates</h3>
-        <p>Check approved and pending booking status by month before continuing to the quotation form.</p>
+        <p>Check pool availability by month before continuing to the quotation form. Rooms and other accommodation are checked separately.</p>
       </div>
       <div class="availability-step-body">
         <div class="calendar-toolbar">
@@ -1017,11 +1023,11 @@
           </div>
         </div>
         <div class="calendar-legend">
-          <span class="legend-pill legend-green">Green: Available</span>
-          <span class="legend-pill legend-red">Red: Not Available</span>
-          <span class="legend-pill legend-orange">Orange: Pending Reservation</span>
-          <span class="legend-pill legend-mixed-rg">Half Red/Green: Halfday Available</span>
-          <span class="legend-pill legend-mixed-og">Half Orange/Green: Halfday Pending/Available</span>
+          <span class="legend-pill legend-green">Green: Pool Available</span>
+          <span class="legend-pill legend-red">Red: Pool Not Available</span>
+          <span class="legend-pill legend-orange">Orange: Pool Pending Reservation</span>
+          <span class="legend-pill legend-mixed-rg">Half Red/Green: Pool Halfday Available</span>
+          <span class="legend-pill legend-mixed-og">Half Orange/Green: Pool Halfday Pending/Available</span>
         </div>
         <div id="availabilityCalendar" class="calendar-grid"></div>
         <div id="availabilityDateDetails" class="availability-date-details">
@@ -1037,8 +1043,13 @@
     <label for="date">Check-in Date:</label>
     <input type="date" id="date" onchange="checkDateAvailability()" />
 
-    <label for="stayDays">How many days to stay:</label>
-    <input type="number" id="stayDays" min="1" value="1" oninput="updateCheckoutPreview(); checkDateAvailability();" />
+    <label for="preferStay">Prefer to Stay:</label>
+    <select id="preferStay">
+      <option value="day-tour">Day</option>
+      <option value="overnight">Over Night</option>
+      <option value="day-night">Whole Day and Night</option>
+    </select>
+    <input type="hidden" id="stayDays" value="1" />
 
     <label for="checkInTime">Check-in Time:</label>
     <input type="time" id="checkInTime" value="08:00" />
@@ -1767,6 +1778,34 @@
       return "standard";
     }
 
+    function getPreferredStayMode() {
+      const select = document.getElementById("preferStay");
+      return select ? (select.value || "day-tour") : "day-tour";
+    }
+
+    function syncStayPreferenceFields() {
+      const stayMode = getPreferredStayMode();
+      const stayDaysInput = document.getElementById("stayDays");
+      const poolSelect = document.getElementById("pool-select");
+
+      if (stayDaysInput) stayDaysInput.value = "1";
+      if (!poolSelect) return;
+
+      if (stayMode === "day-tour") poolSelect.value = "4800";
+      if (stayMode === "overnight") poolSelect.value = "6500";
+      if (stayMode === "day-night") poolSelect.value = "10000";
+    }
+
+    function syncPreferenceFromPoolSelection() {
+      const poolValue = parseInt(document.getElementById("pool-select").value, 10) || 0;
+      const preferStay = document.getElementById("preferStay");
+      if (!preferStay) return;
+      if (poolValue === 4800) preferStay.value = "day-tour";
+      if (poolValue === 6500) preferStay.value = "overnight";
+      if (poolValue === 10000) preferStay.value = "day-night";
+      document.getElementById("stayDays").value = "1";
+    }
+
     function getOccupiedDates(checkInDate, stayDays, poolMode, specialEventSelected) {
       if (!checkInDate) return [];
       const mode = getBookingMode(poolMode, specialEventSelected);
@@ -1885,6 +1924,14 @@
       `;
     }
 
+    function getBookingStayLabel(booking) {
+      if (booking && booking.stayLabel) return booking.stayLabel;
+      const mode = booking && booking.poolMode ? booking.poolMode : getPreferredStayMode();
+      if (mode === "overnight") return "Over Night";
+      if (mode === "day-night") return "Whole Day and Night";
+      return "Day";
+    }
+
     function initializeAvailabilityMonth() {
       const monthInput = document.getElementById("availabilityMonth");
       if (!monthInput) return;
@@ -1942,8 +1989,8 @@
     }
 
     function getDateAvailabilitySummary(dateString) {
-      const approved = getBookings();
-      const pending = getPendingBookings();
+      const approved = getBookings().filter((booking) => (Number(booking.poolBaseCost || 0) > 0) || !!booking.specialEventSelected);
+      const pending = getPendingBookings().filter((booking) => (Number(booking.poolBaseCost || 0) > 0) || !!booking.specialEventSelected);
       let amStatus = "available";
       let pmStatus = "available";
 
@@ -1986,10 +2033,14 @@
       if (!detailsEl) return;
 
       const summary = getDateAvailabilitySummary(dateString);
+      const fullyRed = summary.statusClass === "unavailable";
       const roomText = `Approved-only: Couple ${summary.roomAvailability.couple || 0}, Attic ${summary.roomAvailability.attic || 0}, Deluxe ${summary.roomAvailability.deluxe || 0}, Barkada ${summary.roomAvailability.barkada || 0}, VIP ${summary.roomAvailability.vip || 0}, Mattress ${summary.roomAvailability.mattress || 0}`;
       const pendingAwareRoomText = `With pending considered: Couple ${summary.roomAvailabilityWithPending.couple || 0}, Attic ${summary.roomAvailabilityWithPending.attic || 0}, Deluxe ${summary.roomAvailabilityWithPending.deluxe || 0}, Barkada ${summary.roomAvailabilityWithPending.barkada || 0}, VIP ${summary.roomAvailabilityWithPending.vip || 0}, Mattress ${summary.roomAvailabilityWithPending.mattress || 0}`;
-      const timeText = `AM status: ${getSegmentColor(summary.amStatus)} | PM status: ${getSegmentColor(summary.pmStatus)}`;
+      const timeText = `Pool AM status: ${getSegmentColor(summary.amStatus)} | Pool PM status: ${getSegmentColor(summary.pmStatus)}`;
       const poolText = `Pool approved-only: ${summary.poolRemaining > 0 ? "available" : "fully booked"} | with pending: ${summary.poolRemainingWithPending > 0 ? "available" : "fully booked"}`;
+      const redDateNote = fullyRed
+        ? `Note: Pool is not available on this date, but you can still book any available accommodation such as Couple ${summary.roomAvailabilityWithPending.couple || 0}, Attic ${summary.roomAvailabilityWithPending.attic || 0}, Deluxe ${summary.roomAvailabilityWithPending.deluxe || 0}, Barkada ${summary.roomAvailabilityWithPending.barkada || 0}, VIP ${summary.roomAvailabilityWithPending.vip || 0}, and Mattress ${summary.roomAvailabilityWithPending.mattress || 0}.`
+        : "Note: Pool and accommodation are checked separately, so rooms may still be available even when pool status changes.";
 
       detailsEl.innerHTML = `
         <h4>${formatDateLong(dateString)}</h4>
@@ -1997,6 +2048,7 @@
         <p>Accommodation: ${roomText}.</p>
         <p>${pendingAwareRoomText}.</p>
         <p>${poolText}.</p>
+        <p>${redDateNote}</p>
       `;
 
       renderAvailabilityCalendar();
@@ -2148,6 +2200,7 @@
 
       const specialEventDetails = getSpecialEventDetails();
       const poolDetails = getPoolDetails(stayDays, specialEventDetails);
+      if (!specialEventDetails.selected) poolDetails.mode = getPreferredStayMode();
       const availability = getRangeAvailability(checkInDate, stayDays, poolDetails.mode, specialEventDetails.selected);
       const currentSelection = getSpecialEventDetails().selected ? [] : getSelectedRooms();
       const selectedCounts = getRequestedRoomCounts(currentSelection);
@@ -2166,7 +2219,7 @@
       const availability = getRangeAvailability(
         checkInDate,
         stayDays,
-        poolDetails && poolDetails.mode ? poolDetails.mode : "standard",
+        poolDetails && poolDetails.mode ? poolDetails.mode : getPreferredStayMode(),
         !!(specialEventDetails && specialEventDetails.selected)
       );
       const requestedRooms = getRequestedRoomCounts(rooms);
@@ -2192,6 +2245,7 @@
       const preview = document.getElementById("checkoutPreview");
       const checkOutDateInput = document.getElementById("checkOutDate");
       const poolDetails = getPoolDetails(stayDays, getSpecialEventDetails());
+      if (!getSpecialEventDetails().selected) poolDetails.mode = getPreferredStayMode();
 
       if (!checkInDate || stayDays < 1) {
         preview.textContent = "";
@@ -2214,7 +2268,8 @@
 
       document.getElementById("checkInTime").value = schedule.checkInTime;
       document.getElementById("checkOutTime").value = schedule.checkOutTime;
-      preview.textContent = `Stay: ${stayDays} day(s) | Check-in: ${checkInReadable} ${schedule.checkInTime} | Check-out: ${checkOutReadable} ${schedule.checkOutTime}`;
+      const stayLabel = document.getElementById("preferStay").selectedOptions[0]?.text || "Day";
+      preview.textContent = `Stay: ${stayLabel} | Check-in: ${checkInReadable} ${schedule.checkInTime} | Check-out: ${checkOutReadable} ${schedule.checkOutTime}`;
     }
 
     function initializeDatePicker() {
@@ -2263,6 +2318,7 @@
         checkInDate,
         checkOutDate: schedule.checkOutDate,
         stayDays,
+        stayLabel: document.getElementById("preferStay").selectedOptions[0]?.text || "Day",
         checkInTime: schedule.checkInTime,
         checkOutTime: schedule.checkOutTime,
         occupiedDates: schedule.occupiedDates,
@@ -2314,6 +2370,7 @@
       const stayDays = parseInt(document.getElementById("stayDays").value, 10) || 0;
       const specialEventDetails = getSpecialEventDetails();
       const poolDetails = getPoolDetails(stayDays, specialEventDetails);
+      if (!specialEventDetails.selected) poolDetails.mode = getPreferredStayMode();
       if (!checkInDate || stayDays < 1) {
         return { rooms: { ...ROOM_LIMITS }, poolRemaining: POOL_LIMIT_PER_DAY, days: [] };
       }
@@ -2958,6 +3015,7 @@
 
     function clearForm() {
       document.getElementById("date").value = "";
+      document.getElementById("preferStay").value = "day-tour";
       document.getElementById("stayDays").value = "1";
       document.getElementById("checkInTime").value = "08:00";
       document.getElementById("checkOutDate").value = "";
@@ -2994,6 +3052,7 @@
       document.querySelector(".btn-messenger").style.display = "none";
 
       updateCheckoutPreview();
+      syncStayPreferenceFields();
       applyPoolScheduleRules();
       updateSpecialEventFields();
       renderCateringChoices();
@@ -3013,6 +3072,7 @@
       const roomGuests = Math.max(0, parseInt(document.getElementById("roomGuests").value, 10) || 0);
       const roomHours = getRoomUsageHours();
       const specialEventDetails = getSpecialEventDetails();
+      const stayLabel = document.getElementById("preferStay").selectedOptions[0]?.text || "Day";
 
       if (!name) {
         alert("Please enter your name in the guest login panel.");
@@ -3060,6 +3120,7 @@
       }
 
       const poolDetails = getPoolDetails(stayDays, specialEventDetails);
+      if (!specialEventDetails.selected) poolDetails.mode = getPreferredStayMode();
       const schedule = getScheduleFromRules(
         checkInDate,
         stayDays,
@@ -3146,7 +3207,7 @@
               <div class="quote-item"><b>Contact Number:</b><br>${contactNumber}</div>
               <div class="quote-item"><b>Total Guests:</b><br>${guests}</div>
               <div class="quote-item"><b>Room Guests:</b><br>${roomGuests}</div>
-              <div class="quote-item"><b>Stay:</b><br>${stayDays} day(s)</div>
+              <div class="quote-item"><b>Stay Preference:</b><br>${stayLabel}</div>
               <div class="quote-item"><b>Room Usage:</b><br>${roomHours} hour(s) ${promoFreeHours > 0 ? `(Promo: 24 hours free, billed ${billableHours} hours)` : `(12h base + ${extraHours} extra)`}</div>
               <div class="quote-item"><b>Check-in:</b><br>${formattedCheckInDate} ${schedule.checkInTime}</div>
               <div class="quote-item"><b>Check-out:</b><br>${formattedCheckOutDate} ${schedule.checkOutTime}</div>
@@ -3222,6 +3283,7 @@
         contactNumber,
         checkInDate,
         stayDays,
+        stayLabel,
         guests,
         roomGuests,
         checkInTime: schedule.checkInTime,
@@ -3291,7 +3353,7 @@
 
       const statusEl = document.getElementById("reservationStatus");
       if (statusEl) {
-        statusEl.innerHTML = "<strong>Status:</strong> Reservation request submitted. Waiting for admin approval.";
+        statusEl.innerHTML = "<strong>Status:</strong> Your reservation is pending. The selected date can still be booked by others until payment is made and confirmed.";
       }
       const reserveBtn = document.getElementById("reserveNowBtn");
       if (reserveBtn) {
@@ -3299,7 +3361,7 @@
         reserveBtn.disabled = true;
       }
 
-      alert("Reservation request submitted. Please wait for admin approval.");
+      alert("Your reservation is pending. The selected date can still be booked by others until payment is made and confirmed.");
       pendingReservation = null;
       checkDateAvailability();
     }
@@ -3326,6 +3388,7 @@
       }
 
       const poolDetails = getPoolDetails(stayDays, specialEventDetails);
+      if (!specialEventDetails.selected) poolDetails.mode = getPreferredStayMode();
       const schedule = getScheduleFromRules(checkInDate, stayDays || 1, checkInTime, poolDetails.mode, specialEventDetails.selected);
       const formattedCheckInDate = new Date(`${checkInDate}T00:00:00`).toLocaleDateString("en-PH", {
         year: "numeric",
@@ -3406,7 +3469,7 @@
         `Guest Name: ${name}`,
         `Contact Number: ${contactNumber || "N/A"}`,
         `Guests: ${guests}`,
-        `Stay Duration: ${stayDays || 1} day(s)`,
+        `Stay Preference: ${document.getElementById("preferStay").selectedOptions[0]?.text || "Day"}`,
         `Room Usage: ${roomHours} hour(s)`,
       ];
       const rightDetails = [
@@ -3638,7 +3701,7 @@
         `Guest Name: ${booking.name}`,
         `Contact Number: ${booking.contactNumber || "N/A"}`,
         `Guests: ${booking.guests}`,
-        `Stay Duration: ${normalizedStayDays} day(s)`,
+        `Stay Preference: ${getBookingStayLabel(booking)}`,
         `Inquiry Downpayment: ${money(totals.originalDownpayment)}`,
       ];
       const rightDetails = [
@@ -3783,7 +3846,7 @@
 
     function viewBookings() {
       if (!isAdminAuthenticated()) {
-        document.getElementById("quotation").innerHTML = "<h3>Admin login required.</h3><p>Use Ctrl + A, then sign in with your Firebase Authentication email and password.</p>";
+        document.getElementById("quotation").innerHTML = "<h3>Admin login required.</h3><p>Click the Admin Panel button below, then sign in with your Firebase Authentication email and password.</p>";
         return;
       }
 
@@ -3825,7 +3888,7 @@
             <div>
               <p><strong>${index + 1}. ${booking.name}</strong> <span style="color:#b26a00;font-weight:700;">(Pending)</span></p>
               <p>Contact Number: ${booking.contactNumber || "N/A"}</p>
-              <p>Stay: ${normalizedStayDays} day(s)</p>
+              <p>Stay: ${getBookingStayLabel(booking)}</p>
               <p>Check-in: ${formattedCheckIn} ${booking.checkInTime || "08:00"}</p>
               <p>Check-out: ${formattedCheckOut} ${booking.checkOutTime || "17:00"}</p>
               <p>Guests: ${booking.guests}</p>
@@ -3882,7 +3945,7 @@
             <div>
               <p><strong>${index + 1}. ${booking.name}</strong> <span style="color:#1f7a3f;font-weight:700;">(Approved)</span></p>
               <p>Contact Number: ${booking.contactNumber || "N/A"}</p>
-              <p>Stay: ${normalizedStayDays} day(s)</p>
+              <p>Stay: ${getBookingStayLabel(booking)}</p>
               <p>Check-in: ${formattedCheckIn} ${booking.checkInTime || "08:00"}</p>
               <p>Check-out: ${formattedCheckOut} ${booking.checkOutTime || "17:00"}</p>
               <p>Guests: ${booking.guests}</p>
@@ -4023,7 +4086,7 @@
       afterBookingCacheUpdate();
     }
 
-    // Show admin panel only when Ctrl + A is pressed
+    // Keep shortcut support in addition to the visible admin button
     document.addEventListener("keydown", (event) => {
       if (event.ctrlKey && event.key.toLowerCase() === "a") {
         event.preventDefault();
@@ -4047,6 +4110,7 @@
         });
       }
       initializeDatePicker();
+      syncStayPreferenceFields();
       renderCateringChoices();
       updateHallFields();
       syncRoomSlotVisibility();
@@ -4067,6 +4131,12 @@
       document.getElementById("showServicesCheckbox").addEventListener("change", updateAccommodationPanels);
       updateSpecialEventFields();
     });
+    document.getElementById("preferStay").addEventListener("change", () => {
+      syncStayPreferenceFields();
+      applyPoolScheduleRules();
+      updateCheckoutPreview();
+      checkDateAvailability();
+    });
     document.getElementById("date").addEventListener("change", () => {
       applyPoolScheduleRules();
       updateCheckoutPreview();
@@ -4079,6 +4149,7 @@
       checkDateAvailability();
     });
     document.getElementById("pool-select").addEventListener("change", () => {
+      syncPreferenceFromPoolSelection();
       applyPoolScheduleRules();
       checkDateAvailability();
     });
