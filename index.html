@@ -329,6 +329,25 @@
     color: #48635f;
   }
 
+  .phone-input-wrap {
+    display: grid;
+    grid-template-columns: 68px 1fr;
+    gap: 8px;
+    align-items: end;
+  }
+
+  .phone-prefix {
+    padding: 14px 16px;
+    margin-top: 6px;
+    border-radius: 14px;
+    border: 1px solid #c8ddd7;
+    background: linear-gradient(180deg, #f3f8f6, #edf5f2);
+    font-size: 16px;
+    color: var(--text);
+    font-weight: 700;
+    text-align: center;
+  }
+
   button:hover {
     transform: translateY(-1px);
   }
@@ -873,6 +892,13 @@
   .calendar-date-cell.mixed-rg { background: linear-gradient(135deg, #ffdedd 50%, #dff5e5 50%); }
   .calendar-date-cell.mixed-og { background: linear-gradient(135deg, #ffe7c9 50%, #dff5e5 50%); }
   .calendar-date-cell.mixed-ro { background: linear-gradient(135deg, #ffdedd 50%, #ffe7c9 50%); }
+  .calendar-date-cell.locked {
+    background: #e8eceb;
+    color: #6f807c;
+    border-color: #d5ddda;
+    cursor: not-allowed;
+    opacity: 0.92;
+  }
 
   .calendar-date-cell.selected {
     box-shadow: 0 0 0 3px rgba(27, 139, 157, 0.24);
@@ -942,7 +968,7 @@
   }
 
   #adminBtn {
-    display: block;
+    display: none;
     position: fixed;
     right: 18px;
     bottom: 18px;
@@ -1070,7 +1096,11 @@
           </div>
           <div>
             <label for="contactNumber">Contact Number:</label>
-            <input type="tel" id="contactNumber" placeholder="09XXXXXXXXX" />
+            <div class="phone-input-wrap">
+              <div class="phone-prefix">09</div>
+              <input type="tel" id="contactNumber" inputmode="numeric" maxlength="9" placeholder="123456789" />
+            </div>
+            <div class="helper-note">Enter the last 9 digits only.</div>
           </div>
         </div>
         <button type="button" class="primary-btn" onclick="proceedToQuotationForm()">Proceed to Quotation Form</button>
@@ -1135,10 +1165,10 @@
     <div class="helper-note">Choose the type of stay. The time will adjust automatically.</div>
     <input type="hidden" id="stayDays" value="1" />
 
-    <label for="checkInTime">Check-in Time:</label>
+    <label for="checkInTime">Check-in From:</label>
     <input type="time" id="checkInTime" value="08:00" />
 
-    <label for="bookingDateRangeDisplay">Booking Schedule:</label>
+    <label for="bookingDateRangeDisplay">Check-in / Check-out:</label>
     <input type="text" id="bookingDateRangeDisplay" readonly />
     <input type="hidden" id="checkOutDate" />
     <input type="hidden" id="checkOutTime" value="17:00" />
@@ -1817,7 +1847,12 @@
     }
 
     function getContactNumberValue() {
-      return document.getElementById("contactNumber").value.trim();
+      const raw = (document.getElementById("contactNumber").value || "").replace(/\D/g, "").slice(0, 9);
+      return raw.length > 0 ? `09${raw}` : "";
+    }
+
+    function getContactDigitsOnly() {
+      return (document.getElementById("contactNumber").value || "").replace(/\D/g, "").slice(0, 9);
     }
 
     function proceedToQuotationForm() {
@@ -1831,6 +1866,11 @@
 
       if (!contactNumber) {
         alert("Please enter your contact number first.");
+        return;
+      }
+
+      if (!/^09\d{9}$/.test(contactNumber)) {
+        alert("Please enter a valid contact number. It must start with 09 and contain 11 digits.");
         return;
       }
 
@@ -1968,8 +2008,7 @@
       }
 
       if (poolValue === 4800) {
-        if (!checkInTimeInput.value || checkInTimeInput.value < "08:00") checkInTimeInput.value = "08:00";
-        if (checkInTimeInput.value > "17:00") checkInTimeInput.value = "17:00";
+        checkInTimeInput.value = "08:00";
         checkInTimeInput.min = "08:00";
         checkInTimeInput.max = "17:00";
         checkInTimeInput.disabled = false;
@@ -2154,29 +2193,50 @@
     }
 
     function showAvailabilityDateDetails(dateString) {
+      const todayIso = toISODate(new Date());
+      const detailsEl = document.getElementById("availabilityDateDetails");
+      if (dateString < todayIso) {
+        selectedAvailabilityDate = "";
+        if (detailsEl) {
+          detailsEl.innerHTML = `
+            <h4>${formatDateLong(dateString)}</h4>
+            <p>This date is locked because it has already passed.</p>
+            <p>Please choose today or a future date.</p>
+          `;
+        }
+        renderAvailabilityCalendar();
+        return;
+      }
+
       selectedAvailabilityDate = dateString;
       const dateInput = document.getElementById("date");
       if (dateInput) dateInput.value = dateString;
-      const detailsEl = document.getElementById("availabilityDateDetails");
       if (!detailsEl) return;
 
       const summary = getDateAvailabilitySummary(dateString);
-      const fullyRed = summary.statusClass === "unavailable";
-      const roomText = `Approved-only: Couple ${summary.roomAvailability.couple || 0}, Attic ${summary.roomAvailability.attic || 0}, Deluxe ${summary.roomAvailability.deluxe || 0}, Barkada ${summary.roomAvailability.barkada || 0}, VIP ${summary.roomAvailability.vip || 0}, Mattress ${summary.roomAvailability.mattress || 0}`;
-      const pendingAwareRoomText = `With pending considered: Couple ${summary.roomAvailabilityWithPending.couple || 0}, Attic ${summary.roomAvailabilityWithPending.attic || 0}, Deluxe ${summary.roomAvailabilityWithPending.deluxe || 0}, Barkada ${summary.roomAvailabilityWithPending.barkada || 0}, VIP ${summary.roomAvailabilityWithPending.vip || 0}, Mattress ${summary.roomAvailabilityWithPending.mattress || 0}`;
-      const timeText = `Pool AM status: ${getSegmentColor(summary.amStatus)} | Pool PM status: ${getSegmentColor(summary.pmStatus)}`;
-      const poolText = `Pool approved-only: ${summary.poolRemaining > 0 ? "available" : "fully booked"} | with pending: ${summary.poolRemainingWithPending > 0 ? "available" : "fully booked"}`;
-      const redDateNote = fullyRed
-        ? `Note: Pool is not available on this date, but you can still book any available accommodation such as Couple ${summary.roomAvailabilityWithPending.couple || 0}, Attic ${summary.roomAvailabilityWithPending.attic || 0}, Deluxe ${summary.roomAvailabilityWithPending.deluxe || 0}, Barkada ${summary.roomAvailabilityWithPending.barkada || 0}, VIP ${summary.roomAvailabilityWithPending.vip || 0}, and Mattress ${summary.roomAvailabilityWithPending.mattress || 0}.`
-        : "Note: Pool and accommodation are checked separately, so rooms may still be available even when pool status changes.";
+      const availableItems = [];
+      if ((summary.roomAvailabilityWithPending.couple || 0) > 0) availableItems.push(`Couple ${summary.roomAvailabilityWithPending.couple}`);
+      if ((summary.roomAvailabilityWithPending.attic || 0) > 0) availableItems.push(`Attic ${summary.roomAvailabilityWithPending.attic}`);
+      if ((summary.roomAvailabilityWithPending.deluxe || 0) > 0) availableItems.push(`Deluxe ${summary.roomAvailabilityWithPending.deluxe}`);
+      if ((summary.roomAvailabilityWithPending.barkada || 0) > 0) availableItems.push(`Barkada ${summary.roomAvailabilityWithPending.barkada}`);
+      if ((summary.roomAvailabilityWithPending.vip || 0) > 0) availableItems.push(`VIP ${summary.roomAvailabilityWithPending.vip}`);
+      if ((summary.roomAvailabilityWithPending.mattress || 0) > 0) availableItems.push(`Mattress ${summary.roomAvailabilityWithPending.mattress}`);
+
+      const poolAvailabilityText = summary.poolRemainingWithPending > 0
+        ? "Pool is available on this date."
+        : "Pool is not available on this date.";
+      const accommodationText = availableItems.length > 0
+        ? `Available accommodation: ${availableItems.join(", ")}.`
+        : "No accommodation is available on this date.";
+      const bookingNote = summary.poolRemainingWithPending > 0
+        ? "You can continue with pool booking or room booking if available."
+        : "Pool is full, but you can still book any accommodation listed above if you do not need the pool.";
 
       detailsEl.innerHTML = `
         <h4>${formatDateLong(dateString)}</h4>
-        <p>Available time: ${timeText}.</p>
-        <p>Accommodation: ${roomText}.</p>
-        <p>${pendingAwareRoomText}.</p>
-        <p>${poolText}.</p>
-        <p>${redDateNote}</p>
+        <p>${poolAvailabilityText}</p>
+        <p>${accommodationText}</p>
+        <p>${bookingNote}</p>
       `;
 
       updateCheckoutPreview();
@@ -2195,6 +2255,7 @@
       const monthIndex = (parseInt(monthStr, 10) || 1) - 1;
       const firstDay = new Date(year, monthIndex, 1);
       const lastDay = new Date(year, monthIndex + 1, 0);
+      const todayIso = toISODate(new Date());
       const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
       let html = dayNames.map((day) => `<div class="calendar-day-name">${day}</div>`).join("");
@@ -2205,12 +2266,17 @@
 
       for (let day = 1; day <= lastDay.getDate(); day += 1) {
         const dateString = `${year}-${String(monthIndex + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+        const isLocked = dateString < todayIso;
         const summary = getDateAvailabilitySummary(dateString);
         const selectedClass = selectedAvailabilityDate === dateString ? " selected" : "";
+        const cellClass = isLocked ? "locked" : summary.statusClass;
+        const cellText = isLocked ? "Locked" : (summary.poolRemaining > 0 ? "Pool open" : "Pool full");
+        const disabledAttr = isLocked ? "disabled" : "";
+        const clickHandler = isLocked ? "" : `onclick="showAvailabilityDateDetails('${dateString}')"`;
         html += `
-          <button type="button" class="calendar-date-cell ${summary.statusClass}${selectedClass}" onclick="showAvailabilityDateDetails('${dateString}')">
+          <button type="button" class="calendar-date-cell ${cellClass}${selectedClass}" ${clickHandler} ${disabledAttr}>
             ${day}
-            <small>${summary.poolRemaining > 0 ? "Pool open" : "Pool full"}</small>
+            <small>${cellText}</small>
           </button>
         `;
       }
@@ -3228,6 +3294,11 @@
         return;
       }
 
+      if (!/^09\d{9}$/.test(contactNumber)) {
+        alert("Please enter a valid contact number. It must start with 09 and contain 11 digits.");
+        return;
+      }
+
       if (!checkInDate) {
         alert("Please select a check-in date.");
         return;
@@ -4239,7 +4310,7 @@
       afterBookingCacheUpdate();
     }
 
-    // Keep shortcut support in addition to the visible admin button
+    // Admin button stays hidden until Ctrl + A is pressed
     document.addEventListener("keydown", (event) => {
       if (event.ctrlKey && event.key.toLowerCase() === "a") {
         event.preventDefault();
@@ -4354,7 +4425,11 @@
       updateLiveBookingSummary();
     });
     document.getElementById("guestName").addEventListener("input", updateLiveBookingSummary);
-    document.getElementById("contactNumber").addEventListener("input", updateLiveBookingSummary);
+    document.getElementById("contactNumber").addEventListener("input", () => {
+      const input = document.getElementById("contactNumber");
+      input.value = (input.value || "").replace(/\D/g, "").slice(0, 9);
+      updateLiveBookingSummary();
+    });
   </script>
 </body>
 </html>
