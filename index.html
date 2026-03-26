@@ -2170,10 +2170,28 @@
 
     function getBookingStayLabel(booking) {
       if (booking && booking.stayLabel) return booking.stayLabel;
-      const mode = booking && booking.poolMode ? booking.poolMode : getPreferredStayMode();
+      const mode = inferBookingPoolMode(booking);
       if (mode === "overnight") return "Over Night";
       if (mode === "day-night") return "Whole Day and Night";
       return "Day";
+    }
+
+    function inferBookingPoolMode(booking) {
+      if (!booking) return getPreferredStayMode();
+      if (booking.specialEventSelected) return "special_event";
+      if (booking.poolMode && booking.poolMode !== "standard") return booking.poolMode;
+
+      const poolBaseCost = Number(booking.poolBaseCost || 0);
+      if (poolBaseCost === 4800) return "day-tour";
+      if (poolBaseCost === 6500) return "overnight";
+      if (poolBaseCost === 10000) return "day-night";
+
+      const breakdown = String(booking.poolBreakdown || "").toLowerCase();
+      if (breakdown.includes("overnight")) return "overnight";
+      if (breakdown.includes("day and night")) return "day-night";
+      if (breakdown.includes("day tour")) return "day-tour";
+
+      return "standard";
     }
 
     function initializeAvailabilityMonth() {
@@ -2193,7 +2211,7 @@
     }
 
     function getBookingSegmentsForDate(booking, targetDate, collectionType) {
-      const mode = booking.poolMode || ((booking.poolBaseCost || 0) > 0 ? "standard" : "standard");
+      const mode = inferBookingPoolMode(booking);
       const occupiedDates = Array.isArray(booking.occupiedDates) && booking.occupiedDates.length > 0
         ? booking.occupiedDates
         : getBookingStayDates(booking);
@@ -4415,7 +4433,7 @@
           computedCost: req.poolComputedCost || 0,
           breakdown: req.poolBreakdown || "None",
           schedule: req.poolSchedule || "N/A",
-          mode: req.poolMode || "standard",
+          mode: inferBookingPoolMode(req),
         },
         {
           selected: !!req.specialEventSelected,
@@ -4431,6 +4449,7 @@
 
       const approvedBooking = {
         ...req,
+        poolMode: inferBookingPoolMode(req),
         status: "approved",
         approvedAt: new Date().toISOString(),
       };
