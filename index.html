@@ -529,6 +529,69 @@
     flex-wrap: wrap;
   }
 
+  .review-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(8, 31, 38, 0.65);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 35;
+    backdrop-filter: blur(6px);
+  }
+
+  .review-overlay.hidden {
+    display: none !important;
+  }
+
+  .review-modal {
+    width: min(680px, 100%);
+    max-height: min(88vh, 900px);
+    overflow: auto;
+    background: linear-gradient(180deg, #fffef9, #f4fbf8);
+    border: 1px solid var(--line);
+    border-radius: 24px;
+    box-shadow: 0 28px 70px rgba(5, 38, 46, 0.24);
+    padding: 22px;
+  }
+
+  .review-modal h3 {
+    margin: 0 0 8px;
+  }
+
+  .review-summary {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin: 12px 0;
+  }
+
+  .review-card {
+    background: #fff;
+    border: 1px solid #d8e7df;
+    border-radius: 14px;
+    padding: 10px;
+    font-size: 13px;
+  }
+
+  .review-list {
+    margin: 12px 0;
+    padding: 12px;
+    background: #fff;
+    border: 1px solid #d8e7df;
+    border-radius: 14px;
+    font-size: 13px;
+  }
+
+  .review-list p {
+    margin: 0 0 8px;
+  }
+
+  .review-list p:last-child {
+    margin-bottom: 0;
+  }
+
   .catering-choices {
     margin-top: 10px;
     padding: 12px;
@@ -1069,6 +1132,17 @@
       <button type="button" class="primary-btn" onclick="closeWelcomePopup()">Enter Booking Panel</button>
     </div>
   </div>
+  <div id="reviewOverlay" class="review-overlay hidden">
+    <div class="review-modal">
+      <h3>Review Your Reservation</h3>
+      <p>Please review your quotation details before sending your reservation request to admin.</p>
+      <div id="reviewQuoteContent"></div>
+      <div class="quote-actions">
+        <button type="button" class="secondary-btn" onclick="closeReservationReview()">Back to Quote</button>
+        <button type="button" class="reserve-now-btn" onclick="confirmReservationSubmission()">Confirm Reservation</button>
+      </div>
+    </div>
+  </div>
   <div class="weather-scene" aria-hidden="true">
     <span class="weather-sun"></span>
     <span class="weather-cloud cloud-a"></span>
@@ -1115,7 +1189,7 @@
             <div class="helper-note">Enter the last 9 digits only.</div>
           </div>
         </div>
-        <button type="button" class="primary-btn" onclick="proceedToQuotationForm()">Proceed to Quotation Form</button>
+        <button type="button" class="primary-btn" onclick="proceedToQuotationForm()">Continue to Booking Form</button>
         <div class="motivation-card">
           <strong>Today's Resort Reminder</strong>
           <p id="motivationVerse"></p>
@@ -1147,7 +1221,7 @@
           <h4>No Date Selected</h4>
           <p>Select a date in the calendar to view available time and accommodation details.</p>
         </div>
-        <button type="button" class="primary-btn" onclick="continueToQuotationForm()">Continue to Quotation Form</button>
+        <button type="button" class="primary-btn" onclick="continueToQuotationForm()">Continue to Booking Form</button>
       </div>
     </div>
 
@@ -1224,7 +1298,7 @@
       <input type="number" id="roomGuests" min="0" value="1" />
       <div class="helper-note">Room rate is based on 12 hours per day.</div>
       <div id="roomMultiDayWrap" class="hidden">
-        <label for="roomHours">How Many Day(s) Will You Use the Rooms?</label>
+        <label for="roomHours">Room Booking Days</label>
         <select id="roomHours">
           <option value="1">1 day</option>
           <option value="2">2 days</option>
@@ -1234,7 +1308,7 @@
           <option value="6">6 days</option>
           <option value="7">7 days</option>
         </select>
-        <div class="helper-note">Room promo: if room booking is more than 1 day, 1 day is free.</div>
+        <div class="helper-note">Promo: book rooms for more than 1 day and get 1 day free.</div>
       </div>
       <div id="roomGuideInfo" class="room-guide-card">
         <strong>Room Guide</strong>
@@ -1330,7 +1404,7 @@
         <option value="10000">Day and Night Tour - PHP 10,000 / day</option>
       </select>
       <div id="poolMultiDayWrap" class="hidden">
-        <label for="stayDaysVisible">How Many Day(s) Will You Use the Pool?</label>
+        <label for="stayDaysVisible">Pool Access Days</label>
         <select id="stayDaysVisible">
           <option value="1">1 day</option>
           <option value="2">2 days</option>
@@ -1873,6 +1947,11 @@
 
     function closeWelcomePopup() {
       document.getElementById("welcomeOverlay").classList.add("hidden");
+    }
+
+    function closeReservationReview() {
+      const overlay = document.getElementById("reviewOverlay");
+      if (overlay) overlay.classList.add("hidden");
     }
 
     function showAdminWorkspace() {
@@ -3405,6 +3484,58 @@
       };
     }
 
+    function renderReservationReview() {
+      if (!pendingReservation) return;
+      const container = document.getElementById("reviewQuoteContent");
+      if (!container) return;
+
+      const pseudoBooking = {
+        reservationReference: pendingReservation.reservationReference,
+        name: pendingReservation.name,
+        contactNumber: pendingReservation.contactNumber,
+        guests: pendingReservation.guests,
+        roomGuests: pendingReservation.roomGuests,
+        checkInDate: pendingReservation.checkInDate,
+        checkOutDate: pendingReservation.selectedCheckOutDate,
+        checkInTime: pendingReservation.checkInTime,
+        checkOutTime: pendingReservation.checkOutTime,
+        stayLabel: pendingReservation.stayLabel,
+        rooms: pendingReservation.rooms,
+        roomStayDays: pendingReservation.roomStayDays,
+        roomPromoFreeDays: pendingReservation.roomPromoFreeDays,
+        poolComputedCost: pendingReservation.poolDetails?.computedCost || 0,
+        poolBaseCost: pendingReservation.poolDetails?.baseCost || 0,
+        poolBreakdown: pendingReservation.poolDetails?.breakdown || "None",
+        cateringCost: pendingReservation.cateringDetails?.totalCost || 0,
+        cateringPackage: pendingReservation.cateringDetails?.packageName || "None",
+        hallCost: pendingReservation.hallDetails?.cost || 0,
+        specialEventCost: pendingReservation.specialEventDetails?.baseCost || 0,
+      };
+      const totals = computeBookingTotals(pseudoBooking);
+      const roomNames = Array.isArray(pendingReservation.rooms) && pendingReservation.rooms.length > 0
+        ? pendingReservation.rooms.map((room) => room.text).join(", ")
+        : "No rooms selected";
+
+      container.innerHTML = `
+        <div class="review-summary">
+          <div class="review-card"><strong>Guest</strong><br>${pendingReservation.name}<br>${pendingReservation.contactNumber}</div>
+          <div class="review-card"><strong>Reference No.</strong><br>${pendingReservation.reservationReference}</div>
+          <div class="review-card"><strong>Schedule</strong><br>${formatDateLong(pendingReservation.checkInDate)} ${pendingReservation.checkInTime}<br>to<br>${formatDateLong(pendingReservation.selectedCheckOutDate)} ${pendingReservation.checkOutTime}</div>
+          <div class="review-card"><strong>Stay Preference</strong><br>${pendingReservation.stayLabel}</div>
+        </div>
+        <div class="review-list">
+          <p><strong>Guests:</strong> ${pendingReservation.guests}</p>
+          <p><strong>Guests Staying in Rooms:</strong> ${pendingReservation.roomGuests}</p>
+          <p><strong>Room Details:</strong> ${roomNames}</p>
+          <p><strong>Pool Package:</strong> ${pendingReservation.poolDetails?.breakdown || "None"}</p>
+          ${pendingReservation.roomPromoFreeDays > 0 ? `<p><strong>Room Promo:</strong> ${pendingReservation.roomPromoFreeDays} free day applied.</p>` : ""}
+          <p><strong>Total Amount:</strong> PHP ${totals.total.toLocaleString("en-PH", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+          <p><strong>Required Downpayment:</strong> PHP ${totals.downpayment.toLocaleString("en-PH", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+          <p><strong>Reminder:</strong> Your selected date is not secured until payment is made and confirmed.</p>
+        </div>
+      `;
+    }
+
     function updateSpecialEventFields() {
       const specialEventDetails = getSpecialEventDetails();
       const stayDaysInput = document.getElementById("stayDays");
@@ -3713,7 +3844,7 @@
               <div class="quote-item"><b>Total Guests:</b><br>${guests}</div>
               <div class="quote-item"><b>Room Guests:</b><br>${effectiveRoomGuests}</div>
               <div class="quote-item"><b>Stay Preference:</b><br>${stayLabel}</div>
-              <div class="quote-item"><b>Room Usage:</b><br>12 hours per day${roomLineItems.length > 0 && roomPromoDetails.requestedDays > 1 ? `<br>${roomPromoDetails.requestedDays} day(s) selected${roomPromoDetails.promoApplied ? ` (Promo: ${roomPromoDetails.freeDays} day free, billed ${roomPromoDetails.billableDays} day(s))` : ""}` : ""}</div>
+              <div class="quote-item"><b>Room Usage:</b><br>12-hour room rate per day${roomLineItems.length > 0 && roomPromoDetails.requestedDays > 1 ? `<br>${roomPromoDetails.requestedDays} day(s) selected${roomPromoDetails.promoApplied ? ` (Promo: ${roomPromoDetails.freeDays} day free, billed ${roomPromoDetails.billableDays} day(s))` : ""}` : ""}</div>
               <div class="quote-item"><b>Check-in:</b><br>${formattedCheckInDate} ${schedule.checkInTime}</div>
               <div class="quote-item"><b>Check-out:</b><br>${formattedCheckOutDate} ${schedule.checkOutTime}</div>
             </div>
@@ -3734,8 +3865,8 @@
             `).join("") : '<div class="quote-row"><div>No rooms selected.</div><div>PHP 0.00</div></div>'}
             ${roomLineItems.length > 0 && roomPromoDetails.promoApplied ? `
             <div class="quote-row">
-              <div><strong>Room Promo</strong><br>Requested ${roomPromoDetails.requestedDays} day(s), billed ${roomPromoDetails.billableDays} day(s), free ${roomPromoDetails.freeDays} day.</div>
-              <div>FREE PROMO</div>
+              <div><strong>Room Promo</strong><br>Requested ${roomPromoDetails.requestedDays} day(s), billed ${roomPromoDetails.billableDays} day(s), with ${roomPromoDetails.freeDays} free day.</div>
+              <div>Included</div>
             </div>` : ""}
 
             <div class="quote-row">
@@ -3817,7 +3948,16 @@
       document.querySelector(".btn-messenger").style.display = "block";
     }
 
-    async function saveReservation() {
+    function saveReservation() {
+      if (!pendingReservation) {
+        alert("Please generate a quotation first.");
+        return;
+      }
+      renderReservationReview();
+      document.getElementById("reviewOverlay").classList.remove("hidden");
+    }
+
+    async function confirmReservationSubmission() {
       if (!pendingReservation) {
         alert("Please generate a quotation first.");
         return;
@@ -3872,6 +4012,7 @@
         return;
       }
 
+      closeReservationReview();
       const statusEl = document.getElementById("reservationStatus");
       if (statusEl) {
         statusEl.innerHTML = `<strong>Status:</strong> Your reservation is pending. Reference No.: ${reservationReference}. The selected date can still be booked by others until payment is made and confirmed.`;
@@ -3992,7 +4133,7 @@
         `Contact Number: ${contactNumber || "N/A"}`,
         `Guests: ${guests}`,
         `Stay Preference: ${document.getElementById("preferStay").selectedOptions[0]?.text || "Day"}`,
-        `Room Usage: 12 hours per day${roomPromoDetails.requestedDays > 1 ? ` | ${roomPromoDetails.requestedDays} day(s)${roomPromoDetails.promoApplied ? ` (${roomPromoDetails.freeDays} day free promo)` : ""}` : ""}`,
+        `Room Usage: 12-hour room rate per day${roomPromoDetails.requestedDays > 1 ? ` | ${roomPromoDetails.requestedDays} day(s)${roomPromoDetails.promoApplied ? ` (${roomPromoDetails.freeDays} free day promo)` : ""}` : ""}`,
       ];
       const rightDetails = [
         `Check-in: ${formattedCheckInDate} ${schedule.checkInTime}`,
@@ -4062,7 +4203,7 @@
           y += rowHeight;
         });
         if (!specialEventDetails.selected && roomPromoDetails.promoApplied) {
-          drawRow(`Room Promo: ${roomPromoDetails.freeDays} day free`, `Requested ${roomPromoDetails.requestedDays} day(s), billed ${roomPromoDetails.billableDays} day(s)`, y);
+          drawRow(`Room Promo: ${roomPromoDetails.freeDays} free day`, `Requested ${roomPromoDetails.requestedDays} day(s), billed ${roomPromoDetails.billableDays} day(s)`, y);
           y += rowHeight;
         }
       }
@@ -4137,14 +4278,14 @@
       y += 20;
       doc.line(12, y, 82, y);
       doc.line(128, y, 198, y);
-      y += 5;
-      doc.setFontSize(9);
-      doc.text("Prepared by", 12, y);
-      doc.text("Approved by", 128, y);
-      y += 6;
       doc.setFont("helvetica", "bold");
       doc.setFontSize(9.2);
       doc.text("Dekack's Private Resort and Hotel Management", 12, y);
+      y += 6;
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(9);
+      doc.text("Prepared by", 12, y);
+      doc.text("Approved by", 128, y);
 
       // Footer
       doc.setDrawColor(215, 224, 234);
@@ -4425,7 +4566,7 @@
               <p>Check-out: ${formattedCheckOut} ${booking.checkOutTime || "17:00"}</p>
               <p>Guests: ${booking.guests}</p>
               <p>Room Guests: ${booking.roomGuests || booking.guests || 0}</p>
-              <p>Room Stay: ${booking.roomStayDays || booking.roomHours || 1} day(s)${Number(booking.roomPromoFreeDays || 0) > 0 ? ` (${booking.roomPromoFreeDays} day free promo)` : ""}</p>
+              <p>Room Booking Days: ${booking.roomStayDays || booking.roomHours || 1} day(s)${Number(booking.roomPromoFreeDays || 0) > 0 ? ` (${booking.roomPromoFreeDays} free day promo)` : ""}</p>
               <p>Special Event: ${booking.specialEventSelected ? `${booking.specialEventLabel} - PHP ${Number(booking.specialEventCost || 0).toLocaleString("en-PH", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} (${booking.specialEventCateringMode === "with" ? "With cater" : "Non-cater"})` : "None"}</p>
               <p>Rooms: ${
                 Array.isArray(booking.rooms) && booking.rooms.length > 0
@@ -4483,7 +4624,7 @@
               <p>Check-out: ${formattedCheckOut} ${booking.checkOutTime || "17:00"}</p>
               <p>Guests: ${booking.guests}</p>
               <p>Room Guests: ${booking.roomGuests || booking.guests || 0}</p>
-              <p>Room Stay: ${booking.roomStayDays || booking.roomHours || 1} day(s)${Number(booking.roomPromoFreeDays || 0) > 0 ? ` (${booking.roomPromoFreeDays} day free promo)` : ""}</p>
+              <p>Room Booking Days: ${booking.roomStayDays || booking.roomHours || 1} day(s)${Number(booking.roomPromoFreeDays || 0) > 0 ? ` (${booking.roomPromoFreeDays} free day promo)` : ""}</p>
               <p>Special Event: ${booking.specialEventSelected ? `${booking.specialEventLabel} - PHP ${Number(booking.specialEventCost || 0).toLocaleString("en-PH", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} (${booking.specialEventCateringMode === "with" ? "With cater" : "Non-cater"})` : "None"}</p>
               <p>Rooms: ${
                 Array.isArray(booking.rooms) && booking.rooms.length > 0
