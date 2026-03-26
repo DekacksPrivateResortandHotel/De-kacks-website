@@ -1368,7 +1368,7 @@
 
     <button class="primary-btn" onclick="generateQuotation()">Generate Quotation</button>
     <button class="secondary-btn" type="button" onclick="clearForm()">Clear Form</button>
-    <button class="secondary-btn btn-download" onclick="downloadPDF()" style="display:none;">Download PDF</button>
+    <button class="secondary-btn btn-download" onclick="downloadPDF()" style="display:none;">Download Quote</button>
     <button class="secondary-btn btn-messenger" onclick="bookMessenger()" style="display:none;">Book via Messenger</button>
 
     <div id="quotation"></div>
@@ -3706,6 +3706,7 @@
             </div>
 
             <div class="quote-actions">
+              <button type="button" class="secondary-btn" onclick="downloadPDF()">Download Quote</button>
               <button id="reserveNowBtn" class="reserve-now-btn" onclick="saveReservation()">Reserve Now</button>
             </div>
           </div>
@@ -3732,7 +3733,6 @@
         specialEventDetails,
       };
 
-      document.querySelector(".btn-download").style.display = "block";
       document.querySelector(".btn-messenger").style.display = "block";
     }
 
@@ -4055,6 +4055,10 @@
       doc.setFontSize(9);
       doc.text("Prepared by", 12, y);
       doc.text("Approved by", 128, y);
+      y += 6;
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(9.2);
+      doc.text("Dekack's Private Resort and Hotel Management", 12, y);
 
       // Footer
       doc.setDrawColor(215, 224, 234);
