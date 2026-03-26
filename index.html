@@ -529,67 +529,45 @@
     flex-wrap: wrap;
   }
 
-  .review-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(8, 31, 38, 0.65);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    z-index: 35;
-    backdrop-filter: blur(6px);
-  }
-
-  .review-overlay.hidden {
-    display: none !important;
-  }
-
-  .review-modal {
-    width: min(680px, 100%);
-    max-height: min(88vh, 900px);
-    overflow: auto;
-    background: linear-gradient(180deg, #fffef9, #f4fbf8);
-    border: 1px solid var(--line);
-    border-radius: 24px;
-    box-shadow: 0 28px 70px rgba(5, 38, 46, 0.24);
-    padding: 22px;
-  }
-
-  .review-modal h3 {
-    margin: 0 0 8px;
-  }
-
-  .review-summary {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin: 12px 0;
-  }
-
-  .review-card {
-    background: #fff;
-    border: 1px solid #d8e7df;
-    border-radius: 14px;
-    padding: 10px;
-    font-size: 13px;
-  }
-
-  .review-list {
-    margin: 12px 0;
+  .quick-setup-card {
+    margin-top: 14px;
     padding: 12px;
-    background: #fff;
-    border: 1px solid #d8e7df;
-    border-radius: 14px;
-    font-size: 13px;
+    border: 1px solid #d7e4f2;
+    border-radius: 12px;
+    background: linear-gradient(180deg, #fffef9, #f6fbff);
   }
 
-  .review-list p {
-    margin: 0 0 8px;
+  .quick-setup-card strong {
+    display: block;
+    color: #0f3558;
+    font-size: 14px;
+    margin-bottom: 6px;
   }
 
-  .review-list p:last-child {
-    margin-bottom: 0;
+  .quick-setup-buttons {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+    margin-top: 8px;
+  }
+
+  .quick-setup-btn {
+    border: 1px solid #cfe0ef;
+    background: #ffffff;
+    color: #143f66;
+    border-radius: 12px;
+    padding: 12px 14px;
+    font-size: 15px;
+    font-weight: 700;
+    text-align: left;
+    cursor: pointer;
+  }
+
+  .quick-setup-btn.active {
+    border-color: #0f6a83;
+    background: linear-gradient(135deg, #e6f6f8, #f2fbfb);
+    color: #0a4353;
+    box-shadow: 0 8px 18px rgba(17, 102, 123, 0.12);
   }
 
   .catering-choices {
@@ -1143,17 +1121,6 @@
       <button type="button" class="primary-btn" onclick="closeWelcomePopup()">Enter Booking Panel</button>
     </div>
   </div>
-  <div id="reviewOverlay" class="review-overlay hidden">
-    <div class="review-modal">
-      <h3>Review Your Reservation</h3>
-      <p>Please review your quotation details before sending your reservation request to admin.</p>
-      <div id="reviewQuoteContent"></div>
-      <div class="quote-actions">
-        <button type="button" class="secondary-btn" onclick="closeReservationReview()">Back to Quote</button>
-        <button type="button" class="reserve-now-btn" onclick="confirmReservationSubmission()">Confirm Reservation</button>
-      </div>
-    </div>
-  </div>
   <div class="weather-scene" aria-hidden="true">
     <span class="weather-sun"></span>
     <span class="weather-cloud cloud-a"></span>
@@ -1280,8 +1247,18 @@
     <input type="number" id="guests" min="1" value="1" />
     <div class="helper-note">Enter everyone included in the booking, even if some will not use a room.</div>
 
+    <div class="quick-setup-card">
+      <strong>Quick Booking Setup (Easy for seniors)</strong>
+      <div class="helper-note">Pick one first so the form can open only what you need.</div>
+      <div class="quick-setup-buttons">
+        <button type="button" class="quick-setup-btn" data-quick-mode="pool-only" onclick="applyQuickSetup('pool-only')">Pool Only</button>
+        <button type="button" class="quick-setup-btn" data-quick-mode="room-only" onclick="applyQuickSetup('room-only')">Room Only</button>
+        <button type="button" class="quick-setup-btn" data-quick-mode="pool-room" onclick="applyQuickSetup('pool-room')">Pool + Room</button>
+      </div>
+    </div>
+
     <div style="margin-top:14px;padding:12px;border:1px solid #d7e4f2;border-radius:10px;background:#f8fbff;">
-      <div style="font-weight:700;color:#0f3558;font-size:13px;margin-bottom:8px;">Accommodation Selection</div>
+      <div style="font-weight:700;color:#0f3558;font-size:13px;margin-bottom:8px;">What Would You Like to Book?</div>
       <label style="display:flex;align-items:center;gap:8px;margin:0 0 8px;font-weight:600;cursor:pointer;">
         <input type="checkbox" id="showRoomsCheckbox" style="width:auto;margin:0;" />
         <span>Room Accommodation</span>
@@ -1960,11 +1937,6 @@
       document.getElementById("welcomeOverlay").classList.add("hidden");
     }
 
-    function closeReservationReview() {
-      const overlay = document.getElementById("reviewOverlay");
-      if (overlay) overlay.classList.add("hidden");
-    }
-
     function showAdminWorkspace() {
       const welcomeOverlay = document.getElementById("welcomeOverlay");
       const preEntryPanel = document.getElementById("preEntryPanel");
@@ -2321,6 +2293,41 @@
         <div class="booking-summary-item"><strong>Rooms</strong>${roomNames}</div>
         <div class="booking-summary-item"><strong>Pool</strong>${poolLabel}</div>
       `;
+    }
+
+    function setQuickSetupActive(mode) {
+      document.querySelectorAll("[data-quick-mode]").forEach((btn) => {
+        btn.classList.toggle("active", btn.getAttribute("data-quick-mode") === mode);
+      });
+    }
+
+    function applyQuickSetup(mode) {
+      const roomsCheckbox = document.getElementById("showRoomsCheckbox");
+      const poolCheckbox = document.getElementById("showPoolCheckbox");
+      const specialEventCheckbox = document.getElementById("showSpecialEventCheckbox");
+
+      if (!roomsCheckbox || !poolCheckbox || !specialEventCheckbox) return;
+
+      if (mode === "pool-only") {
+        roomsCheckbox.checked = false;
+        poolCheckbox.checked = true;
+        specialEventCheckbox.checked = false;
+      } else if (mode === "room-only") {
+        roomsCheckbox.checked = true;
+        poolCheckbox.checked = false;
+        specialEventCheckbox.checked = false;
+      } else {
+        roomsCheckbox.checked = true;
+        poolCheckbox.checked = true;
+        specialEventCheckbox.checked = false;
+      }
+
+      setQuickSetupActive(mode);
+      updateAccommodationPanels();
+      applyPoolScheduleRules();
+      checkDateAvailability();
+      updateRoomGuide();
+      updateLiveBookingSummary();
     }
 
     function getBookingStayLabel(booking) {
@@ -3495,58 +3502,6 @@
       };
     }
 
-    function renderReservationReview() {
-      if (!pendingReservation) return;
-      const container = document.getElementById("reviewQuoteContent");
-      if (!container) return;
-
-      const pseudoBooking = {
-        reservationReference: pendingReservation.reservationReference,
-        name: pendingReservation.name,
-        contactNumber: pendingReservation.contactNumber,
-        guests: pendingReservation.guests,
-        roomGuests: pendingReservation.roomGuests,
-        checkInDate: pendingReservation.checkInDate,
-        checkOutDate: pendingReservation.selectedCheckOutDate,
-        checkInTime: pendingReservation.checkInTime,
-        checkOutTime: pendingReservation.checkOutTime,
-        stayLabel: pendingReservation.stayLabel,
-        rooms: pendingReservation.rooms,
-        roomStayDays: pendingReservation.roomStayDays,
-        roomPromoFreeDays: pendingReservation.roomPromoFreeDays,
-        poolComputedCost: pendingReservation.poolDetails?.computedCost || 0,
-        poolBaseCost: pendingReservation.poolDetails?.baseCost || 0,
-        poolBreakdown: pendingReservation.poolDetails?.breakdown || "None",
-        cateringCost: pendingReservation.cateringDetails?.totalCost || 0,
-        cateringPackage: pendingReservation.cateringDetails?.packageName || "None",
-        hallCost: pendingReservation.hallDetails?.cost || 0,
-        specialEventCost: pendingReservation.specialEventDetails?.baseCost || 0,
-      };
-      const totals = computeBookingTotals(pseudoBooking);
-      const roomNames = Array.isArray(pendingReservation.rooms) && pendingReservation.rooms.length > 0
-        ? pendingReservation.rooms.map((room) => room.text).join(", ")
-        : "No rooms selected";
-
-      container.innerHTML = `
-        <div class="review-summary">
-          <div class="review-card"><strong>Guest</strong><br>${pendingReservation.name}<br>${pendingReservation.contactNumber}</div>
-          <div class="review-card"><strong>Reference No.</strong><br>${pendingReservation.reservationReference}</div>
-          <div class="review-card"><strong>Schedule</strong><br>${formatDateLong(pendingReservation.checkInDate)} ${pendingReservation.checkInTime}<br>to<br>${formatDateLong(pendingReservation.selectedCheckOutDate)} ${pendingReservation.checkOutTime}</div>
-          <div class="review-card"><strong>Stay Preference</strong><br>${pendingReservation.stayLabel}</div>
-        </div>
-        <div class="review-list">
-          <p><strong>Guests:</strong> ${pendingReservation.guests}</p>
-          <p><strong>Guests Staying in Rooms:</strong> ${pendingReservation.roomGuests}</p>
-          <p><strong>Room Details:</strong> ${roomNames}</p>
-          <p><strong>Pool Package:</strong> ${pendingReservation.poolDetails?.breakdown || "None"}</p>
-          ${pendingReservation.roomPromoFreeDays > 0 ? `<p><strong>Room Promo:</strong> ${pendingReservation.roomPromoFreeDays} free day applied.</p>` : ""}
-          <p><strong>Total Amount:</strong> PHP ${totals.total.toLocaleString("en-PH", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
-          <p><strong>Required Downpayment:</strong> PHP ${totals.downpayment.toLocaleString("en-PH", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
-          <p><strong>Reminder:</strong> Your selected date is not secured until payment is made and confirmed.</p>
-        </div>
-      `;
-    }
-
     function updateSpecialEventFields() {
       const specialEventDetails = getSpecialEventDetails();
       const stayDaysInput = document.getElementById("stayDays");
@@ -3959,21 +3914,14 @@
       document.querySelector(".btn-messenger").style.display = "block";
     }
 
-    function saveReservation() {
+    async function saveReservation() {
       if (!pendingReservation) {
         alert("Please generate a quotation first.");
         return;
       }
-      renderReservationReview();
-      document.getElementById("reviewOverlay").classList.remove("hidden");
-    }
-
-    async function confirmReservationSubmission() {
-      if (!pendingReservation) {
-        alert("Please generate a quotation first.");
+      if (!confirm("Are you sure you want to book this reservation?")) {
         return;
       }
-
       const {
         reservationReference,
         name,
@@ -4022,8 +3970,6 @@
         alert("Unable to submit reservation request because selected dates are no longer available.");
         return;
       }
-
-      closeReservationReview();
       const statusEl = document.getElementById("reservationStatus");
       if (statusEl) {
         statusEl.innerHTML = `<strong>Status:</strong> Your reservation is pending. Reference No.: ${reservationReference}. The selected date can still be booked by others until payment is made and confirmed.`;
@@ -4809,7 +4755,7 @@
       refreshRoomSelectionAvailability();
       updateRoomGuide();
       updateLiveBookingSummary();
-      document.getElementById("showRoomsCheckbox").addEventListener("change", updateAccommodationPanels);
+    document.getElementById("showRoomsCheckbox").addEventListener("change", updateAccommodationPanels);
       document.getElementById("showPoolCheckbox").addEventListener("change", updateAccommodationPanels);
       document.getElementById("showSpecialEventCheckbox").addEventListener("change", () => {
         if (!document.getElementById("showSpecialEventCheckbox").checked) {
@@ -4930,6 +4876,8 @@
       input.value = (input.value || "").replace(/\D/g, "").slice(0, 9);
       updateLiveBookingSummary();
     });
+    document.getElementById("showRoomsCheckbox").addEventListener("change", () => setQuickSetupActive(""));
+    document.getElementById("showPoolCheckbox").addEventListener("change", () => setQuickSetupActive(""));
   </script>
 </body>
 </html>
