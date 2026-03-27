@@ -17,6 +17,7 @@
 <meta name="twitter:description" content="Official booking page of Dekack's Private Resort and Hotel. Check rooms, pool packages, catering options, and reservation quotations online." />
 <meta name="twitter:image" content="https://dekacksprivateresortandhotel.github.io/De-kacks-website/logo.png" />
 <style>
+  @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Source+Sans+3:wght@400;500;600&display=swap");
   :root {
     --bg-1: #fff5df;
     --bg-2: #dff4ef;
@@ -40,8 +41,12 @@
     box-sizing: border-box;
   }
 
+  h1, h2, h3, h4, h5, h6, .step-pill {
+    font-family: "Poppins", "Source Sans 3", "Segoe UI", sans-serif;
+  }
+
   body {
-    font-family: "Poppins", "Segoe UI", sans-serif;
+    font-family: "Source Sans 3", "Segoe UI", sans-serif;
     background:
       radial-gradient(circle at top left, rgba(255, 248, 214, 0.95), rgba(255, 248, 214, 0) 32%),
       radial-gradient(circle at top right, rgba(86, 189, 178, 0.25), rgba(86, 189, 178, 0) 28%),
@@ -357,10 +362,15 @@
     opacity: 0.94;
   }
 
+  button:focus-visible, .ghost-btn:focus-visible, .primary-btn:focus-visible, .secondary-btn:focus-visible {
+    outline: 2px solid #0f8aa0;
+    outline-offset: 2px;
+  }
+
   .primary-btn {
-    background: linear-gradient(135deg, var(--primary), var(--sea));
+    background: linear-gradient(135deg, #0f8aa0, #0d6574);
     color: white;
-    box-shadow: 0 12px 24px rgba(14, 77, 89, 0.24);
+    box-shadow: 0 12px 24px rgba(14, 77, 89, 0.22);
   }
 
   .secondary-btn {
@@ -882,12 +892,17 @@
     min-width: 0;
     display: grid;
     gap: 12px;
+    position: sticky;
+    top: 12px;
+    max-height: calc(100vh - 140px);
+    overflow: auto;
+    padding-right: 4px;
   }
 
   .calendar-toolbar {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
     flex-wrap: wrap;
     margin-bottom: 14px;
   }
@@ -896,15 +911,31 @@
     max-width: 220px;
   }
 
+  .ghost-btn {
+    border: 1px solid #cfe1dc;
+    background: #ffffff;
+    color: #1f4b52;
+    padding: 6px 10px;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 140ms ease;
+  }
+
+  .ghost-btn:hover {
+    box-shadow: 0 0 0 2px rgba(15, 62, 102, 0.12);
+  }
+
   .calendar-legend {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
-    margin-bottom: 14px;
+    gap: 6px;
+    margin-bottom: 12px;
   }
 
   .legend-pill {
-    padding: 8px 10px;
+    padding: 7px 9px;
     border-radius: 999px;
     font-size: 12px;
     font-weight: 700;
@@ -928,7 +959,8 @@
   .calendar-day-name,
   .calendar-date-cell {
     border-radius: 14px;
-    min-height: 78px;
+    min-height: 86px;
+    animation: fadeSlideIn 160ms ease;
   }
 
   .calendar-day-name {
@@ -943,8 +975,8 @@
   }
 
   .calendar-date-cell {
-    border: 1px solid #d5e5dd;
-    background: #fff;
+    border: 1px solid #e6ece9;
+    background: #ffffff;
     padding: 10px;
     text-align: left;
     font-weight: 700;
@@ -967,9 +999,9 @@
     cursor: default;
   }
 
-  .calendar-date-cell.available { background: #dff5e5; }
-  .calendar-date-cell.pending { background: #ffe7c9; }
-  .calendar-date-cell.unavailable { background: #ffdedd; }
+  .calendar-date-cell.available { background: #fff; }
+  .calendar-date-cell.pending { background: #fff; }
+  .calendar-date-cell.unavailable { background: #fff; }
   .calendar-date-cell.mixed-rg { background: linear-gradient(135deg, #ffdedd 50%, #dff5e5 50%); }
   .calendar-date-cell.mixed-og { background: linear-gradient(135deg, #ffe7c9 50%, #dff5e5 50%); }
   .calendar-date-cell.mixed-ro { background: linear-gradient(135deg, #ffdedd 50%, #ffe7c9 50%); }
@@ -982,8 +1014,37 @@
   }
 
   .calendar-date-cell.selected {
-    box-shadow: 0 0 0 3px rgba(27, 139, 157, 0.24);
+    box-shadow: 0 0 0 3px rgba(27, 139, 157, 0.22);
     border-color: #4b9e94;
+  }
+  .calendar-date-cell:not(.locked):hover {
+    box-shadow: 0 0 0 2px rgba(15, 62, 102, 0.14);
+    border-color: #cde2dd;
+  }
+
+  .status-dot {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: #d1eae0;
+    box-shadow: 0 0 0 2px #fff;
+  }
+  .status-dot.pending { background: #ffb158; }
+  .status-dot.unavailable { background: #ff6b6b; }
+  .status-dot.mixed { background: linear-gradient(135deg, #ff6b6b 50%, #d1eae0 50%); }
+
+  @keyframes fadeSlideIn {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   .availability-date-details {
@@ -992,6 +1053,7 @@
     border-radius: 18px;
     border: 1px solid #d8e7df;
     background: linear-gradient(135deg, rgba(255, 247, 228, 0.95), rgba(234, 248, 244, 0.95));
+    transition: all 160ms ease;
   }
 
   .availability-date-details h4,
@@ -1061,6 +1123,7 @@
     border-radius: 18px;
     border: 1px solid #d8e7df;
     background: #f7fcfa;
+    transition: all 160ms ease;
   }
 
   .availability-booking-details h4,
@@ -1082,7 +1145,7 @@
   .availability-booking-list {
     margin-top: 10px;
     display: grid;
-    gap: 10px;
+    gap: 8px;
   }
 
   .availability-booking-item {
@@ -1092,6 +1155,69 @@
     padding: 10px 12px;
   }
 
+  .availability-booking-item + .availability-booking-item {
+    border-top: 1px dashed #dfe7e4;
+    padding-top: 14px;
+    margin-top: 4px;
+  }
+
+  .toast-container {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    display: grid;
+    gap: 8px;
+    z-index: 9999;
+    pointer-events: none;
+  }
+
+  .toast {
+    min-width: 220px;
+    max-width: 360px;
+    padding: 10px 12px;
+    border-radius: 12px;
+    background: #0f3e66;
+    color: #fff;
+    font-weight: 700;
+    box-shadow: 0 10px 30px rgba(15, 62, 102, 0.25);
+    opacity: 0;
+    transform: translateY(-6px);
+    animation: toastIn 180ms ease forwards;
+  }
+
+  .offline-ribbon {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 10px 14px;
+    background: #c62828;
+    color: #fff;
+    font-weight: 700;
+    text-align: center;
+    z-index: 9998;
+    display: none;
+  }
+
+  .toast.success {
+    background: #1f7a3f;
+  }
+
+  .toast.error {
+    background: #c62828;
+  }
+
+  @keyframes toastIn {
+    from {
+      opacity: 0;
+      transform: translateY(-6px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
   .availability-booking-item p {
     margin: 0 0 6px;
   }
@@ -1099,6 +1225,14 @@
   @media (max-width: 940px) {
     .availability-layout {
       grid-template-columns: 1fr;
+    }
+    .availability-side {
+      position: static;
+      max-height: none;
+      overflow: visible;
+    }
+    .calendar-date-cell {
+      min-height: 92px;
     }
   }
 
@@ -1348,6 +1482,8 @@
       <button type="button" class="primary-btn" onclick="closeWelcomePopup()">Enter Booking Panel</button>
     </div>
   </div>
+  <div id="toastContainer" class="toast-container" aria-live="polite" aria-atomic="true"></div>
+  <div id="offlineRibbon" class="offline-ribbon">Offline mode: showing cached bookings.</div>
   <div class="weather-scene" aria-hidden="true">
     <span class="weather-sun"></span>
     <span class="weather-cloud cloud-a"></span>
@@ -1363,7 +1499,7 @@
       <div class="step-pill">Step 4 Quotation</div>
     </div>
     <div class="brand-head">
-      <img src="./logo.png" alt="Dekack logo" class="brand-logo" />
+      <img src="./logo.png" alt="Dekack logo" class="brand-logo" loading="lazy" />
       <div class="brand-text">
         <h1>Dekack's Private Resort &amp; Hotel</h1>
         <h3>Reservation Quotation</h3>
@@ -1413,6 +1549,11 @@
             <label for="availabilityMonth">Choose Month:</label>
             <input type="month" id="availabilityMonth" />
           </div>
+          <div>
+            <button type="button" class="ghost-btn" onclick="jumpToTodayMonth()">Today</button>
+            <button type="button" class="ghost-btn" onclick="jumpToNextMonth()">Next</button>
+            <button type="button" class="ghost-btn" onclick="exportCurrentMonthPdf()">Export PDF</button>
+          </div>
         </div>
         <div class="calendar-legend">
           <span class="legend-pill legend-green">Green: Pool Available</span>
@@ -1426,7 +1567,7 @@
             <div id="availabilityCalendar" class="calendar-grid"></div>
           </div>
           <div class="availability-side">
-            <div id="availabilityDateDetails" class="availability-date-details">
+            <div id="availabilityDateDetails" class="availability-date-details" aria-live="polite">
               <h4>No Date Selected</h4>
               <p>Select a date in the calendar to view available time and accommodation details.</p>
             </div>
@@ -1435,7 +1576,7 @@
               <p id="availabilityBookedDatesEmpty">Loading booked dates...</p>
               <ul id="availabilityBookedDatesList" class="availability-booked-dates-list"></ul>
             </div>
-            <div id="availabilityBookingDetails" class="availability-booking-details">
+            <div id="availabilityBookingDetails" class="availability-booking-details" aria-live="polite">
               <h4>All Bookings Summary</h4>
               <p>Loading booking summary...</p>
             </div>
@@ -1892,6 +2033,9 @@
     let approvedBookingsCache = [];
     let pendingBookingsCache = [];
     let adminPanelOpen = false;
+    let offlineQueue = [];
+    let offlineMode = false;
+    const OFFLINE_QUEUE_KEY = "offlineQueue";
     let adminCalendarMonth = "";
     let adminSelectedDate = "";
     let approvedBookingsUnsubscribe = null;
@@ -1951,6 +2095,49 @@
       localStorage.setItem(PENDING_STORAGE_KEY, JSON.stringify(bookings));
     }
 
+    function showToast(message, type = "info", duration = 3200) {
+      const container = document.getElementById("toastContainer");
+      if (!container) return;
+      const toast = document.createElement("div");
+      toast.className = `toast ${type}`;
+      toast.textContent = message;
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.style.opacity = "0";
+        toast.style.transform = "translateY(-4px)";
+      }, duration - 400);
+      setTimeout(() => {
+        if (toast.parentNode) toast.parentNode.removeChild(toast);
+      }, duration);
+    }
+
+    function setOfflineBanner(active, message = "Offline mode: showing cached bookings.") {
+      const ribbon = document.getElementById("offlineRibbon");
+      if (!ribbon) return;
+      offlineMode = !!active;
+      ribbon.textContent = message;
+      ribbon.style.display = active ? "block" : "none";
+    }
+
+    function loadOfflineQueueFromStorage() {
+      try {
+        const raw = localStorage.getItem(OFFLINE_QUEUE_KEY);
+        if (!raw) return;
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed)) offlineQueue = parsed;
+      } catch (e) {
+        console.warn("Failed to load offline queue", e);
+      }
+    }
+
+    function persistOfflineQueue() {
+      try {
+        localStorage.setItem(OFFLINE_QUEUE_KEY, JSON.stringify(offlineQueue));
+      } catch (e) {
+        console.warn("Failed to persist offline queue", e);
+      }
+    }
+
     function sortBookingsByCreatedAt(bookings) {
       return [...bookings].sort((a, b) => {
         const aTime = Date.parse(a.createdAt || a.approvedAt || "") || Number(a.id) || 0;
@@ -2004,7 +2191,7 @@
 
     function requireAdminAuth() {
       if (isAdminAuthenticated()) return true;
-      alert("Please log in with your Firebase admin account first.");
+      showToast("Please log in with your Firebase admin account first.", "error");
       return false;
     }
 
@@ -2039,6 +2226,7 @@
         approvedBookingsCache = sortBookingsByCreatedAt(getLocalBookings());
         pendingBookingsCache = sortBookingsByCreatedAt(getLocalPendingBookings());
         afterBookingCacheUpdate();
+        setOfflineBanner(true, "Offline mode: showing cached bookings.");
         return;
       }
 
@@ -2046,19 +2234,25 @@
       approvedBookingsUnsubscribe = db.collection(BOOKINGS_COLLECTION).onSnapshot((snapshot) => {
         approvedBookingsCache = normalizeSnapshotBookings(snapshot);
         afterBookingCacheUpdate();
+        setOfflineBanner(false, "");
       }, (error) => {
         console.error("Approved bookings sync failed:", error);
+        setOfflineBanner(true, "Connection lost. Showing cached bookings.");
       });
 
       stopPendingBookingSync();
       pendingBookingsUnsubscribe = db.collection(PENDING_BOOKINGS_COLLECTION).onSnapshot((snapshot) => {
         pendingBookingsCache = normalizeSnapshotBookings(snapshot);
         afterBookingCacheUpdate();
+        setOfflineBanner(false, "");
       }, (error) => {
         console.error("Pending bookings sync failed:", error);
         stopPendingBookingSync();
         afterBookingCacheUpdate();
+        setOfflineBanner(true, "Connection lost. Showing cached bookings.");
       });
+
+      flushOfflineQueue();
     }
 
     async function saveBookingRecord(collectionName, booking) {
@@ -2066,6 +2260,9 @@
       normalizedBooking.id = String(normalizedBooking.id || `${collectionName}_${Date.now()}`);
 
       if (!db) {
+        offlineQueue.push({ type: "set", collectionName, booking: normalizedBooking });
+        setOfflineBanner(true, "Offline mode: changes queued. Will sync when online.");
+        persistOfflineQueue();
         if (collectionName === BOOKINGS_COLLECTION) {
           const next = sortBookingsByCreatedAt([
             ...getLocalBookings().filter((item) => String(item.id) !== String(normalizedBooking.id)),
@@ -2090,6 +2287,9 @@
 
     async function deleteBookingRecord(collectionName, bookingId) {
       if (!db) {
+        offlineQueue.push({ type: "delete", collectionName, bookingId });
+        setOfflineBanner(true, "Offline mode: changes queued. Will sync when online.");
+        persistOfflineQueue();
         if (collectionName === BOOKINGS_COLLECTION) {
           const next = getLocalBookings().filter((item) => String(item.id) !== String(bookingId));
           setLocalBookings(next);
@@ -2104,6 +2304,29 @@
       }
 
       await db.collection(collectionName).doc(String(bookingId)).delete();
+    }
+
+    async function flushOfflineQueue() {
+      if (!db || offlineQueue.length === 0) return;
+      const queueCopy = [...offlineQueue];
+      offlineQueue = [];
+      persistOfflineQueue();
+      try {
+        for (const item of queueCopy) {
+          if (item.type === "set") {
+            await db.collection(item.collectionName).doc(String(item.booking.id)).set(item.booking);
+          } else if (item.type === "delete") {
+            await db.collection(item.collectionName).doc(String(item.bookingId)).delete();
+          }
+        }
+        showToast("Queued changes synced online.", "success");
+        setOfflineBanner(false, "");
+      } catch (error) {
+        console.error("Flush offline queue failed:", error);
+        offlineQueue = queueCopy.concat(offlineQueue);
+        persistOfflineQueue();
+        setOfflineBanner(true, "Still offline. Changes queued.");
+      }
     }
 
     async function migrateLocalStorageToCloudIfNeeded() {
@@ -2599,6 +2822,89 @@
       monthInput.value = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}`;
     }
 
+    function jumpToTodayMonth() {
+      const monthInput = document.getElementById("availabilityMonth");
+      if (!monthInput) return;
+      const today = new Date();
+      monthInput.value = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}`;
+      selectedAvailabilityDate = "";
+      renderAvailabilityCalendar();
+      renderAvailabilityBookedDatesList();
+      renderAvailabilityBookingDetails("");
+    }
+
+    function jumpToNextMonth() {
+      const monthInput = document.getElementById("availabilityMonth");
+      if (!monthInput) return;
+      const today = new Date();
+      const next = new Date(today.getFullYear(), today.getMonth() + 1, 1);
+      monthInput.value = `${next.getFullYear()}-${String(next.getMonth() + 1).padStart(2, "0")}`;
+      selectedAvailabilityDate = "";
+      renderAvailabilityCalendar();
+      renderAvailabilityBookedDatesList();
+      renderAvailabilityBookingDetails("");
+    }
+
+    function exportCurrentMonthPdf() {
+      const monthInput = document.getElementById("availabilityMonth");
+      const { jsPDF } = window.jspdf || window.jspdf || {};
+      if (!monthInput || !monthInput.value) {
+        showToast("Set a month first before exporting.", "error");
+        return;
+      }
+      if (!jsPDF) {
+        showToast("PDF library not loaded.", "error");
+        return;
+      }
+      const monthValue = monthInput.value;
+      const entries = getAvailabilityBookedDateEntriesForMonth(monthValue);
+      const combined = getAdminCombinedBookings();
+      const detailByDate = {};
+      combined.forEach(({ collectionType, booking }) => {
+        getBookingStayDates(booking).forEach((d) => {
+          if (!d.startsWith(`${monthValue}-`)) return;
+          if (!detailByDate[d]) detailByDate[d] = [];
+          detailByDate[d].push({
+            status: collectionType,
+            name: booking.name || "Guest",
+            ref: booking.reservationReference || "N/A",
+          });
+        });
+      });
+
+      const doc = new jsPDF();
+      doc.setFontSize(14);
+      doc.text(`Dekack's Bookings - ${monthValue}`, 14, 20);
+      doc.setFontSize(11);
+      doc.text(`Generated: ${new Date().toLocaleString()}`, 14, 28);
+      let y = 32;
+      if (entries.length === 0) {
+        doc.text("No bookings for this month.", 14, y);
+      } else {
+        entries.forEach((entry, idx) => {
+          const line = `${entry.dateString} — Booked: ${entry.approved} | Pending: ${entry.pending}`;
+          doc.text(line, 14, y);
+          y += 7;
+          const details = detailByDate[entry.dateString] || [];
+          details.slice(0, 4).forEach((info) => {
+            doc.text(`• ${info.name} (${info.status}) Ref: ${info.ref}`, 18, y);
+            y += 6;
+          });
+          if (details.length > 4) {
+            doc.text(`• +${details.length - 4} more...`, 18, y);
+            y += 6;
+          }
+          y += 8;
+          if (y > 280 && idx < entries.length - 1) {
+            doc.addPage();
+            y = 20;
+          }
+        });
+      }
+      doc.save(`dekacks-bookings-${monthValue}.pdf`);
+      showToast("Exported current month PDF.", "success");
+    }
+
     function formatDateLong(dateString) {
       return new Date(`${dateString}T00:00:00`).toLocaleDateString("en-PH", {
         year: "numeric",
@@ -2988,8 +3294,15 @@
         const cellText = isLocked ? "Locked" : getCalendarCellLabel(summary);
         const disabledAttr = isLocked ? "disabled" : "";
         const clickHandler = isLocked ? "" : `onclick="showAvailabilityDateDetails('${dateString}')"`;
+        const dotClass =
+          summary.statusClass.includes("mixed") ? "status-dot mixed"
+          : summary.statusClass.includes("pending") ? "status-dot pending"
+          : summary.statusClass.includes("unavailable") ? "status-dot unavailable"
+          : "status-dot";
+        const delayStyle = `style="animation-delay:${Math.min(day * 6, 180)}ms"`;
         html += `
-          <button type="button" class="calendar-date-cell ${cellClass}${selectedClass}" ${clickHandler} ${disabledAttr}>
+          <button type="button" class="calendar-date-cell ${cellClass}${selectedClass}" ${clickHandler} ${disabledAttr} ${delayStyle}>
+            <span class="${dotClass}"></span>
             ${day}
             <small>${cellText}</small>
           </button>
@@ -5164,11 +5477,11 @@
       if (!inputDate) return;
       const nextCheckInDate = inputDate.trim();
       if (!/^\d{4}-\d{2}-\d{2}$/.test(nextCheckInDate)) {
-        alert("Invalid date format. Please use YYYY-MM-DD.");
+        showToast("Invalid date format. Please use YYYY-MM-DD.", "error");
         return;
       }
       if (nextCheckInDate < todayIso) {
-        alert("Rebooking date cannot be in the past.");
+        showToast("Rebooking date cannot be in the past.", "error");
         return;
       }
 
@@ -5202,7 +5515,7 @@
       );
 
       if (validationError) {
-        alert(`Cannot rebook: ${validationError}`);
+        showToast(`Cannot rebook: ${validationError}`, "error");
         return;
       }
 
@@ -5217,7 +5530,7 @@
       };
 
       await saveBookingRecord(getCollectionName(collectionType), updatedBooking);
-      alert(`Rebooking complete. New check-in date: ${formatDateLong(nextCheckInDate)}.`);
+      showToast(`Rebooked to ${formatDateLong(nextCheckInDate)}.`, "success");
       if (selectedAvailabilityDate) {
         renderAvailabilityBookingDetails(selectedAvailabilityDate);
         showAvailabilityDateDetails(selectedAvailabilityDate);
@@ -5267,7 +5580,7 @@
 
       await saveBookingRecord(BOOKINGS_COLLECTION, approvedBooking);
       await deleteBookingRecord(PENDING_BOOKINGS_COLLECTION, req.id);
-      alert("Reservation approved and added to official schedule.");
+      showToast("Reservation approved and added to schedule.", "success");
       if (adminPanelOpen) viewBookings();
     }
 
@@ -5278,6 +5591,7 @@
       if (!pending[index]) return;
       if (confirm("Reject this pending reservation request?")) {
         await deleteBookingRecord(PENDING_BOOKINGS_COLLECTION, pending[index].id);
+        showToast("Pending reservation rejected.", "info");
         if (adminPanelOpen) viewBookings();
       }
     }
@@ -5290,13 +5604,14 @@
 
       if (confirm("Delete this booking?")) {
         await deleteBookingRecord(BOOKINGS_COLLECTION, bookings[index].id);
+        showToast("Booking deleted.", "info");
         if (adminPanelOpen) viewBookings();
       }
     }
 
     async function adminLogin() {
       if (!auth) {
-        alert("Firebase Auth is not ready.");
+        showToast("Firebase Auth is not ready.", "error");
         return;
       }
 
@@ -5317,7 +5632,7 @@
         viewBookings();
       } catch (error) {
         console.error("Admin login failed:", error);
-        alert("Admin login failed. Check your Firebase Authentication email and password.");
+        showToast("Admin login failed. Check your Firebase admin email/password.", "error");
       }
     }
 
@@ -5333,6 +5648,8 @@
       adminPanelOpen = false;
       stopPendingBookingSync();
       afterBookingCacheUpdate();
+      const adminBtn = document.getElementById("adminBtn");
+      if (adminBtn) adminBtn.style.display = "none";
     }
 
     // Keyboard shortcuts: Ctrl + A for admin panel, Alt + 1 for booking calendar
@@ -5342,6 +5659,7 @@
         const adminBtn = document.getElementById("adminBtn");
         if (adminBtn) adminBtn.style.display = "block";
         adminLogin();
+        showToast("Admin panel unlocked (Ctrl + A).", "info");
         return;
       }
 
@@ -5350,13 +5668,14 @@
         const adminBtn = document.getElementById("adminBtn");
         if (adminBtn) adminBtn.style.display = "block";
         adminLogin();
+        showToast("Admin panel unlocked (Ctrl + 1).", "info");
         return;
       }
 
       if (event.altKey && event.key === "1") {
         event.preventDefault();
         showBookingCalendarWorkspace();
-        alert(`Booking calendar opened (${BOOKING_CALENDAR_SHORTCUT}).`);
+        showToast(`Booking calendar opened (${BOOKING_CALENDAR_SHORTCUT}).`, "info");
       }
     });
 
@@ -5366,6 +5685,7 @@
       setRandomMotivationalVerse();
       initializeAvailabilityMonth();
       initializeFirebase();
+      loadOfflineQueueFromStorage();
       startCloudBookingSync();
       migrateLocalStorageToCloudIfNeeded();
       if (auth) {
