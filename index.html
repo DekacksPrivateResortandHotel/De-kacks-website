@@ -1492,7 +1492,14 @@
       <span class="welcome-badge">Welcome Guest</span>
       <h2 id="welcomeGreeting">Welcome to Dekack's Private Resort and Hotel</h2>
       <p>Before you continue to the quotation form, please enter your basic details first so we can guide your booking properly.</p>
-      <button id="enterBookingBtn" type="button" class="primary-btn" onclick="closeWelcomePopup()">Enter Booking Panel</button>
+      <button
+        id="enterBookingBtn"
+        type="button"
+        class="primary-btn"
+        onclick="document.getElementById('welcomeOverlay').classList.add('hidden');"
+      >
+        Enter Booking Panel
+      </button>
     </div>
   </div>
   <script>
