@@ -5210,21 +5210,20 @@
         : `<h4>All Bookings</h4><div class="admin-booking-list">`;
       entries.forEach(({ collectionType, booking }) => {
         const statusLabel = collectionType === "pending" ? "Pending" : "Booked";
-        const index = getAdminBookingIndexById(collectionType, booking.id);
+        const indexVal = getAdminBookingIndexById(collectionType, booking.id);
         const statusColor = collectionType === "pending" ? "#b26a00" : "#1f7a3f";
         const checkInDate = getNormalizedCheckInDate(booking);
         const checkOutDate = getNormalizedCheckOutDate(booking);
         const formattedCheckIn = new Date(`${checkInDate}T00:00:00`).toLocaleDateString("en-PH", { year: "numeric", month: "long", day: "numeric" });
         const formattedCheckOut = new Date(`${checkOutDate}T00:00:00`).toLocaleDateString("en-PH", { year: "numeric", month: "long", day: "numeric" });
-        const index = getAdminBookingIndexById(collectionType, booking.id);
-        const fullyPaidBtn = collectionType === "approved" && index >= 0 && !computeBookingTotals(booking).fullyPaid
-          ? `<button onclick="markBookingFullyPaid(${index})" style="background:#2e7d32;color:#fff;width:auto;padding:8px 12px;">Fully Paid</button>`
+        const fullyPaidBtn = collectionType === "approved" && indexVal >= 0 && !computeBookingTotals(booking).fullyPaid
+          ? `<button onclick="markBookingFullyPaid(${indexVal})" style="background:#2e7d32;color:#fff;width:auto;padding:8px 12px;">Fully Paid</button>`
           : "";
-        const pendingActions = collectionType === "pending" && index >= 0
-          ? `<button onclick="approvePendingBooking(${index})" style="background:#1f7a3f;color:#fff;width:auto;padding:8px 12px;">Approve</button>
-             <button onclick="rejectPendingBooking(${index})" style="background:#c62828;color:#fff;width:auto;padding:8px 12px;">Reject</button>`
+        const pendingActions = collectionType === "pending" && indexVal >= 0
+          ? `<button onclick="approvePendingBooking(${indexVal})" style="background:#1f7a3f;color:#fff;width:auto;padding:8px 12px;">Approve</button>
+             <button onclick="rejectPendingBooking(${indexVal})" style="background:#c62828;color:#fff;width:auto;padding:8px 12px;">Reject</button>`
           : "";
-        const rebookBtn = collectionType === "approved" && index >= 0
+        const rebookBtn = collectionType === "approved" && indexVal >= 0
           ? `<button onclick="rebookBookingById('${collectionType}', '${String(booking.id)}')" style="background:#0f3e66;color:#fff;width:auto;padding:8px 12px;">Rebook</button>`
           : "";
 
@@ -5814,6 +5813,8 @@
         closeWelcomePopup();
       }
     }, 500);
+    // Ensure overlay does not block if scripts delayed
+    closeWelcomePopup();
   </script>
 </body>
 </html>
