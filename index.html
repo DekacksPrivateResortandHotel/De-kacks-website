@@ -1573,6 +1573,10 @@
               <h4>No Date Selected</h4>
               <p>Select a date in the calendar to view available time and accommodation details.</p>
             </div>
+            <div id="availabilityBookingDetails" class="availability-booking-details" aria-live="polite" style="display:none;">
+              <h4>Management Booking Details</h4>
+              <p>Select a date to view booking details (management view only).</p>
+            </div>
           </div>
         </div>
         <button type="button" class="primary-btn" onclick="continueToQuotationForm()">Continue to Booking Form</button>
@@ -2026,6 +2030,7 @@
     let approvedBookingsCache = [];
     let pendingBookingsCache = [];
     let adminPanelOpen = false;
+    let managementPanelOpen = false;
     let offlineQueue = [];
     let offlineMode = false;
     const OFFLINE_QUEUE_KEY = "offlineQueue";
@@ -2161,6 +2166,7 @@
       checkDateAvailability();
       renderAvailabilityCalendar();
       if (selectedAvailabilityDate) showAvailabilityDateDetails(selectedAvailabilityDate);
+      if (managementPanelOpen) renderAvailabilityBookingDetails(selectedAvailabilityDate || toISODate(new Date()));
       if (adminPanelOpen) viewBookings();
     }
 
@@ -2405,6 +2411,7 @@
       const bookingFormPanel = document.getElementById("bookingFormPanel");
       const quotationEl = document.getElementById("quotation");
       adminPanelOpen = false;
+      managementPanelOpen = false;
       if (welcomeOverlay) welcomeOverlay.classList.add("hidden");
       if (preEntryPanel) preEntryPanel.classList.add("hidden");
       if (availabilityStepPanel) availabilityStepPanel.classList.remove("hidden");
@@ -2413,6 +2420,17 @@
       initializeAvailabilityMonth();
       renderAvailabilityCalendar();
       window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function openManagementPanel() {
+      if (!requireAdminAuth()) return;
+      managementPanelOpen = true;
+      adminPanelOpen = false;
+      showBookingCalendarWorkspace();
+      const details = document.getElementById("availabilityBookingDetails");
+      if (details) details.style.display = "block";
+      renderAvailabilityBookingDetails(selectedAvailabilityDate || toISODate(new Date()));
+      showToast("Management calendar opened (Ctrl + 2).", "info");
     }
 
     function getTimeBasedGreeting() {
@@ -3155,7 +3173,7 @@
 
     function renderAvailabilityBookingDetails(dateString = "") {
       const container = document.getElementById("availabilityBookingDetails");
-      if (!container) return;
+      if (!container || container.style.display === "none") return;
 
       if (!dateString) {
         container.innerHTML = "";
@@ -5470,8 +5488,8 @@
         showAvailabilityDateDetails(selectedAvailabilityDate);
       } else {
         renderAvailabilityCalendar();
-      renderAvailabilityBookingDetails("");
-    }
+        renderAvailabilityBookingDetails("");
+      }
     }
 
     async function approvePendingBooking(index) {
@@ -5579,6 +5597,7 @@
       }
 
       adminPanelOpen = false;
+      managementPanelOpen = false;
       stopPendingBookingSync();
       afterBookingCacheUpdate();
       const adminBtn = document.getElementById("adminBtn");
@@ -5605,6 +5624,12 @@
         return;
       }
 
+      if (event.ctrlKey && event.key === "2") {
+        event.preventDefault();
+        openManagementPanel();
+        return;
+      }
+
       if (event.altKey && event.key === "1") {
         event.preventDefault();
         showBookingCalendarWorkspace();
@@ -5626,6 +5651,11 @@
           startCloudBookingSync();
           migrateLocalStorageToCloudIfNeeded();
           if (adminPanelOpen) viewBookings();
+          if (managementPanelOpen) {
+            const details = document.getElementById("availabilityBookingDetails");
+            if (details) details.style.display = "block";
+            renderAvailabilityBookingDetails(selectedAvailabilityDate || toISODate(new Date()));
+          }
         });
       }
       initializeDatePicker();
