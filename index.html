@@ -2912,7 +2912,6 @@
             <div class="availability-booking-item">
               <p><strong>${booking.name || "Guest"}</strong> <span style="color:${statusColor};font-weight:700;">(${statusLabel})</span></p>
               <p><strong>Date:</strong> ${formattedCheckIn} to ${formattedCheckOut}</p>
-              <p><strong>Rebooking Key:</strong> ${booking.reservationReference || "N/A"}</p>
               <p><strong>Pool:</strong> ${stripPriceText(booking.poolBreakdown || "None")}</p>
             </div>
           `;
@@ -2943,7 +2942,6 @@
         html += `
           <div class="availability-booking-item">
             <p><strong>${booking.name || "Guest"}</strong> <span style="color:${statusColor};font-weight:700;">(${statusLabel})</span></p>
-            <p><strong>Rebooking Key:</strong> ${booking.reservationReference || "N/A"}</p>
             <p><strong>Contact Number:</strong> ${booking.contactNumber || "N/A"}</p>
             <p><strong>Package:</strong> ${getBookingPackageSummaryNoPrice(booking)}</p>
             <p><strong>Stay:</strong> ${getBookingStayLabel(booking)}</p>
@@ -2954,7 +2952,7 @@
             <p><strong>Pool:</strong> ${stripPriceText(booking.poolBreakdown || "None")}</p>
             <p><strong>Catering:</strong> ${stripPriceText(booking.cateringPackage || "None")} ${booking.cateringPersons ? `(${booking.cateringPersons} pax)` : ""}</p>
             <p><strong>Function Hall:</strong> ${booking.hallSelected ? stripPriceText(booking.hallLabel || "Included") : "None"}</p>
-            <button onclick="rebookBookingByKey('${collectionType}', '${String(booking.id)}')" style="background:#0f3e66;color:#fff;width:auto;padding:8px 12px;">Rebook (Key)</button>
+            <button onclick="rebookBookingByKey('${collectionType}', '${String(booking.id)}')" style="background:#0f3e66;color:#fff;width:auto;padding:8px 12px;">Rebook</button>
           </div>
         `;
       });
@@ -5122,35 +5120,58 @@
       const booking = source.find((item) => String(item.id) === String(bookingId));
       if (!booking) return;
 
-      const expectedKey = String(booking.reservationReference || "").trim();
-      if (!expectedKey) {
-        alert("No rebooking key is available for this booking.");
-        return;
-      }
+      const stayDays = getNormalizedStayDays(booking);
+      const poolMode = inferBookingPoolMode(booking);
+      const todayIso = toISODate(new Date());
 
-      const enteredKey = prompt("Enter rebooking key:");
-      if (!enteredKey) return;
-      if (enteredKey.trim() !== expectedKey) {
-        alert("Invalid rebooking key.");
-        return;
+      // gather suggested open dates (next 90 days)
+      const availableDates = [];
+      const otherApproved = getBookings().filter((item) => String(item.id) !== String(bookingId));
+      const otherPending = getPendingBookings().filter((item) => String(item.id) !== String(bookingId));
+      const comparisonSourceBase = collectionType === "approved" ? otherApproved : [...otherApproved, ...otherPending];
+      for (let i = 0; i < 90; i += 1) {
+        const candidate = addDays(todayIso, i);
+        const validationErrorPreview = validateSelectionAgainstSources(
+          candidate,
+          stayDays,
+          Array.isArray(booking.rooms) ? booking.rooms : [],
+          {
+            baseCost: booking.poolBaseCost || 0,
+            computedCost: booking.poolComputedCost || 0,
+            breakdown: booking.poolBreakdown || "None",
+            schedule: booking.poolSchedule || "N/A",
+            mode: poolMode,
+          },
+          {
+            selected: !!booking.specialEventSelected,
+            baseCost: booking.specialEventCost || 0,
+          },
+          addDays(candidate, stayDays),
+          comparisonSourceBase
+        );
+        if (!validationErrorPreview) {
+          availableDates.push(candidate);
+        }
+        if (availableDates.length >= 10) break;
       }
 
       const currentCheckIn = getNormalizedCheckInDate(booking);
-      const inputDate = prompt("Enter new check-in date (YYYY-MM-DD):", currentCheckIn);
+      const availableText = availableDates.length > 0 ? availableDates.join(", ") : "No suggested open dates in the next 90 days.";
+      const inputDate = prompt(
+        `Enter new check-in date (YYYY-MM-DD).\nSuggested open dates: ${availableText}\nCurrent: ${currentCheckIn}`,
+        availableDates[0] || currentCheckIn
+      );
       if (!inputDate) return;
       const nextCheckInDate = inputDate.trim();
       if (!/^\d{4}-\d{2}-\d{2}$/.test(nextCheckInDate)) {
         alert("Invalid date format. Please use YYYY-MM-DD.");
         return;
       }
-      const todayIso = toISODate(new Date());
       if (nextCheckInDate < todayIso) {
         alert("Rebooking date cannot be in the past.");
         return;
       }
 
-      const stayDays = getNormalizedStayDays(booking);
-      const poolMode = inferBookingPoolMode(booking);
       const selectedCheckOutDate = addDays(nextCheckInDate, stayDays);
       const schedule = getScheduleFromRules(
         nextCheckInDate,
@@ -5160,10 +5181,6 @@
         !!booking.specialEventSelected,
         selectedCheckOutDate
       );
-
-      const otherApproved = getBookings().filter((item) => String(item.id) !== String(bookingId));
-      const otherPending = getPendingBookings().filter((item) => String(item.id) !== String(bookingId));
-      const comparisonSource = collectionType === "approved" ? otherApproved : [...otherApproved, ...otherPending];
 
       const validationError = validateSelectionAgainstSources(
         nextCheckInDate,
@@ -5181,7 +5198,7 @@
           baseCost: booking.specialEventCost || 0,
         },
         schedule.checkOutDate,
-        comparisonSource
+        comparisonSourceBase
       );
 
       if (validationError) {
@@ -5207,6 +5224,7 @@
       } else {
         renderAvailabilityCalendar();
         renderAvailabilityBookedDatesList();
+        renderAvailabilityBookingDetails("");
       }
     }
 
