@@ -956,6 +956,15 @@
     font-size: 16px;
   }
 
+  .motivation-reference {
+    margin-top: 10px !important;
+    font-size: 12px !important;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #6d837c !important;
+  }
+
   .booking-form-panel {
     margin-top: 18px;
     padding-top: 4px;
@@ -1820,10 +1829,8 @@
     <section class="launch-hero reveal-target">
       <div class="launch-hero-copy">
         <span class="launch-eyebrow">Motivational Bible Verse</span>
-        <h2>I can do all things through Christ which strengtheneth me.</h2>
-        <p>
-          Philippians 4:13 (KJV)
-        </p>
+        <h2 id="heroVerseText">I can do all things through Christ which strengtheneth me.</h2>
+        <p id="heroVerseReference">Philippians 4:13 (KJV)</p>
       </div>
       <div class="launch-hero-side">
         <div class="launch-spotlight-card">
@@ -1934,6 +1941,7 @@
         <div id="resortReminderCard" class="motivation-card">
           <strong>Resort Reminder</strong>
           <p id="motivationVerse"></p>
+          <p id="motivationVerseReference" class="motivation-reference"></p>
         </div>
       </div>
     </div>
@@ -2315,6 +2323,38 @@
       "\"Be strong and of a good courage; be not afraid... for the Lord thy God is with thee.\" Joshua 1:9 (KJV)",
       "\"Commit thy works unto the Lord, and thy thoughts shall be established.\" Proverbs 16:3 (KJV)",
       "\"Wait on the Lord: be of good courage, and he shall strengthen thine heart.\" Psalm 27:14 (KJV)",
+      "\"The Lord shall preserve thy going out and thy coming in from this time forth, and even for evermore.\" Psalm 121:8 (KJV)",
+      "\"Delight thyself also in the Lord; and he shall give thee the desires of thine heart.\" Psalm 37:4 (KJV)",
+      "\"God is our refuge and strength, a very present help in trouble.\" Psalm 46:1 (KJV)",
+      "\"Trust in the Lord with all thine heart; and lean not unto thine own understanding.\" Proverbs 3:5 (KJV)",
+      "\"In all thy ways acknowledge him, and he shall direct thy paths.\" Proverbs 3:6 (KJV)",
+      "\"The joy of the Lord is your strength.\" Nehemiah 8:10 (KJV)",
+      "\"My help cometh from the Lord, which made heaven and earth.\" Psalm 121:2 (KJV)",
+      "\"Cast thy burden upon the Lord, and he shall sustain thee.\" Psalm 55:22 (KJV)",
+      "\"This is the day which the Lord hath made; we will rejoice and be glad in it.\" Psalm 118:24 (KJV)",
+      "\"The Lord is good, a strong hold in the day of trouble; and he knoweth them that trust in him.\" Nahum 1:7 (KJV)",
+      "\"Fear thou not; for I am with thee: be not dismayed; for I am thy God.\" Isaiah 41:10 (KJV)",
+      "\"When thou passest through the waters, I will be with thee.\" Isaiah 43:2 (KJV)",
+      "\"They that wait upon the Lord shall renew their strength.\" Isaiah 40:31 (KJV)",
+      "\"With men this is impossible; but with God all things are possible.\" Matthew 19:26 (KJV)",
+      "\"Ask, and it shall be given you; seek, and ye shall find.\" Matthew 7:7 (KJV)",
+      "\"Let not your heart be troubled: ye believe in God, believe also in me.\" John 14:1 (KJV)",
+      "\"Peace I leave with you, my peace I give unto you.\" John 14:27 (KJV)",
+      "\"If God be for us, who can be against us?\" Romans 8:31 (KJV)",
+      "\"And we know that all things work together for good to them that love God.\" Romans 8:28 (KJV)",
+      "\"Rejoicing in hope; patient in tribulation; continuing instant in prayer.\" Romans 12:12 (KJV)",
+      "\"My grace is sufficient for thee: for my strength is made perfect in weakness.\" 2 Corinthians 12:9 (KJV)",
+      "\"Be careful for nothing; but in every thing by prayer and supplication with thanksgiving let your requests be made known unto God.\" Philippians 4:6 (KJV)",
+      "\"And the peace of God, which passeth all understanding, shall keep your hearts and minds through Christ Jesus.\" Philippians 4:7 (KJV)",
+      "\"But my God shall supply all your need according to his riches in glory by Christ Jesus.\" Philippians 4:19 (KJV)",
+      "\"Pray without ceasing.\" 1 Thessalonians 5:17 (KJV)",
+      "\"Be strong in the Lord, and in the power of his might.\" Ephesians 6:10 (KJV)",
+      "\"Now faith is the substance of things hoped for, the evidence of things not seen.\" Hebrews 11:1 (KJV)",
+      "\"Jesus Christ the same yesterday, and to day, and for ever.\" Hebrews 13:8 (KJV)",
+      "\"Every good gift and every perfect gift is from above.\" James 1:17 (KJV)",
+      "\"Humble yourselves therefore under the mighty hand of God, that he may exalt you in due time.\" 1 Peter 5:6 (KJV)",
+      "\"Casting all your care upon him; for he careth for you.\" 1 Peter 5:7 (KJV)",
+      "\"Beloved, if God so loved us, we ought also to love one another.\" 1 John 4:11 (KJV)",
     ];
     const CATERING_PACKAGE_RULES = {
       A: {
@@ -2906,9 +2946,20 @@
     }
 
     function setRandomMotivationalVerse() {
-      const verse = MOTIVATIONAL_VERSES[Math.floor(Math.random() * MOTIVATIONAL_VERSES.length)];
+      const verse = MOTIVATIONAL_VERSES[Math.floor(Math.random() * MOTIVATIONAL_VERSES.length)] || "";
+      const match = verse.match(/^"?(.*?)"?\s+([1-3]?\s?[A-Za-z]+\s+\d+:\d+(?:-\d+)?\s+\(KJV\))$/);
+      const verseText = match ? match[1] : verse;
+      const verseReference = match ? match[2] : "";
+
       const verseEl = document.getElementById("motivationVerse");
-      if (verseEl) verseEl.textContent = verse;
+      const verseReferenceEl = document.getElementById("motivationVerseReference");
+      const heroVerseTextEl = document.getElementById("heroVerseText");
+      const heroVerseReferenceEl = document.getElementById("heroVerseReference");
+
+      if (verseEl) verseEl.textContent = verseText;
+      if (verseReferenceEl) verseReferenceEl.textContent = verseReference;
+      if (heroVerseTextEl) heroVerseTextEl.textContent = verseText;
+      if (heroVerseReferenceEl) heroVerseReferenceEl.textContent = verseReference;
     }
 
     function setResortReminderVisible(isVisible) {
