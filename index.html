@@ -16,6 +16,7 @@
 <meta name="twitter:title" content="Dekack's Private Resort and Hotel | Online Booking" />
 <meta name="twitter:description" content="Official booking page of Dekack's Private Resort and Hotel. Check rooms, pool packages, catering options, and reservation quotations online." />
 <meta name="twitter:image" content="https://dekacksprivateresortandhotel.github.io/De-kacks-website/logo.png" />
+<link rel="stylesheet" href="./styles.css" />
 <style>
   @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Source+Sans+3:wght@400;500;600&display=swap");
   :root {
@@ -235,6 +236,18 @@
     position: relative;
   }
 
+  .brand-head::after {
+    content: "";
+    position: absolute;
+    right: 18px;
+    top: 18px;
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0));
+    pointer-events: none;
+  }
+
   .step-flow {
     display: flex;
     flex-wrap: wrap;
@@ -250,6 +263,32 @@
     color: #35514f;
     font-size: 12px;
     font-weight: 700;
+    transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease, border-color 160ms ease, color 160ms ease;
+  }
+
+  .step-pill.active {
+    background: linear-gradient(135deg, #fff4d8, #dff7f0);
+    border-color: #9bcbbd;
+    color: #164952;
+    box-shadow: 0 10px 20px rgba(15, 74, 82, 0.1);
+    transform: translateY(-1px);
+  }
+
+  .step-pill.done {
+    background: linear-gradient(135deg, #e6f8ee, #eefbf5);
+    border-color: #a9d8be;
+    color: #196347;
+  }
+
+  .reveal-target {
+    opacity: 0;
+    transform: translateY(18px) scale(0.985);
+    transition: opacity 420ms ease, transform 420ms ease;
+  }
+
+  .reveal-target.is-visible {
+    opacity: 1;
+    transform: translateY(0) scale(1);
   }
 
   .brand-logo {
@@ -379,6 +418,36 @@
     box-shadow: 0 12px 24px rgba(215, 119, 33, 0.24);
   }
 
+  .primary-btn,
+  .secondary-btn {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .primary-btn::after,
+  .secondary-btn::after {
+    content: "";
+    position: absolute;
+    inset: -120% auto auto -20%;
+    width: 42%;
+    height: 300%;
+    transform: rotate(18deg);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0));
+    opacity: 0;
+    transition: opacity 180ms ease;
+  }
+
+  .primary-btn:hover::after,
+  .secondary-btn:hover::after {
+    opacity: 1;
+    animation: buttonShine 900ms ease;
+  }
+
+  @keyframes buttonShine {
+    from { left: -30%; }
+    to { left: 120%; }
+  }
+
   #availabilityInfo {
     padding: 10px 12px;
     border-radius: 14px;
@@ -412,6 +481,25 @@
 
   .quote-card {
     background: #fff;
+    position: relative;
+  }
+
+  .quote-card::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 8px;
+    background: linear-gradient(90deg, #f0b04c, #0f8aa0, #67c2af);
+  }
+
+  .quote-card.quote-highlight {
+    animation: quotePulse 900ms ease;
+  }
+
+  @keyframes quotePulse {
+    0% { box-shadow: 0 0 0 rgba(15, 138, 160, 0); transform: translateY(0); }
+    45% { box-shadow: 0 0 0 8px rgba(15, 138, 160, 0.14); transform: translateY(-2px); }
+    100% { box-shadow: 0 22px 42px rgba(11, 63, 73, 0.12); transform: translateY(0); }
   }
 
   .quote-head {
@@ -578,6 +666,70 @@
     background: linear-gradient(135deg, #e6f6f8, #f2fbfb);
     color: #0a4353;
     box-shadow: 0 8px 18px rgba(17, 102, 123, 0.12);
+  }
+
+  .action-dock {
+    position: fixed;
+    right: 18px;
+    bottom: 18px;
+    z-index: 40;
+    width: min(320px, calc(100vw - 28px));
+    padding: 14px;
+    border-radius: 22px;
+    border: 1px solid rgba(201, 221, 214, 0.95);
+    background: rgba(255, 255, 255, 0.88);
+    backdrop-filter: blur(14px);
+    box-shadow: 0 22px 44px rgba(7, 35, 44, 0.18);
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(18px);
+    transition: opacity 180ms ease, transform 180ms ease;
+  }
+
+  .action-dock.visible {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+  }
+
+  .action-dock-title {
+    margin: 0 0 6px;
+    color: var(--primary);
+    font-size: 14px;
+    font-weight: 800;
+  }
+
+  .action-dock-text {
+    margin: 0;
+    color: #4c6661;
+    font-size: 12px;
+    line-height: 1.5;
+  }
+
+  .action-dock-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+  }
+
+  .action-dock-btn {
+    flex: 1 1 96px;
+    margin-top: 0;
+    padding: 10px 12px;
+    border-radius: 14px;
+    border: 1px solid #cfe0da;
+    background: linear-gradient(180deg, #ffffff, #f4faf7);
+    color: #1c4c52;
+    font-size: 12px;
+    font-weight: 800;
+    box-shadow: none;
+  }
+
+  .action-dock-btn.primary {
+    background: linear-gradient(135deg, #0f8aa0, #0d6574);
+    color: #fff;
+    border-color: transparent;
   }
 
   .catering-choices {
@@ -844,6 +996,122 @@
     font-size: 12px;
     text-transform: uppercase;
     letter-spacing: 0.04em;
+  }
+
+  .booking-assist-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    margin: 0 0 18px;
+  }
+
+  .booking-assist-card {
+    padding: 16px;
+    border-radius: 18px;
+    border: 1px solid #d8e7df;
+    background: #f8fcfa;
+    box-shadow: 0 12px 24px rgba(15, 74, 82, 0.07);
+  }
+
+  .booking-assist-card h4 {
+    margin: 0 0 8px;
+    color: var(--primary);
+  }
+
+  .booking-assist-card p {
+    margin: 0;
+    color: #4d6661;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+
+  .booking-preset-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+  }
+
+  .booking-preset-btn {
+    border: 1px solid #cde0d8;
+    background: #fff;
+    color: #18484e;
+    padding: 8px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 140ms ease, box-shadow 140ms ease, border-color 140ms ease;
+  }
+
+  .booking-preset-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 18px rgba(15, 74, 82, 0.1);
+    border-color: #9fcabc;
+  }
+
+  .booking-checklist {
+    list-style: none;
+    padding: 0;
+    margin: 12px 0 0;
+    display: grid;
+    gap: 8px;
+  }
+
+  .booking-checklist li {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 9px 10px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.84);
+    border: 1px solid #d9e7e1;
+    color: #37534f;
+    font-size: 13px;
+  }
+
+  .booking-checklist li.done {
+    border-color: #b9ddcf;
+    background: #edf9f3;
+  }
+
+  .booking-checklist li.pending {
+    border-color: #f0dcc0;
+    background: #fff7ea;
+  }
+
+  .booking-check-icon {
+    flex: 0 0 auto;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 800;
+    background: #d9ece4;
+    color: #1f6f55;
+  }
+
+  .booking-checklist li.pending .booking-check-icon {
+    background: #ffe7c9;
+    color: #8b5a14;
+  }
+
+  .booking-helper-kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 8px;
+    padding: 5px 9px;
+    border-radius: 999px;
+    background: #e9f6f2;
+    color: #1e6158;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
   }
 
   .availability-step-card {
@@ -1237,6 +1505,17 @@
   }
 
   @media (max-width: 940px) {
+    .booking-assist-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .action-dock {
+      right: 12px;
+      left: 12px;
+      width: auto;
+      bottom: 12px;
+    }
+
     .availability-layout {
       grid-template-columns: 1fr;
     }
@@ -1523,12 +1802,12 @@
   </div>
   <div class="container">
     <div class="step-flow">
-      <div class="step-pill">Step 1 Guest Info</div>
-      <div class="step-pill">Step 2 Pool Calendar</div>
-      <div class="step-pill">Step 3 Booking Form</div>
-      <div class="step-pill">Step 4 Quotation</div>
+      <div id="stepPillGuest" class="step-pill">Step 1 Guest Info</div>
+      <div id="stepPillCalendar" class="step-pill">Step 2 Pool Calendar</div>
+      <div id="stepPillForm" class="step-pill">Step 3 Booking Form</div>
+      <div id="stepPillQuote" class="step-pill">Step 4 Quotation</div>
     </div>
-    <div class="brand-head">
+    <div class="brand-head reveal-target">
       <img src="./logo.png" alt="Dekack logo" class="brand-logo" loading="lazy" />
       <div class="brand-text">
         <h1>Dekack's Private Resort &amp; Hotel</h1>
@@ -1537,7 +1816,98 @@
       </div>
     </div>
 
-    <div id="preEntryPanel" class="pre-entry-card">
+    <div id="bookingIntroSections">
+    <section class="launch-hero reveal-target">
+      <div class="launch-hero-copy">
+        <span class="launch-eyebrow">Motivational Bible Verse</span>
+        <h2>I can do all things through Christ which strengtheneth me.</h2>
+        <p>
+          Philippians 4:13 (KJV)
+        </p>
+      </div>
+      <div class="launch-hero-side">
+        <div class="launch-spotlight-card">
+          <span class="launch-spotlight-label">Live Booking Mood</span>
+          <h3 id="launchSpotlightTitle">Smooth, guided, and guest-friendly</h3>
+          <p id="launchSpotlightText">Choose a date, select a stay style, and let the page guide the guest through a more elegant resort-style reservation flow.</p>
+        </div>
+        <div class="launch-stat-grid">
+          <div class="launch-stat-card">
+            <strong>4-Step Flow</strong>
+            <span>Guest info to quotation</span>
+          </div>
+          <div class="launch-stat-card">
+            <strong>Live Estimate</strong>
+            <span>Clear pricing before reserve</span>
+          </div>
+          <div class="launch-stat-card">
+            <strong>Availability First</strong>
+            <span>Calendar-led booking decisions</span>
+          </div>
+          <div class="launch-stat-card">
+            <strong>Admin Ready</strong>
+            <span>Existing Firebase workflow preserved</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="launch-experience-band reveal-target">
+      <article class="launch-feature-card">
+        <span class="launch-feature-kicker">For Guests</span>
+        <h3>See what is available faster</h3>
+        <p>Check the schedule, choose your stay, and move through the booking steps without confusion.</p>
+      </article>
+      <article class="launch-feature-card">
+        <span class="launch-feature-kicker">Easy Booking</span>
+        <h3>Choose the setup that fits your stay</h3>
+        <p>Whether you want pool access, rooms, or a special event, the form guides you to the right option.</p>
+      </article>
+      <article class="launch-feature-card">
+        <span class="launch-feature-kicker">Before You Confirm</span>
+        <h3>Review your quotation first</h3>
+        <p>See your schedule, selected services, and estimated cost before sending your reservation request.</p>
+      </article>
+    </section>
+
+    <section class="launch-journey reveal-target">
+      <div class="launch-journey-card">
+        <span class="launch-journey-step">01</span>
+        <h3>Enter your details</h3>
+        <p>Start with your name and contact number so we can prepare your reservation correctly.</p>
+      </div>
+      <div class="launch-journey-card">
+        <span class="launch-journey-step">02</span>
+        <h3>Check available dates</h3>
+        <p>Use the calendar first so you can choose a date that matches your preferred schedule.</p>
+      </div>
+      <div class="launch-journey-card">
+        <span class="launch-journey-step">03</span>
+        <h3>Select your stay</h3>
+        <p>Pick the rooms, pool access, and extra services you want for your visit.</p>
+      </div>
+      <div class="launch-journey-card">
+        <span class="launch-journey-step">04</span>
+        <h3>Review and send</h3>
+        <p>Check your quotation, confirm the details, and submit your reservation request when ready.</p>
+      </div>
+    </section>
+
+    <div class="launch-marquee reveal-target" aria-hidden="true">
+      <div class="launch-marquee-track">
+        <span>Private Pool Luxury</span>
+        <span>Premium Booking Experience</span>
+        <span>Elegant Guest Journey</span>
+        <span>World-Class Reservation Flow</span>
+        <span>Private Pool Luxury</span>
+        <span>Premium Booking Experience</span>
+        <span>Elegant Guest Journey</span>
+        <span>World-Class Reservation Flow</span>
+      </div>
+    </div>
+    </div>
+
+    <div id="preEntryPanel" class="pre-entry-card reveal-target">
       <div class="pre-entry-head">
         <div>
           <h3>Guest Login Panel</h3>
@@ -1561,14 +1931,14 @@
           </div>
         </div>
         <button type="button" class="primary-btn" onclick="proceedToQuotationForm()">Continue to Booking Form</button>
-        <div class="motivation-card">
-          <strong>Today's Resort Reminder</strong>
+        <div id="resortReminderCard" class="motivation-card">
+          <strong>Resort Reminder</strong>
           <p id="motivationVerse"></p>
         </div>
       </div>
     </div>
 
-    <div id="availabilityStepPanel" class="availability-step-card hidden">
+    <div id="availabilityStepPanel" class="availability-step-card hidden reveal-target">
       <div class="availability-step-head">
         <h3>View Available Dates</h3>
         <p>Check pool availability by month before continuing to the quotation form. Rooms and other accommodation are checked separately.</p>
@@ -1610,7 +1980,7 @@
       </div>
     </div>
 
-    <div id="bookingFormPanel" class="booking-form-panel hidden">
+    <div id="bookingFormPanel" class="booking-form-panel hidden reveal-target">
     <div class="booking-summary-card">
       <h3>Booking Summary</h3>
       <div id="bookingSummary" class="booking-summary-grid">
@@ -1620,6 +1990,28 @@
         <div class="booking-summary-item"><strong>Guests</strong>1 guest</div>
         <div class="booking-summary-item"><strong>Rooms</strong>No rooms selected yet</div>
         <div class="booking-summary-item"><strong>Pool</strong>Based on your stay preference</div>
+      </div>
+    </div>
+
+    <div class="booking-assist-grid">
+      <div class="booking-assist-card">
+        <div class="booking-helper-kicker">Fast Booking Help</div>
+        <h4 id="bookingRecommendationTitle">Suggested Setup</h4>
+        <p id="bookingRecommendationText">Choose a date and number of guests first. The page will suggest the easiest setup for this booking.</p>
+        <div class="booking-preset-buttons">
+          <button type="button" class="booking-preset-btn" onclick="applyBookingPreset('day-tour')">Quick Day Tour</button>
+          <button type="button" class="booking-preset-btn" onclick="applyBookingPreset('overnight')">Family Overnight</button>
+          <button type="button" class="booking-preset-btn" onclick="applyBookingPreset('event')">Special Event</button>
+        </div>
+      </div>
+      <div class="booking-assist-card">
+        <div class="booking-helper-kicker">Ready To Submit</div>
+        <h4>Booking Checklist</h4>
+        <ul id="bookingChecklist" class="booking-checklist">
+          <li class="pending"><span class="booking-check-icon">!</span><span>Enter guest details to start the form.</span></li>
+          <li class="pending"><span class="booking-check-icon">!</span><span>Choose your booking date and stay type.</span></li>
+          <li class="pending"><span class="booking-check-icon">!</span><span>Select the service you need, then generate the quotation.</span></li>
+        </ul>
       </div>
     </div>
 
@@ -1854,8 +2246,18 @@
     </div>
   </div>
 
-  <div id="adminPanelShell" class="admin-panel-shell">
+    <div id="adminPanelShell" class="admin-panel-shell">
     <div id="adminPanelContent"></div>
+  </div>
+
+  <div id="bookingActionDock" class="action-dock">
+    <p class="action-dock-title">Booking Shortcuts</p>
+    <p id="bookingActionDockText" class="action-dock-text">Move faster between the calendar, booking form, and quotation.</p>
+    <div class="action-dock-buttons">
+      <button type="button" class="action-dock-btn" onclick="scrollToBookingSection('availabilityStepPanel')">Calendar</button>
+      <button type="button" class="action-dock-btn" onclick="scrollToBookingSection('bookingFormPanel')">Form</button>
+      <button type="button" class="action-dock-btn primary" onclick="scrollToBookingSection('quotation')">Quotation</button>
+    </div>
   </div>
 
     <button id="adminBtn" onclick="adminLogin()">Open Admin Panel</button>
@@ -1908,10 +2310,11 @@
       { slot: 6, text: "VIP Room - Included in Special Event Package", price: 5500, pax: 12, type: "vip" },
     ];
     const MOTIVATIONAL_VERSES = [
-      "Every great getaway starts with one simple step. Your peaceful stay is closer than you think.",
-      "Rest is not a reward, it is part of living well. Let this booking be the start of your next reset.",
-      "Good memories are built one planned moment at a time. Your resort experience begins here.",
-      "A calm mind and a happy heart deserve a beautiful place to pause. Keep going, you are almost there.",
+      "\"I can do all things through Christ which strengtheneth me.\" Philippians 4:13 (KJV)",
+      "\"For with God nothing shall be impossible.\" Luke 1:37 (KJV)",
+      "\"Be strong and of a good courage; be not afraid... for the Lord thy God is with thee.\" Joshua 1:9 (KJV)",
+      "\"Commit thy works unto the Lord, and thy thoughts shall be established.\" Proverbs 16:3 (KJV)",
+      "\"Wait on the Lord: be of good courage, and he shall strengthen thine heart.\" Psalm 27:14 (KJV)",
     ];
     const CATERING_PACKAGE_RULES = {
       A: {
@@ -2204,10 +2607,10 @@
 
     function applyRandomWeatherTheme() {
       const weatherThemes = [
-        { key: "sunny" },
-        { key: "cloudy" },
-        { key: "rainy" },
-        { key: "sunset" },
+        { key: "lagoon-morning" },
+        { key: "palm-breeze" },
+        { key: "monsoon-lounge" },
+        { key: "golden-dusk" },
       ];
 
       const selectedTheme = weatherThemes[Math.floor(Math.random() * weatherThemes.length)];
@@ -2449,6 +2852,8 @@
       if (preEntryPanel) preEntryPanel.classList.add("hidden");
       if (availabilityStepPanel) availabilityStepPanel.classList.add("hidden");
       if (bookingFormPanel) bookingFormPanel.classList.add("hidden");
+      setBookingIntroVisible(false);
+      setResortReminderVisible(false);
       if (quotationEl) quotationEl.innerHTML = "";
       if (adminShell) adminShell.style.display = "block";
       window.scrollTo({ top: 0, behavior: "smooth" });
@@ -2467,6 +2872,8 @@
       if (preEntryPanel) preEntryPanel.classList.add("hidden");
       if (availabilityStepPanel) availabilityStepPanel.classList.remove("hidden");
       if (bookingFormPanel) bookingFormPanel.classList.add("hidden");
+      setBookingIntroVisible(false);
+      setResortReminderVisible(false);
       if (quotationEl) quotationEl.innerHTML = "";
       if (adminShell) adminShell.style.display = "none";
       initializeAvailabilityMonth();
@@ -2495,13 +2902,25 @@
     function setWelcomeGreeting() {
       const welcomeGreetingEl = document.getElementById("welcomeGreeting");
       if (!welcomeGreetingEl) return;
-      welcomeGreetingEl.textContent = `${getTimeBasedGreeting()}, welcome to Dekack's Private Resort and Hotel`;
+      welcomeGreetingEl.textContent = `${getTimeBasedGreeting()}, welcome to your private resort escape at Dekack's`;
     }
 
     function setRandomMotivationalVerse() {
       const verse = MOTIVATIONAL_VERSES[Math.floor(Math.random() * MOTIVATIONAL_VERSES.length)];
       const verseEl = document.getElementById("motivationVerse");
       if (verseEl) verseEl.textContent = verse;
+    }
+
+    function setResortReminderVisible(isVisible) {
+      const reminderCard = document.getElementById("resortReminderCard");
+      if (!reminderCard) return;
+      reminderCard.style.display = isVisible ? "" : "none";
+    }
+
+    function setBookingIntroVisible(isVisible) {
+      const introSections = document.getElementById("bookingIntroSections");
+      if (!introSections) return;
+      introSections.style.display = isVisible ? "" : "none";
     }
 
     function getGuestNameValue() {
@@ -2540,7 +2959,10 @@
       }
 
       document.getElementById("preEntryPanel").classList.add("hidden");
+      setBookingIntroVisible(false);
+      setResortReminderVisible(false);
       document.getElementById("availabilityStepPanel").classList.remove("hidden");
+      document.getElementById("availabilityStepPanel").classList.add("is-visible");
       initializeAvailabilityMonth();
       renderAvailabilityCalendar();
       updateRoomGuide();
@@ -2550,7 +2972,10 @@
 
     function continueToQuotationForm() {
       document.getElementById("availabilityStepPanel").classList.add("hidden");
+      setBookingIntroVisible(false);
+      setResortReminderVisible(false);
       document.getElementById("bookingFormPanel").classList.remove("hidden");
+      document.getElementById("bookingFormPanel").classList.add("is-visible");
       if (selectedAvailabilityDate) {
         document.getElementById("date").value = selectedAvailabilityDate;
       }
@@ -2784,6 +3209,230 @@
       `;
     }
 
+    function formatCurrencyPHP(value) {
+      return `PHP ${Number(value || 0).toLocaleString("en-PH", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    }
+
+    function getEstimatedBookingTotal() {
+      const stayDays = parseInt(document.getElementById("stayDays").value, 10) || 0;
+      const roomHours = getRoomUsageHours();
+      const specialEventDetails = getSpecialEventDetails();
+      const selectedRooms = specialEventDetails.selected ? getSpecialEventRooms() : getSelectedRooms();
+      const roomTotal = specialEventDetails.selected
+        ? 0
+        : selectedRooms.reduce((sum, room) => sum + (room.type === "mattress" ? Number(room.price || 0) : computeRoomCost(room.price, roomHours)), 0);
+      const poolDetails = getPoolDetails(Math.max(stayDays, 1), specialEventDetails);
+      const cateringDetails = getCateringDetails();
+      const hallDetails = getFunctionHallDetails(cateringDetails, specialEventDetails);
+      return {
+        total: Number(specialEventDetails.baseCost || 0) + roomTotal + Number(poolDetails.computedCost || 0) + Number(cateringDetails.totalCost || 0) + Number(hallDetails.cost || 0),
+        roomTotal,
+        poolDetails,
+        cateringDetails,
+        hallDetails,
+        specialEventDetails,
+        selectedRooms,
+      };
+    }
+
+    function getBookingChecklistItems() {
+      const guestName = getGuestNameValue();
+      const contact = getContactNumberValue();
+      const checkInDate = document.getElementById("date").value;
+      const checkOutDate = document.getElementById("checkOutDatePicker").value;
+      const hasGuestInfo = !!guestName && /^09\d{9}$/.test(contact || "");
+      const hasDates = !!checkInDate && !!checkOutDate;
+      const wantsRooms = !!document.getElementById("showRoomsCheckbox").checked;
+      const wantsPool = !!document.getElementById("showPoolCheckbox").checked;
+      const wantsSpecialEvent = !!document.getElementById("showSpecialEventCheckbox").checked;
+      const wantsServices = !!document.getElementById("showServicesCheckbox").checked;
+      const selectedRooms = getSelectedRooms();
+      const hasServiceChoice = wantsSpecialEvent || wantsPool || wantsServices || (wantsRooms && selectedRooms.length > 0);
+
+      return [
+        {
+          done: hasGuestInfo,
+          text: hasGuestInfo ? "Guest name and contact number are ready." : "Enter guest name and a valid 11-digit contact number.",
+        },
+        {
+          done: hasDates,
+          text: hasDates ? "Booking dates are selected." : "Choose the check-in and check-out schedule.",
+        },
+        {
+          done: hasServiceChoice,
+          text: hasServiceChoice ? "At least one booking service is selected." : "Pick a room, pool, special event, or extra service.",
+        },
+        {
+          done: !!pendingReservation,
+          text: pendingReservation ? "Quotation generated. You can submit the reservation now." : "Generate the quotation before tapping Reserve Now.",
+        },
+      ];
+    }
+
+    function getBookingRecommendation() {
+      const totalGuests = Math.max(0, parseInt(document.getElementById("guests").value, 10) || 0);
+      const stayMode = getPreferredStayMode();
+      const checkInDate = document.getElementById("date").value;
+      const hasRooms = document.getElementById("showRoomsCheckbox").checked;
+      const hasPool = document.getElementById("showPoolCheckbox").checked;
+      const hasSpecialEvent = document.getElementById("showSpecialEventCheckbox").checked;
+      const estimate = getEstimatedBookingTotal();
+
+      if (hasSpecialEvent) {
+        return {
+          title: "Special Event Mode",
+          text: `This is the fastest option for large celebrations because rooms, pool, and hall are bundled together. Current estimate: ${formatCurrencyPHP(estimate.total)}.`,
+        };
+      }
+
+      if (!checkInDate) {
+        return {
+          title: "Start With The Date",
+          text: "Pick the check-in date first so the page can auto-adjust your stay schedule, available rooms, and pool options.",
+        };
+      }
+
+      if (stayMode === "day-tour" && hasPool && !hasRooms) {
+        return {
+          title: "Quick Day Tour Setup",
+          text: `Good for same-day swimming bookings. If your guests may stay longer, turn on rooms after checking the estimate of ${formatCurrencyPHP(estimate.total)}.`,
+        };
+      }
+
+      if (totalGuests >= 20) {
+        return {
+          title: "Large Group Tip",
+          text: `For ${totalGuests} guests, the easiest path is usually pool plus rooms, or the Special Event package if you also need the hall. Current estimate: ${formatCurrencyPHP(estimate.total)}.`,
+        };
+      }
+
+      if (stayMode === "overnight" || stayMode === "day-night") {
+        return {
+          title: "Overnight Recommendation",
+          text: `Since this stay goes beyond daytime access, guests usually book rooms together with the pool. Current estimate: ${formatCurrencyPHP(estimate.total)}.`,
+        };
+      }
+
+      if (hasRooms && !hasPool) {
+        return {
+          title: "Room-Focused Booking",
+          text: `This setup keeps the booking simple if you only need accommodation. You can still add the pool later before generating the quotation. Current estimate: ${formatCurrencyPHP(estimate.total)}.`,
+        };
+      }
+
+      return {
+        title: "Balanced Setup",
+        text: `The form is ready for a standard booking. Review the checklist below, then generate the quotation when the estimate looks right at ${formatCurrencyPHP(estimate.total)}.`,
+      };
+    }
+
+    function updateBookingAssistantPanel() {
+      const recommendationTitle = document.getElementById("bookingRecommendationTitle");
+      const recommendationText = document.getElementById("bookingRecommendationText");
+      const checklist = document.getElementById("bookingChecklist");
+      const recommendation = getBookingRecommendation();
+
+      if (recommendationTitle) recommendationTitle.textContent = recommendation.title;
+      if (recommendationText) recommendationText.textContent = recommendation.text;
+
+      if (!checklist) return;
+      checklist.innerHTML = getBookingChecklistItems().map((item) => `
+        <li class="${item.done ? "done" : "pending"}">
+          <span class="booking-check-icon">${item.done ? "OK" : "!"}</span>
+          <span>${item.text}</span>
+        </li>
+      `).join("");
+    }
+
+    function updateStepFlowState() {
+      const guestDone = !!getGuestNameValue() && /^09\d{9}$/.test(getContactNumberValue() || "");
+      const calendarDone = !!document.getElementById("date").value;
+      const formVisible = !document.getElementById("bookingFormPanel").classList.contains("hidden");
+      const quoteReady = !!pendingReservation || !!document.querySelector("#quotation .quote-card");
+
+      const guestPill = document.getElementById("stepPillGuest");
+      const calendarPill = document.getElementById("stepPillCalendar");
+      const formPill = document.getElementById("stepPillForm");
+      const quotePill = document.getElementById("stepPillQuote");
+
+      if (guestPill) {
+        guestPill.classList.toggle("done", guestDone);
+        guestPill.classList.toggle("active", !guestDone);
+      }
+      if (calendarPill) {
+        calendarPill.classList.toggle("done", calendarDone);
+        calendarPill.classList.toggle("active", guestDone && !calendarDone);
+      }
+      if (formPill) {
+        formPill.classList.toggle("done", formVisible && !quoteReady);
+        formPill.classList.toggle("active", calendarDone && !quoteReady);
+      }
+      if (quotePill) {
+        quotePill.classList.toggle("done", quoteReady);
+        quotePill.classList.toggle("active", formVisible && !quoteReady);
+      }
+    }
+
+    function updateActionDock() {
+      const dock = document.getElementById("bookingActionDock");
+      const dockText = document.getElementById("bookingActionDockText");
+      if (!dock || !dockText) return;
+
+      const quoteReady = !!document.querySelector("#quotation .quote-card");
+      const formVisible = !document.getElementById("bookingFormPanel").classList.contains("hidden");
+      const hasDate = !!document.getElementById("date").value;
+
+      if (quoteReady) {
+        dock.classList.add("visible");
+        dockText.textContent = pendingReservation
+          ? "Quotation is ready. Review it, then tap Reserve Now when everything looks correct."
+          : "Your quotation is visible below. You can jump back to edit the booking anytime.";
+        return;
+      }
+
+      if (formVisible || hasDate) {
+        dock.classList.add("visible");
+        dockText.textContent = "Use these shortcuts to jump between the availability calendar, form, and quotation area.";
+        return;
+      }
+
+      dock.classList.remove("visible");
+    }
+
+    function flashQuotationCard() {
+      const quoteCard = document.querySelector("#quotation .quote-card");
+      if (!quoteCard) return;
+      quoteCard.classList.remove("quote-highlight");
+      void quoteCard.offsetWidth;
+      quoteCard.classList.add("quote-highlight");
+    }
+
+    function scrollToBookingSection(id) {
+      const target = document.getElementById(id);
+      if (!target) return;
+      target.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    function initializeRevealAnimations() {
+      const targets = Array.from(document.querySelectorAll(".reveal-target"));
+      if (targets.length === 0) return;
+
+      if (!("IntersectionObserver" in window)) {
+        targets.forEach((target) => target.classList.add("is-visible"));
+        return;
+      }
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add("is-visible");
+          observer.unobserve(entry.target);
+        });
+      }, { threshold: 0.14 });
+
+      targets.forEach((target) => observer.observe(target));
+    }
+
     function updateLiveBookingSummary() {
       const summary = document.getElementById("bookingSummary");
       if (!summary) return;
@@ -2798,11 +3447,13 @@
       const roomNames = selectedRooms.length > 0
         ? selectedRooms.map((room) => room.text.split(" - ")[0]).join(", ")
         : "No rooms selected yet";
+      const estimate = getEstimatedBookingTotal();
       const poolValue = parseInt(document.getElementById("pool-select").value, 10) || 0;
       let poolLabel = "No pool selected";
       if (poolValue === 4800) poolLabel = "Day Tour Pool";
       if (poolValue === 6500) poolLabel = "Overnight Pool";
       if (poolValue === 10000) poolLabel = "Whole Day and Night Pool";
+      const nextStep = pendingReservation ? "Ready to submit reservation" : "Generate quotation next";
 
       summary.innerHTML = `
         <div class="booking-summary-item"><strong>Guest</strong>${guestName}<br>${contact}</div>
@@ -2811,7 +3462,12 @@
         <div class="booking-summary-item"><strong>Guests</strong>${totalGuests} total</div>
         <div class="booking-summary-item"><strong>Rooms</strong>${roomNames}</div>
         <div class="booking-summary-item"><strong>Pool</strong>${poolLabel}</div>
+        <div class="booking-summary-item"><strong>Estimated Total</strong>${formatCurrencyPHP(estimate.total)}</div>
+        <div class="booking-summary-item"><strong>Next Step</strong>${nextStep}</div>
       `;
+      updateBookingAssistantPanel();
+      updateStepFlowState();
+      updateActionDock();
     }
 
     function setQuickSetupActive(mode) {
@@ -2844,6 +3500,58 @@
       setQuickSetupActive(mode);
       updateAccommodationPanels();
       applyPoolScheduleRules();
+      checkDateAvailability();
+      updateRoomGuide();
+      updateLiveBookingSummary();
+    }
+
+    function applyBookingPreset(preset) {
+      const guestsInput = document.getElementById("guests");
+      const preferStay = document.getElementById("preferStay");
+      const roomsCheckbox = document.getElementById("showRoomsCheckbox");
+      const poolCheckbox = document.getElementById("showPoolCheckbox");
+      const specialEventCheckbox = document.getElementById("showSpecialEventCheckbox");
+      const servicesCheckbox = document.getElementById("showServicesCheckbox");
+      const specialEventSelect = document.getElementById("specialEventSelect");
+      const specialEventCateringMode = document.getElementById("specialEventCateringMode");
+
+      if (!guestsInput || !preferStay || !roomsCheckbox || !poolCheckbox || !specialEventCheckbox || !servicesCheckbox) return;
+
+      if (preset === "day-tour") {
+        guestsInput.value = String(Math.max(4, parseInt(guestsInput.value, 10) || 4));
+        preferStay.value = "day-tour";
+        specialEventCheckbox.checked = false;
+        servicesCheckbox.checked = false;
+        if (specialEventSelect) specialEventSelect.value = "0";
+        if (specialEventCateringMode) specialEventCateringMode.value = "none";
+        applyQuickSetup("pool-only");
+      } else if (preset === "overnight") {
+        guestsInput.value = String(Math.max(6, parseInt(guestsInput.value, 10) || 6));
+        preferStay.value = "overnight";
+        specialEventCheckbox.checked = false;
+        servicesCheckbox.checked = false;
+        if (specialEventSelect) specialEventSelect.value = "0";
+        if (specialEventCateringMode) specialEventCateringMode.value = "none";
+        applyQuickSetup("pool-room");
+      } else if (preset === "event") {
+        guestsInput.value = String(Math.max(30, parseInt(guestsInput.value, 10) || 30));
+        preferStay.value = "day-tour";
+        roomsCheckbox.checked = false;
+        poolCheckbox.checked = false;
+        specialEventCheckbox.checked = true;
+        servicesCheckbox.checked = true;
+        if (specialEventSelect) specialEventSelect.value = String(SPECIAL_EVENT_BASE_RATE);
+        if (specialEventCateringMode) specialEventCateringMode.value = "with";
+        setQuickSetupActive("");
+        updateAccommodationPanels();
+      }
+
+      syncStayPreferenceFields();
+      syncStayDaysFromDateRange();
+      applyPoolScheduleRules();
+      updateSpecialEventFields();
+      updateHallFields();
+      toggleMultiDaySelectors();
       checkDateAvailability();
       updateRoomGuide();
       updateLiveBookingSummary();
@@ -4496,6 +5204,10 @@
         </div>
       `;
 
+      flashQuotationCard();
+      updateActionDock();
+      updateStepFlowState();
+
       pendingReservation = {
         name,
         reservationReference,
@@ -4585,6 +5297,8 @@
       alert(`Your reservation is pending.\nReference No.: ${reservationReference}\nThe selected date can still be booked by others until payment is made and confirmed.`);
       pendingReservation = null;
       checkDateAvailability();
+      updateActionDock();
+      updateStepFlowState();
     }
 
     async function downloadPDF() {
@@ -4855,6 +5569,68 @@
       window.open("https://www.facebook.com/dekacksprivateresort", "_blank");
     }
 
+    function formatAdminPdfMoney(value) {
+      return `PHP ${Number(value || 0).toLocaleString("en-PH", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    }
+
+    function normalizeAdminPdfText(value, fallback = "N/A") {
+      const text = String(value || "").trim();
+      return text || fallback;
+    }
+
+    function formatAdminPdfDate(dateString, timeString = "") {
+      if (!dateString) return "N/A";
+      const date = new Date(`${dateString}T00:00:00`);
+      const formattedDate = Number.isNaN(date.getTime())
+        ? dateString
+        : date.toLocaleDateString("en-PH", { year: "numeric", month: "long", day: "numeric" });
+      return timeString ? `${formattedDate} ${timeString}` : formattedDate;
+    }
+
+    function sanitizeAdminPdfFilenamePart(value) {
+      return normalizeAdminPdfText(value, "booking").replace(/[^a-z0-9]+/gi, "_");
+    }
+
+    function drawAdminPdfHeader(doc, pdfLogo, title, subtitle, metaLine = "") {
+      doc.setFillColor(17, 45, 78);
+      doc.rect(0, 0, 210, 30, "F");
+      doc.setFillColor(196, 154, 82);
+      doc.rect(0, 30, 210, 4, "F");
+      doc.setFillColor(255, 255, 255);
+      doc.roundedRect(10, 5, 20, 20, 2.5, 2.5, "F");
+      if (pdfLogo) {
+        try {
+          doc.addImage(pdfLogo, "PNG", 12, 7, 16, 16);
+        } catch (error) {
+          // continue without logo
+        }
+      }
+      doc.setTextColor(255, 255, 255);
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(14);
+      doc.text("DEKACK'S PRIVATE RESORT & HOTEL", 36, 13);
+      doc.setFontSize(11);
+      doc.text(title, 36, 19);
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(8.5);
+      doc.text(subtitle, 36, 24);
+      if (metaLine) {
+        doc.text(metaLine, 200, 24, null, null, "right");
+      }
+      doc.setTextColor(20, 35, 52);
+      return 42;
+    }
+
+    function drawAdminPdfFooter(doc, text = "Administrative copy for Dekack's management records.") {
+      doc.setDrawColor(218, 226, 235);
+      doc.line(12, 285, 198, 285);
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(8.3);
+      doc.setTextColor(84, 102, 121);
+      doc.text(text, 105, 290, null, null, "center");
+      doc.setTextColor(20, 35, 52);
+    }
+
     async function downloadAdminBookingPDF(collectionType, index) {
       if (!window.jspdf || !window.jspdf.jsPDF) {
         alert("PDF library failed to load.");
@@ -4877,160 +5653,156 @@
       const pdfLogo = (typeof LOGO_EMBEDDED === "string" && LOGO_EMBEDDED.startsWith("data:image"))
         ? LOGO_EMBEDDED
         : dynamicLogo;
-      const money = (value) => `PHP ${Number(value || 0).toLocaleString("en-PH", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
       const roomList = Array.isArray(booking.rooms) && booking.rooms.length > 0
-        ? booking.rooms.map((r) => r.text).join(", ")
+        ? booking.rooms.map((r) => stripPriceText(r.text)).join(", ")
         : "No room accommodation selected";
 
-      const drawRow = (left, right, y, bold = false, line = true) => {
-        doc.setFont("helvetica", bold ? "bold" : "normal");
-        doc.setFontSize(bold ? 10.2 : 9.8);
-        doc.text(left, 12, y);
-        doc.text(right, 198, y, null, null, "right");
-        if (line) {
-          doc.setDrawColor(227, 234, 242);
-          doc.line(10, y + 2, 200, y + 2);
-        }
+      const drawFieldCard = (title, items, topY) => {
+        const lineHeight = 5.3;
+        const labelWidth = 31;
+        const wrappedItems = items.map(({ label, value }) => ({
+          label,
+          valueLines: doc.splitTextToSize(normalizeAdminPdfText(value), 52),
+        }));
+        const contentHeight = wrappedItems.reduce((sum, item) => sum + Math.max(1, item.valueLines.length) * lineHeight, 0);
+        const cardHeight = Math.max(28, 12 + contentHeight + 6);
+        doc.setFillColor(248, 251, 255);
+        doc.setDrawColor(207, 219, 232);
+        doc.roundedRect(topY.x, topY.y, 88, cardHeight, 3, 3, "FD");
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(9.6);
+        doc.setTextColor(17, 45, 78);
+        doc.text(title, topY.x + 4, topY.y + 7);
+        let lineY = topY.y + 14;
+        wrappedItems.forEach((item) => {
+          doc.setFont("helvetica", "bold");
+          doc.setFontSize(8.9);
+          doc.text(item.label, topY.x + 4, lineY);
+          doc.setFont("helvetica", "normal");
+          doc.setFontSize(8.9);
+          doc.text(item.valueLines, topY.x + 4 + labelWidth, lineY);
+          lineY += Math.max(1, item.valueLines.length) * lineHeight;
+        });
+        return cardHeight;
       };
-      const safeText = (text, maxWidth = 118) => doc.splitTextToSize(String(text || ""), maxWidth);
 
-      doc.setFillColor(18, 43, 68);
-      doc.rect(0, 0, 210, 34, "F");
-      doc.setFillColor(184, 145, 74);
-      doc.rect(0, 34, 210, 4, "F");
-      doc.setFillColor(255, 255, 255);
-      doc.roundedRect(8, 5, 24, 24, 2, 2, "F");
-      if (pdfLogo) {
-        try {
-          doc.addImage(pdfLogo, "PNG", 10, 7, 20, 20);
-        } catch (error) {
-          // continue without logo
+      const drawAmountRow = (label, value, topY, options = {}) => {
+        const descriptionLines = doc.splitTextToSize(label, 126);
+        const rowHeight = Math.max(8, descriptionLines.length * 5.2 + 2);
+        if (options.highlight) {
+          doc.setFillColor(options.fill[0], options.fill[1], options.fill[2]);
+          doc.setDrawColor(options.stroke[0], options.stroke[1], options.stroke[2]);
+          doc.roundedRect(10, topY - 4.5, 190, rowHeight + 2.5, 2.3, 2.3, "FD");
+        } else {
+          doc.setDrawColor(229, 235, 242);
+          doc.line(10, topY + rowHeight - 2, 200, topY + rowHeight - 2);
         }
-      }
-      doc.setTextColor(255, 255, 255);
-      doc.setFont("helvetica", "bold");
-      doc.setFontSize(15);
-      doc.text("DEKACK'S PRIVATE RESORT & HOTEL", 37, 14);
-      doc.setFont("helvetica", "normal");
-      doc.setFontSize(10.3);
-      doc.text("ADMINISTRATIVE RESERVATION SUMMARY", 37, 21);
-      doc.setFontSize(8.8);
-      doc.text(`Status: ${collectionType === "pending" ? "Pending Approval" : "Approved Reservation"}`, 37, 26);
-      doc.setFontSize(8.5);
-      doc.text(`Date Generated: ${new Date().toLocaleDateString("en-PH")}`, 37, 30);
+        doc.setFont("helvetica", options.bold ? "bold" : "normal");
+        doc.setFontSize(options.bold ? 9.7 : 9.2);
+        doc.setTextColor(28, 42, 57);
+        doc.text(descriptionLines, 12, topY);
+        doc.text(value, 198, topY, null, null, "right");
+        return rowHeight;
+      };
 
-      doc.setTextColor(24, 39, 55);
-      let y = 48;
+      let y = drawAdminPdfHeader(
+        doc,
+        pdfLogo,
+        "ADMINISTRATIVE RESERVATION SUMMARY",
+        `${collectionType === "pending" ? "Pending Approval" : "Approved Reservation"} | Ref ${normalizeAdminPdfText(booking.reservationReference)}`,
+        `Generated ${new Date().toLocaleDateString("en-PH")}`
+      );
 
-      const leftDetails = [
-        `Guest Name: ${booking.name}`,
-        `Contact Number: ${booking.contactNumber || "N/A"}`,
-        `Guests: ${booking.guests}`,
-        `Stay Preference: ${getBookingStayLabel(booking)}`,
-        `Inquiry Downpayment: ${money(totals.originalDownpayment)}`,
-      ];
-      const rightDetails = [
-        `Check-in: ${new Date(`${normalizedCheckIn}T00:00:00`).toLocaleDateString("en-PH")} ${booking.checkInTime || "08:00"}`,
-        `Check-out: ${new Date(`${normalizedCheckOut}T00:00:00`).toLocaleDateString("en-PH")} ${booking.checkOutTime || "17:00"}`,
-        `Management Discount: ${totals.managementDiscountPercent}%`,
-        `Payment Status: ${totals.fullyPaid ? "Fully Paid" : "With Outstanding Balance"}`,
-      ];
+      const leftCardHeight = drawFieldCard("Guest Details", [
+        { label: "Guest", value: booking.name },
+        { label: "Contact", value: booking.contactNumber },
+        { label: "Guests", value: `${booking.guests || 0}` },
+        { label: "Stay", value: getBookingStayLabel(booking) },
+      ], { x: 10, y });
+      const rightCardHeight = drawFieldCard("Reservation Details", [
+        { label: "Check-in", value: formatAdminPdfDate(normalizedCheckIn, booking.checkInTime || "08:00") },
+        { label: "Check-out", value: formatAdminPdfDate(normalizedCheckOut, booking.checkOutTime || "17:00") },
+        { label: "Discount", value: `${totals.managementDiscountPercent || 0}%` },
+        { label: "Payment", value: totals.fullyPaid ? "Fully Paid" : "Balance Pending" },
+      ], { x: 112, y });
+      y += Math.max(leftCardHeight, rightCardHeight) + 10;
 
-      doc.setFont("helvetica", "normal");
-      doc.setFontSize(10);
-      const leftWrapped = leftDetails.map((t) => safeText(t, 84));
-      const rightWrapped = rightDetails.map((t) => safeText(t, 84));
-      const leftLines = leftWrapped.reduce((sum, lines) => sum + lines.length, 0);
-      const rightLines = rightWrapped.reduce((sum, lines) => sum + lines.length, 0);
-      const detailLines = Math.max(leftLines, rightLines);
-      const boxHeight = Math.max(39, 14 + detailLines * 5.2);
-
-      doc.setDrawColor(198, 213, 228);
-      doc.setFillColor(248, 252, 255);
-      doc.roundedRect(10, y, 190, boxHeight, 2.5, 2.5, "FD");
-      doc.setFont("helvetica", "bold");
-      doc.setFontSize(10.5);
-      doc.text("BOOKING INFORMATION", 12, y + 7);
-      doc.setDrawColor(214, 226, 237);
-      doc.line(105, y + 10, 105, y + boxHeight - 3);
-
-      doc.setFont("helvetica", "normal");
-      doc.setFontSize(9.7);
-      let leftY = y + 14;
-      leftWrapped.forEach((lines) => {
-        doc.text(lines, 12, leftY);
-        leftY += lines.length * 5.2;
-      });
-      let rightY = y + 14;
-      rightWrapped.forEach((lines) => {
-        doc.text(lines, 112, rightY);
-        rightY += lines.length * 5.2;
-      });
-
-      y += boxHeight + 10;
-
-      doc.setFillColor(238, 246, 255);
-      doc.rect(10, y, 190, 8, "F");
+      doc.setFillColor(236, 244, 255);
       doc.setDrawColor(199, 214, 230);
-      doc.rect(10, y, 190, 8);
+      doc.roundedRect(10, y, 190, 10, 2.5, 2.5, "FD");
       doc.setFont("helvetica", "bold");
-      doc.setFontSize(9.7);
-      doc.text("DESCRIPTION", 12, y + 5.5);
-      doc.text("AMOUNT", 198, y + 5.5, null, null, "right");
-      y += 12;
+      doc.setFontSize(10);
+      doc.setTextColor(17, 45, 78);
+      doc.text("Charge Breakdown", 12, y + 6.5);
+      doc.text("Amount", 198, y + 6.5, null, null, "right");
+      y += 16;
 
-      drawRow("Special Event Package", booking.specialEventSelected ? money(booking.specialEventCost) : "None", y);
-      y += 7;
-
-      const roomLines = safeText(`Room Accommodation: ${roomList}`, 125);
-      doc.setFont("helvetica", "normal");
-      doc.setFontSize(9.6);
-      doc.text(roomLines, 12, y);
-      doc.text(money(totals.roomTotal), 198, y, null, null, "right");
-      doc.setDrawColor(227, 234, 242);
-      doc.line(10, y + 2 + (roomLines.length - 1) * 5.2, 200, y + 2 + (roomLines.length - 1) * 5.2);
-      y += 7 + (roomLines.length - 1) * 5.2;
-
-      drawRow(`Private Pool: ${booking.poolBreakdown || "None"}`, money(totals.poolTotal), y);
-      y += 7;
-      drawRow(`Catering Services: ${booking.cateringPackage || "None"}${booking.cateringPersons ? ` (${booking.cateringPersons} guests)` : ""}`, money(totals.cateringTotal), y);
-      y += 7;
-      drawRow(`Function Hall: ${booking.hallSelected ? `${booking.hallLabel || "Reserved"} (${booking.hallHours || 8} hours)` : "None"}`, money(totals.hallTotal), y);
+      y += drawAmountRow("Special Event Package", booking.specialEventSelected ? formatAdminPdfMoney(booking.specialEventCost) : "None", y);
+      y += 1.5;
+      y += drawAmountRow(`Room Accommodation: ${roomList}`, formatAdminPdfMoney(totals.roomTotal), y);
+      y += 1.5;
+      y += drawAmountRow(`Private Pool: ${stripPriceText(booking.poolBreakdown || "None")}`, formatAdminPdfMoney(totals.poolTotal), y);
+      y += 1.5;
+      y += drawAmountRow(`Catering Services: ${stripPriceText(booking.cateringPackage || "None")}${booking.cateringPersons ? ` (${booking.cateringPersons} guests)` : ""}`, formatAdminPdfMoney(totals.cateringTotal), y);
+      y += 1.5;
+      y += drawAmountRow(`Function Hall: ${booking.hallSelected ? `${stripPriceText(booking.hallLabel || "Reserved")} (${booking.hallHours || 8} hours)` : "None"}`, formatAdminPdfMoney(totals.hallTotal), y);
       y += 10;
 
-      doc.setFillColor(244, 248, 252);
-      doc.setDrawColor(207, 220, 233);
-      doc.roundedRect(10, y, 190, 32, 2.5, 2.5, "FD");
-      drawRow("SUBTOTAL", money(totals.subtotal), y + 8, true, false);
-      drawRow("MANAGEMENT DISCOUNT", money(totals.managementDiscountAmount), y + 16, true, false);
-      drawRow("NET TOTAL", money(totals.total), y + 24, true, false);
-      y += 40;
+      y += drawAmountRow("Subtotal", formatAdminPdfMoney(totals.subtotal), y, {
+        bold: true,
+        highlight: true,
+        fill: [247, 249, 252],
+        stroke: [207, 220, 233],
+      }) + 3;
+      y += drawAmountRow("Management Discount", formatAdminPdfMoney(totals.managementDiscountAmount), y, {
+        bold: true,
+        highlight: true,
+        fill: [255, 248, 236],
+        stroke: [234, 205, 144],
+      }) + 3;
+      y += drawAmountRow("Net Total", formatAdminPdfMoney(totals.total), y, {
+        bold: true,
+        highlight: true,
+        fill: [232, 244, 238],
+        stroke: [176, 211, 189],
+      }) + 8;
 
-      doc.setFillColor(229, 245, 238);
-      doc.setDrawColor(171, 219, 198);
-      doc.roundedRect(10, y, 190, 16, 2.5, 2.5, "FD");
-      drawRow("ORIGINAL INQUIRY DOWNPAYMENT", money(totals.originalDownpayment), y + 10, true, false);
+      y += drawAmountRow("Original Inquiry Downpayment", formatAdminPdfMoney(totals.originalDownpayment), y, {
+        bold: true,
+        highlight: true,
+        fill: [232, 245, 238],
+        stroke: [171, 219, 198],
+      }) + 4;
 
       if (collectionType === "approved") {
-        y += 22;
-        doc.setFillColor(255, 248, 232);
-        doc.setDrawColor(232, 197, 126);
-        doc.roundedRect(10, y, 190, 16, 2.5, 2.5, "FD");
-        drawRow("REMAINING BALANCE AFTER DOWNPAYMENT", money(totals.remainingBalance), y + 10, true, false);
-        y += 22;
-        doc.setFillColor(totals.fullyPaid ? 230 : 245, totals.fullyPaid ? 244 : 238, totals.fullyPaid ? 234 : 232);
-        doc.setDrawColor(totals.fullyPaid ? 133 : 210, totals.fullyPaid ? 186 : 180, totals.fullyPaid ? 145 : 190);
-        doc.roundedRect(10, y, 190, 16, 2.5, 2.5, "FD");
-        drawRow("PAYMENT STATUS", totals.fullyPaid ? "FULLY PAID" : "BALANCE PENDING", y + 10, true, false);
+        y += drawAmountRow("Remaining Balance After Downpayment", formatAdminPdfMoney(totals.remainingBalance), y, {
+          bold: true,
+          highlight: true,
+          fill: [255, 248, 232],
+          stroke: [232, 197, 126],
+        }) + 4;
+        y += drawAmountRow("Payment Status", totals.fullyPaid ? "FULLY PAID" : "BALANCE PENDING", y, {
+          bold: true,
+          highlight: true,
+          fill: totals.fullyPaid ? [231, 244, 235] : [247, 239, 227],
+          stroke: totals.fullyPaid ? [133, 186, 145] : [214, 180, 136],
+        }) + 4;
       }
 
-      y += collectionType === "approved" ? 30 : 24;
       doc.setFont("helvetica", "italic");
-      doc.setFontSize(9);
-      doc.setTextColor(70, 86, 102);
-      doc.text("Administrative copy. Management discount adjusts net total only. Original inquiry downpayment remains unchanged.", 12, y);
+      doc.setFontSize(8.6);
+      doc.setTextColor(84, 102, 121);
+      doc.text(
+        doc.splitTextToSize(
+          "Administrative copy. Management discount adjusts the net total only, while the original inquiry downpayment remains unchanged for audit reference.",
+          180
+        ),
+        12,
+        Math.min(y + 6, 278)
+      );
+      drawAdminPdfFooter(doc);
 
-      doc.save(`Dekacks_Admin_${collectionType}_${booking.name.replace(/[^a-z0-9]+/gi, "_")}.pdf`);
+      doc.save(`Dekacks_Admin_${collectionType}_${sanitizeAdminPdfFilenamePart(booking.name)}.pdf`);
     }
 
     async function applyManagementDiscount(collectionType, index) {
@@ -5119,9 +5891,17 @@
       const pending = getPendingBookings().map((booking) => ({ collectionType: "pending", booking }));
       const approved = getBookings().map((booking) => ({ collectionType: "approved", booking }));
       return [...pending, ...approved].sort((a, b) => {
-        const aDate = new Date(a.booking.createdAt || 0).getTime();
-        const bDate = new Date(b.booking.createdAt || 0).getTime();
-        return bDate - aDate;
+        const aCheckIn = getNormalizedCheckInDate(a.booking) || "9999-12-31";
+        const bCheckIn = getNormalizedCheckInDate(b.booking) || "9999-12-31";
+        if (aCheckIn !== bCheckIn) return aCheckIn.localeCompare(bCheckIn);
+
+        const aCheckOut = getNormalizedCheckOutDate(a.booking) || aCheckIn;
+        const bCheckOut = getNormalizedCheckOutDate(b.booking) || bCheckIn;
+        if (aCheckOut !== bCheckOut) return aCheckOut.localeCompare(bCheckOut);
+
+        const aCreated = Date.parse(a.booking.createdAt || a.booking.approvedAt || "") || Number(a.booking.id) || 0;
+        const bCreated = Date.parse(b.booking.createdAt || b.booking.approvedAt || "") || Number(b.booking.id) || 0;
+        return aCreated - bCreated;
       });
     }
 
@@ -5316,7 +6096,7 @@
       if (adminPanelOpen) viewBookings();
     }
 
-    function exportAdminPdf() {
+    async function exportAdminPdf() {
       const { jsPDF } = window.jspdf || window.jspdf || {};
       if (!jsPDF) {
         showToast("PDF library not loaded.", "error");
@@ -5324,45 +6104,121 @@
       }
       const combined = getAdminCombinedBookings();
       const doc = new jsPDF();
-      doc.setFontSize(14);
-      doc.text("Dekack's Admin Bookings", 14, 18);
-      doc.setFontSize(11);
-      doc.text(`Generated: ${new Date().toLocaleString()}`, 14, 26);
+      const dynamicLogo = await getLogoDataUrl();
+      const pdfLogo = (typeof LOGO_EMBEDDED === "string" && LOGO_EMBEDDED.startsWith("data:image"))
+        ? LOGO_EMBEDDED
+        : dynamicLogo;
+      const pendingCount = combined.filter((entry) => entry.collectionType === "pending").length;
+      const approvedCount = combined.filter((entry) => entry.collectionType === "approved").length;
+      let pageNumber = 1;
+      let y = drawAdminPdfHeader(
+        doc,
+        pdfLogo,
+        "ADMIN BOOKING REPORT",
+        adminSelectedDate ? `Filtered for ${formatDateLong(adminSelectedDate)}` : "All current pending and approved bookings",
+        new Date().toLocaleString("en-PH")
+      );
 
-      let y = 36;
+      const drawSummaryCard = (x, title, value, fill, stroke) => {
+        doc.setFillColor(fill[0], fill[1], fill[2]);
+        doc.setDrawColor(stroke[0], stroke[1], stroke[2]);
+        doc.roundedRect(x, y, 58, 20, 3, 3, "FD");
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(8.5);
+        doc.setTextColor(80, 95, 112);
+        doc.text(title.toUpperCase(), x + 4, y + 7);
+        doc.setFontSize(14);
+        doc.setTextColor(20, 35, 52);
+        doc.text(String(value), x + 4, y + 15);
+      };
+
+      drawSummaryCard(10, "Total Records", combined.length, [247, 249, 252], [212, 222, 233]);
+      drawSummaryCard(74, "Pending", pendingCount, [255, 246, 230], [233, 203, 146]);
+      drawSummaryCard(138, "Approved", approvedCount, [234, 246, 239], [174, 209, 187]);
+      y += 28;
+
+      const startNewPage = () => {
+        drawAdminPdfFooter(doc, `Page ${pageNumber}`);
+        doc.addPage();
+        pageNumber += 1;
+        y = drawAdminPdfHeader(
+          doc,
+          pdfLogo,
+          "ADMIN BOOKING REPORT",
+          adminSelectedDate ? `Filtered for ${formatDateLong(adminSelectedDate)}` : "All current pending and approved bookings",
+          `Page ${pageNumber}`
+        );
+      };
+
+      const ensureSpace = (neededHeight) => {
+        if (y + neededHeight <= 276) return;
+        startNewPage();
+      };
+
       if (combined.length === 0) {
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(11);
         doc.text("No bookings available.", 14, y);
+        drawAdminPdfFooter(doc, "Page 1");
         doc.save("Dekacks_Admin_Bookings.pdf");
         return;
       }
 
-      combined.forEach(({ collectionType, booking }, idx) => {
+      combined.forEach(({ collectionType, booking }) => {
         const status = collectionType === "pending" ? "PENDING" : "BOOKED";
-        const lines = [
-          `Name: ${booking.name || "Guest"}`,
-          `Status: ${status}`,
-          `Reference: ${booking.reservationReference || "N/A"}`,
-          `Contact: ${booking.contactNumber || "N/A"}`,
-          `Dates: ${getNormalizedCheckInDate(booking)} to ${getNormalizedCheckOutDate(booking)}`,
-          `Package: ${getBookingPackageSummaryNoPrice(booking)}`,
-          `Pool: ${stripPriceText(booking.poolBreakdown || "None")}`,
-          `Catering: ${stripPriceText(booking.cateringPackage || "None")} ${booking.cateringPersons ? `(${booking.cateringPersons} pax)` : ""}`,
+        const totals = computeBookingTotals(booking);
+        const rows = [
+          ["Reference", normalizeAdminPdfText(booking.reservationReference)],
+          ["Guest", normalizeAdminPdfText(booking.name, "Guest")],
+          ["Contact", normalizeAdminPdfText(booking.contactNumber)],
+          ["Check-in", formatAdminPdfDate(getNormalizedCheckInDate(booking), booking.checkInTime || "08:00")],
+          ["Check-out", formatAdminPdfDate(getNormalizedCheckOutDate(booking), booking.checkOutTime || "17:00")],
+          ["Stay", getBookingStayLabel(booking)],
+          ["Guests", `${booking.guests || 0}`],
+          ["Package", getBookingPackageSummaryNoPrice(booking)],
+          ["Rooms", getBookingRoomNamesNoPrice(booking)],
+          ["Pool", stripPriceText(booking.poolBreakdown || "None")],
+          ["Catering", `${stripPriceText(booking.cateringPackage || "None")}${booking.cateringPersons ? ` (${booking.cateringPersons} pax)` : ""}`],
+          ["Net Total", formatAdminPdfMoney(totals.total)],
         ];
-        lines.forEach((line) => {
-          doc.text(line, 14, y);
-          y += 6;
-          if (y > 280) {
-            doc.addPage();
-            y = 20;
-          }
+        const valueLines = rows.map(([, value]) => doc.splitTextToSize(normalizeAdminPdfText(value), 132));
+        const contentHeight = valueLines.reduce((sum, lines) => sum + Math.max(1, lines.length) * 5.1, 0);
+        const cardHeight = Math.max(40, 20 + contentHeight);
+        ensureSpace(cardHeight + 8);
+
+        doc.setFillColor(252, 253, 255);
+        doc.setDrawColor(211, 221, 232);
+        doc.roundedRect(10, y, 190, cardHeight, 3, 3, "FD");
+
+        doc.setFillColor(collectionType === "pending" ? 255 : 232, collectionType === "pending" ? 246 : 244, collectionType === "pending" ? 229 : 238);
+        doc.setDrawColor(collectionType === "pending" ? 233 : 174, collectionType === "pending" ? 203 : 209, collectionType === "pending" ? 146 : 187);
+        doc.roundedRect(154, y + 6, 42, 10, 2.5, 2.5, "FD");
+
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(10.5);
+        doc.setTextColor(17, 45, 78);
+        doc.text(normalizeAdminPdfText(booking.name, "Guest"), 14, y + 11);
+        doc.setFontSize(8.6);
+        doc.setTextColor(90, 104, 121);
+        doc.text(status, 175, y + 12, null, null, "center");
+
+        doc.setDrawColor(226, 233, 241);
+        doc.line(14, y + 18, 196, y + 18);
+
+        let rowY = y + 26;
+        rows.forEach(([label], rowIndex) => {
+          doc.setFont("helvetica", "bold");
+          doc.setFontSize(8.8);
+          doc.setTextColor(51, 68, 87);
+          doc.text(`${label}:`, 14, rowY);
+          doc.setFont("helvetica", "normal");
+          doc.text(valueLines[rowIndex], 45, rowY);
+          rowY += Math.max(1, valueLines[rowIndex].length) * 5.1;
         });
-        y += 6;
-        if (y > 280 && idx < combined.length - 1) {
-          doc.addPage();
-          y = 20;
-        }
+        y += cardHeight + 8;
       });
 
+      drawAdminPdfFooter(doc, `Page ${pageNumber}`);
       doc.save("Dekacks_Admin_Bookings.pdf");
       showToast("Admin PDF downloaded.", "success");
     }
@@ -5722,6 +6578,7 @@
     });
 
     document.addEventListener("DOMContentLoaded", () => {
+      initializeRevealAnimations();
       applyRandomWeatherTheme();
       setWelcomeGreeting();
       setRandomMotivationalVerse();
@@ -5752,6 +6609,8 @@
       refreshRoomSelectionAvailability();
       updateRoomGuide();
       updateLiveBookingSummary();
+      updateActionDock();
+      updateStepFlowState();
     document.getElementById("showRoomsCheckbox").addEventListener("change", updateAccommodationPanels);
       document.getElementById("showPoolCheckbox").addEventListener("change", updateAccommodationPanels);
       document.getElementById("showSpecialEventCheckbox").addEventListener("change", () => {
@@ -5874,5 +6733,6 @@
     const enterBtn = document.getElementById("enterBookingBtn");
     if (enterBtn) enterBtn.addEventListener("click", closeWelcomePopup);
   </script>
+  <script src="./script.js"></script>
 </body>
 </html>
