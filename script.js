@@ -403,6 +403,19 @@
     });
   }
 
+  function syncRoomShowcaseSelection() {
+    const selectedTypes = new Set(
+      Array.from(document.querySelectorAll(".room-select"))
+        .map((select) => select.selectedOptions[0]?.dataset?.type || "none")
+        .filter((type) => type && type !== "none")
+    );
+
+    document.querySelectorAll("[data-room-type-card]").forEach((card) => {
+      const type = card.getAttribute("data-room-type-card");
+      card.classList.toggle("selected", selectedTypes.has(type));
+    });
+  }
+
   onReady(() => {
     injectUtilityStyles();
     createWorldProgressBar();
@@ -415,6 +428,11 @@
     upgradeFeatureCards();
     pulseJourneyCards();
     rotateMarqueeMood();
+    syncRoomShowcaseSelection();
     updateHeroSpotlight();
+
+    document.querySelectorAll(".room-select").forEach((select) => {
+      select.addEventListener("change", syncRoomShowcaseSelection);
+    });
   });
 })();
