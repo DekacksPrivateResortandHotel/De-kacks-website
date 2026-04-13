@@ -434,6 +434,70 @@ body[data-weather="monsoon-lounge"] .weather-cloud {
   to { transform: translateX(-50%); }
 }
 
+.room-showcase-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 12px;
+  margin: 14px 0 18px;
+}
+
+.room-showcase-card {
+  padding: 16px;
+  border-radius: 22px;
+  border: 1px solid rgba(168, 205, 194, 0.4);
+  background:
+    radial-gradient(circle at top right, rgba(255,255,255,0.72), rgba(255,255,255,0) 32%),
+    linear-gradient(180deg, rgba(255,255,255,0.96), rgba(244,251,248,0.98));
+  box-shadow: var(--world-shadow-md);
+  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease, background 180ms ease;
+}
+
+.room-showcase-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--world-shadow-lg);
+  border-color: rgba(103, 164, 151, 0.58);
+}
+
+.room-showcase-card.selected {
+  border-color: rgba(15, 127, 143, 0.76);
+  background:
+    radial-gradient(circle at top right, rgba(255,255,255,0.84), rgba(255,255,255,0) 32%),
+    linear-gradient(135deg, rgba(232,248,250,1), rgba(243,252,249,1));
+  box-shadow: 0 22px 40px rgba(12, 89, 101, 0.16);
+}
+
+.room-showcase-kicker {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(15, 127, 143, 0.08);
+  color: var(--world-accent-deep);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.room-showcase-card h4 {
+  margin: 12px 0 8px;
+  font-size: 1.05rem;
+}
+
+.room-showcase-card p {
+  margin: 0;
+  color: var(--world-subtle);
+  font-size: 13px;
+  line-height: 1.65;
+  min-height: 84px;
+}
+
+.room-showcase-card strong {
+  display: block;
+  margin-top: 12px;
+  color: var(--world-accent-deep);
+}
+
 .pre-entry-card,
 .availability-step-card,
 .booking-summary-card,
@@ -722,6 +786,10 @@ select:focus {
     grid-template-columns: 1fr 1fr;
   }
 
+  .room-showcase-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
   .booking-summary-grid {
     grid-template-columns: 1fr 1fr;
   }
@@ -745,6 +813,10 @@ select:focus {
   }
 
   .launch-journey {
+    grid-template-columns: 1fr;
+  }
+
+  .room-showcase-grid {
     grid-template-columns: 1fr;
   }
 }
