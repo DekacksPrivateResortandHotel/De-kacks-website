@@ -1,41 +1,56 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Dekack's Private Resort and Hotel | Online Booking</title>
-<meta name="description" content="Official booking page of Dekack's Private Resort and Hotel. Check rooms, pool packages, catering options, and reservation quotations online." />
+<title>Dekack's Private Resort and Hotel | Guest Booking</title>
+<meta name="description" content="Official guest booking page of Dekack's Private Resort and Hotel. Check available dates, rooms, pool packages, catering options, and send your reservation request online." />
+<meta name="theme-color" content="#0f4c5c" />
+<link rel="canonical" href="https://dekacksprivateresortandhotel.github.io/De-kacks-website/" />
+<link rel="icon" type="image/png" href="./logo.png" />
 <meta property="og:site_name" content="Dekack's Private Resort and Hotel" />
 <meta property="og:type" content="website" />
-<meta property="og:title" content="Dekack's Private Resort and Hotel | Online Booking" />
-<meta property="og:description" content="Official booking page of Dekack's Private Resort and Hotel. Check rooms, pool packages, catering options, and reservation quotations online." />
-<meta property="og:url" content="https://dekacksprivateresortandhotel.github.io/De-kacks-website/logo.png" />
+<meta property="og:title" content="Dekack's Private Resort and Hotel | Guest Booking" />
+<meta property="og:description" content="Official guest booking page of Dekack's Private Resort and Hotel. Check available dates, rooms, pool packages, catering options, and send your reservation request online." />
+<meta property="og:url" content="https://dekacksprivateresortandhotel.github.io/De-kacks-website/" />
 <meta property="og:image" content="https://dekacksprivateresortandhotel.github.io/De-kacks-website/logo.png" />
 <meta property="og:image:alt" content="Dekack's Private Resort and Hotel logo" />
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="Dekack's Private Resort and Hotel | Online Booking" />
-<meta name="twitter:description" content="Official booking page of Dekack's Private Resort and Hotel. Check rooms, pool packages, catering options, and reservation quotations online." />
+<meta name="twitter:title" content="Dekack's Private Resort and Hotel | Guest Booking" />
+<meta name="twitter:description" content="Official guest booking page of Dekack's Private Resort and Hotel. Check available dates, rooms, pool packages, catering options, and send your reservation request online." />
 <meta name="twitter:image" content="https://dekacksprivateresortandhotel.github.io/De-kacks-website/logo.png" />
 <link rel="stylesheet" href="./styles.css" />
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Hotel",
+  "name": "Dekack's Private Resort and Hotel",
+  "url": "https://dekacksprivateresortandhotel.github.io/De-kacks-website/",
+  "image": "https://dekacksprivateresortandhotel.github.io/De-kacks-website/logo.png",
+  "description": "Official guest booking page of Dekack's Private Resort and Hotel with room, pool, catering, and direct reservation request options.",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Rizal",
+    "addressRegion": "Occidental Mindoro",
+    "streetAddress": "Adela"
+  }
+}
+</script>
 <style>
   @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Source+Sans+3:wght@400;500;600&display=swap");
   :root {
-    --bg-1: #fdf4e4;
-    --bg-2: #d8f2eb;
-    --card: #ffffff;
-    --line: #c8e3da;
-    --primary: #0f4c5c;
-    --primary-2: #0c3847;
-    --accent: #ff8a65;
-    --accent-2: #f07045;
-    --sea: #82d0c1;
-    --leaf: #3a9c6d;
-    --sand: #ffe7c3;
-    --text: #12303a;
-    --muted: #55706a;
-    --warn-bg: #fff1dc;
-    --warn-line: #ffb86c;
-    --shadow: 0 22px 48px rgba(12, 70, 82, 0.18);
+    --bg-1: #f0f9ff;
+    --bg-2: #e0f2fe;
+    --sea: #0ea5e9;
+    --leaf: #22c55e;
+    --sand: #fef3c7;
+    --coconut: #8b5cf6;
+    --tropical: #f97316;
+    --text: #0f172a;
+    --muted: #64748b;
+    --warn-bg: #fef3c7;
+    --warn-line: #f59e0b;
+    --shadow: 0 22px 48px rgba(14, 165, 233, 0.15);
   }
 
   * {
@@ -48,10 +63,7 @@
 
   body {
     font-family: "Source Sans 3", "Segoe UI", sans-serif;
-    background:
-      radial-gradient(circle at 14% 12%, rgba(255, 234, 196, 0.85), rgba(255, 234, 196, 0) 26%),
-      radial-gradient(circle at 86% 10%, rgba(130, 208, 193, 0.35), rgba(130, 208, 193, 0) 24%),
-      linear-gradient(135deg, var(--bg-1), var(--bg-2));
+    background: url('background.jpg') center center/cover no-repeat fixed, linear-gradient(135deg, #fef3c7, #f0f9ff);
     margin: 0;
     padding: 24px;
     color: var(--text);
@@ -59,27 +71,123 @@
     min-height: 100vh;
   }
 
-  body[data-weather="sunny"] {
-    background:
-      radial-gradient(circle at 82% 14%, rgba(255, 205, 96, 0.72), rgba(255, 205, 96, 0) 18%),
-      radial-gradient(circle at top left, rgba(255, 248, 214, 0.95), rgba(255, 248, 214, 0) 32%),
-      linear-gradient(145deg, #fff3d6, #dff6f0);
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.3);
+    z-index: -1;
   }
 
-  body[data-weather="cloudy"] {
-    background:
-      radial-gradient(circle at 18% 16%, rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0) 20%),
-      radial-gradient(circle at 78% 20%, rgba(232, 239, 243, 0.82), rgba(232, 239, 243, 0) 22%),
-      linear-gradient(145deg, #edf4f7, #dfece8);
+  /* Coconut tree decorative elements */
+  .coconut-tree {
+    position: fixed;
+    top: 5%;
+    right: 3%;
+    width: 120px;
+    height: 200px;
+    z-index: -1;
+    opacity: 0.4;
+    pointer-events: none;
   }
 
-  body[data-weather="rainy"] {
-    background:
-      linear-gradient(180deg, rgba(26, 74, 93, 0.18), rgba(26, 74, 93, 0) 24%),
-      linear-gradient(145deg, #dceaf1, #d6e4db);
+  .coconut-tree::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 8px;
+    height: 120px;
+    background: linear-gradient(to bottom, #8b4513, #654321);
+    border-radius: 4px;
   }
 
-  body[data-weather="sunset"] {
+  .coconut-tree::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 80px;
+    background: radial-gradient(circle, var(--leaf), transparent);
+    border-radius: 50%;
+    box-shadow: 
+      -20px 10px 0 -10px var(--leaf),
+      20px 10px 0 -10px var(--leaf),
+      0 -20px 0 -5px var(--leaf),
+      -15px -15px 0 -8px var(--leaf),
+      15px -15px 0 -8px var(--leaf);
+  }
+
+  .coconut {
+    position: fixed;
+    bottom: 10%;
+    left: 5%;
+    width: 40px;
+    height: 50px;
+    background: radial-gradient(ellipse at center, #8b7355, #6b5d54);
+    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    z-index: -1;
+    opacity: 0.3;
+    transform: rotate(-15deg);
+  }
+
+  .coconut::before {
+    content: '';
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: 8px;
+    height: 8px;
+    background: #5a4a3a;
+    border-radius: 50%;
+  }
+
+  .coconut::after {
+    content: '';
+    position: absolute;
+    bottom: 15px;
+    right: 8px;
+    width: 6px;
+    height: 6px;
+    background: #5a4a3a;
+    border-radius: 50%;
+  }
+
+  body[data-weather="lagoon-morning"] {
+    background:
+      radial-gradient(circle at 85% 12%, rgba(249, 115, 22, 0.4), rgba(249, 115, 22, 0) 20%),
+      radial-gradient(circle at 15% 88%, rgba(34, 197, 94, 0.3), rgba(34, 197, 94, 0) 25%),
+      radial-gradient(circle at top left, rgba(254, 243, 199, 0.8), rgba(254, 243, 199, 0) 35%),
+      linear-gradient(145deg, #fef3c7, #dcfce7);
+  }
+
+  body[data-weather="palm-breeze"] {
+    background:
+      radial-gradient(circle at 20% 15%, rgba(14, 165, 233, 0.3), rgba(14, 165, 233, 0) 25%),
+      radial-gradient(circle at 80% 85%, rgba(254, 243, 199, 0.4), rgba(254, 243, 199, 0) 30%),
+      linear-gradient(145deg, #e0f2fe, #fef3c7);
+  }
+
+  body[data-weather="monsoon-lounge"] {
+    background:
+      radial-gradient(circle at 50% 50%, rgba(139, 92, 246, 0.2), rgba(139, 92, 246, 0) 40%),
+      linear-gradient(145deg, #f0f9ff, #e0f2fe);
+  }
+
+  body[data-weather="tropical-sunset"] {
+    background:
+      radial-gradient(circle at 90% 10%, rgba(249, 115, 22, 0.5), rgba(249, 115, 22, 0) 30%),
+      radial-gradient(circle at 10% 90%, rgba(239, 68, 68, 0.3), rgba(239, 68, 68, 0) 25%),
+      linear-gradient(145deg, #fef3c7, #fee2e2);
+  }
+
+  body[data-weather="golden-dusk"] {
     background:
       radial-gradient(circle at 84% 18%, rgba(255, 155, 93, 0.55), rgba(255, 155, 93, 0) 18%),
       linear-gradient(145deg, #ffe5d0, #ffeecf 35%, #def2ec);
@@ -186,13 +294,13 @@
     animation: floatGlow 8s ease-in-out infinite;
   }
 
-  body[data-weather="sunny"] .weather-sun,
-  body[data-weather="sunny"] .weather-cloud.cloud-a,
-  body[data-weather="sunset"] .weather-glow,
-  body[data-weather="sunset"] .weather-cloud.cloud-b,
-  body[data-weather="cloudy"] .weather-cloud,
-  body[data-weather="rainy"] .weather-rain,
-  body[data-weather="rainy"] .weather-cloud {
+  body[data-weather="lagoon-morning"] .weather-sun,
+  body[data-weather="lagoon-morning"] .weather-cloud.cloud-a,
+  body[data-weather="golden-dusk"] .weather-glow,
+  body[data-weather="golden-dusk"] .weather-cloud.cloud-b,
+  body[data-weather="palm-breeze"] .weather-cloud,
+  body[data-weather="monsoon-lounge"] .weather-rain,
+  body[data-weather="monsoon-lounge"] .weather-cloud {
     opacity: 1;
   }
 
@@ -732,6 +840,105 @@
     border-color: transparent;
   }
 
+  .mobile-total-bar {
+    position: fixed;
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
+    z-index: 46;
+    display: none;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 12px;
+    align-items: center;
+    padding: 12px 14px;
+    border-radius: 20px;
+    border: 1px solid rgba(201, 221, 214, 0.95);
+    background: rgba(255, 255, 255, 0.94);
+    backdrop-filter: blur(14px);
+    box-shadow: 0 22px 44px rgba(7, 35, 44, 0.18);
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(18px);
+    transition: opacity 180ms ease, transform 180ms ease;
+  }
+
+  .mobile-total-bar.visible {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+  }
+
+  .mobile-total-meta {
+    min-width: 0;
+  }
+
+  .mobile-total-kicker {
+    display: block;
+    margin-bottom: 4px;
+    color: #4c6661;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .mobile-total-amount {
+    display: block;
+    color: var(--primary);
+    font-size: 16px;
+    font-weight: 900;
+  }
+
+  .mobile-total-btn {
+    width: auto;
+    min-width: 132px;
+    margin-top: 0;
+    padding: 12px 14px;
+    font-size: 14px;
+    white-space: nowrap;
+  }
+
+  .booking-success-card {
+    margin-top: 16px;
+    padding: 16px;
+    border-radius: 18px;
+    border: 1px solid #b7ddc6;
+    background: linear-gradient(135deg, rgba(237, 251, 243, 0.98), rgba(250, 255, 252, 0.98));
+    box-shadow: 0 16px 28px rgba(15, 74, 82, 0.08);
+  }
+
+  .booking-success-card.hidden {
+    display: none;
+  }
+
+  .booking-success-card h4 {
+    margin: 0 0 8px;
+    color: #196347;
+  }
+
+  .booking-success-card p {
+    margin: 0;
+    color: #35514f;
+    line-height: 1.6;
+  }
+
+  .booking-success-steps {
+    margin: 12px 0 0;
+    padding-left: 18px;
+    color: #35514f;
+  }
+
+  .booking-success-steps li {
+    margin-bottom: 6px;
+  }
+
+  .booking-success-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 14px;
+  }
+
   .catering-choices {
     margin-top: 10px;
     padding: 12px;
@@ -977,6 +1184,9 @@
     border: 1px solid #d8e7df;
     background: linear-gradient(135deg, rgba(255, 247, 228, 0.96), rgba(234, 248, 244, 0.96));
     box-shadow: 0 16px 30px rgba(15, 74, 82, 0.08);
+    position: sticky;
+    top: 18px;
+    z-index: 8;
   }
 
   .booking-summary-card h3 {
@@ -1057,6 +1267,74 @@
     transform: translateY(-1px);
     box-shadow: 0 10px 18px rgba(15, 74, 82, 0.1);
     border-color: #9fcabc;
+  }
+
+  .service-choice-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+    margin: 14px 0 18px;
+  }
+
+  .service-choice-card {
+    position: relative;
+    display: block;
+    cursor: pointer;
+  }
+
+  .service-choice-card input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .service-choice-card span {
+    display: block;
+    min-height: 100%;
+    padding: 14px;
+    border-radius: 18px;
+    border: 1px solid #d7e4f2;
+    background: linear-gradient(180deg, #ffffff, #f8fbff);
+    color: #123f47;
+    font-weight: 700;
+    line-height: 1.45;
+    box-shadow: 0 10px 22px rgba(8, 43, 51, 0.06);
+    transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease, background 180ms ease;
+  }
+
+  .service-choice-tag {
+    display: flex;
+    width: max-content;
+    margin-bottom: 10px;
+    padding: 5px 9px;
+    border-radius: 999px;
+    background: rgba(240, 170, 67, 0.16);
+    color: #8c5b10;
+    font-size: 10px;
+    font-style: normal;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .service-choice-card small {
+    display: block;
+    margin-top: 6px;
+    color: #53706c;
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  .service-choice-card:hover span {
+    transform: translateY(-2px);
+    box-shadow: 0 16px 28px rgba(8, 43, 51, 0.1);
+    border-color: #afcdc2;
+  }
+
+  .service-choice-card input:checked + span {
+    border-color: #0f7f8f;
+    background: linear-gradient(135deg, #e9f8fa, #f4fcf9);
+    box-shadow: 0 18px 30px rgba(12, 89, 101, 0.14);
   }
 
   .booking-checklist {
@@ -1518,6 +1796,10 @@
       grid-template-columns: 1fr;
     }
 
+    .service-choice-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+
     .action-dock {
       right: 12px;
       left: 12px;
@@ -1540,6 +1822,10 @@
 
   @media (max-width: 640px) {
     .catering-options-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .service-choice-grid {
       grid-template-columns: 1fr;
     }
 
@@ -1716,6 +2002,500 @@
     color: #274254;
   }
 
+  .admin-transaction-panel {
+    margin-top: 18px;
+    border: 1px solid #d5e3dd;
+    border-radius: 18px;
+    background: linear-gradient(180deg, #ffffff, #f7fbfa);
+    padding: 16px;
+  }
+
+  .admin-transaction-panel h4 {
+    margin: 0;
+    color: #0f3e66;
+  }
+
+  .admin-transaction-panel > p {
+    margin: 6px 0 0;
+    color: #46616f;
+    font-size: 13px;
+  }
+
+  .admin-transaction-summary {
+    margin-top: 14px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 10px;
+  }
+
+  .admin-transaction-stat {
+    border: 1px solid #d7e5de;
+    border-radius: 14px;
+    background: #fff;
+    padding: 12px;
+  }
+
+  .admin-transaction-stat strong {
+    display: block;
+    color: #58717d;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .admin-transaction-stat span {
+    display: block;
+    margin-top: 6px;
+    color: #163b4f;
+    font-size: 20px;
+    font-weight: 800;
+  }
+
+  .admin-transaction-list {
+    margin-top: 14px;
+    display: grid;
+    gap: 10px;
+  }
+
+  .admin-transaction-item {
+    border: 1px solid #dbe8e2;
+    border-left: 5px solid #2e7d32;
+    border-radius: 14px;
+    padding: 12px;
+    background: #fff;
+  }
+
+  .admin-transaction-item p {
+    margin: 4px 0;
+    font-size: 13px;
+    color: #274254;
+  }
+
+  .admin-transaction-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 8px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: #e8f5ea;
+    color: #1d6b3f;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+  }
+
+  .feedback-overlay {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(8, 31, 38, 0.7);
+    backdrop-filter: blur(10px);
+    z-index: 40;
+  }
+
+  .feedback-modal {
+    width: min(760px, 96vw);
+    max-height: 92vh;
+    overflow: auto;
+    padding: 28px 22px 24px;
+    border-radius: 28px;
+    border: 1px solid rgba(255, 255, 255, 0.82);
+    background:
+      radial-gradient(circle at top center, rgba(255, 255, 255, 0.78), rgba(255, 255, 255, 0) 42%),
+      linear-gradient(160deg, #fffaf0, #f3fbf8);
+    box-shadow: 0 28px 70px rgba(5, 38, 46, 0.26);
+    position: relative;
+  }
+
+  .feedback-close-btn {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    border: 1px solid #d8e5e0;
+    background: rgba(255, 255, 255, 0.94);
+    color: #214652;
+    border-radius: 999px;
+    padding: 8px 12px;
+    font-weight: 800;
+    cursor: pointer;
+  }
+
+  .feedback-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 12px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.9);
+    color: #0f3e66;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    box-shadow: 0 10px 24px rgba(15, 61, 67, 0.08);
+  }
+
+  .feedback-modal h2,
+  .feedback-modal h3 {
+    margin: 12px 0 8px;
+    color: #0f3558;
+  }
+
+  .feedback-modal p {
+    color: #4d6661;
+    line-height: 1.65;
+  }
+
+  .feedback-qr-grid,
+  .feedback-detail-grid,
+  .feedback-result-grid {
+    display: grid;
+    gap: 12px;
+  }
+
+  .feedback-qr-grid {
+    grid-template-columns: minmax(220px, 280px) minmax(0, 1fr);
+    align-items: stretch;
+    margin-top: 16px;
+  }
+
+  .feedback-detail-grid,
+  .feedback-result-grid {
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    margin-top: 14px;
+  }
+
+  .feedback-qr-card,
+  .feedback-detail-card,
+  .feedback-state-card,
+  .feedback-result-card {
+    padding: 14px 16px;
+    border-radius: 18px;
+    border: 1px solid #d7e5de;
+    background: rgba(255, 255, 255, 0.88);
+    box-shadow: 0 12px 22px rgba(15, 74, 82, 0.08);
+  }
+
+  .feedback-detail-card strong,
+  .feedback-state-card strong {
+    display: block;
+    margin-bottom: 6px;
+    color: #0f5160;
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .feedback-detail-card span {
+    color: #183b4f;
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1.4;
+  }
+
+  .feedback-qr-card img {
+    width: min(250px, 100%);
+    aspect-ratio: 1;
+    margin: 0 auto;
+    display: block;
+    object-fit: contain;
+    background: #fff;
+    border-radius: 20px;
+    border: 1px solid #d9e7e0;
+    padding: 12px;
+  }
+
+  .feedback-link-input {
+    width: 100%;
+    margin-top: 12px;
+    padding: 12px 14px;
+    border-radius: 14px;
+    border: 1px solid #cfe0d9;
+    background: #fff;
+    color: #204556;
+    font-size: 13px;
+  }
+
+  .feedback-action-row,
+  .admin-inline-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 12px;
+  }
+
+  .feedback-footnote,
+  .admin-discount-note {
+    margin-top: 10px;
+    color: #587071;
+    font-size: 12px;
+    line-height: 1.6;
+  }
+
+  .feedback-form {
+    display: grid;
+    gap: 12px;
+    margin-top: 16px;
+  }
+
+  .feedback-form label {
+    color: #164b56;
+    font-size: 13px;
+    font-weight: 800;
+  }
+
+  .feedback-form textarea {
+    width: 100%;
+    min-height: 108px;
+    padding: 12px 14px;
+    border-radius: 14px;
+    border: 1px solid #cfe0d9;
+    background: #fff;
+    color: #214652;
+    font: inherit;
+    resize: vertical;
+  }
+
+  .feedback-rating-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .feedback-rating-btn {
+    border: 1px solid #d2e1db;
+    background: #fff;
+    color: #1c4854;
+    border-radius: 999px;
+    padding: 10px 14px;
+    font-size: 12px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: transform 140ms ease, box-shadow 140ms ease, border-color 140ms ease, background 140ms ease;
+  }
+
+  .feedback-rating-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 18px rgba(15, 74, 82, 0.1);
+    border-color: #9fcabc;
+  }
+
+  .feedback-rating-btn.active {
+    border-color: transparent;
+    background: linear-gradient(135deg, #1a8c9e, #0f3e66);
+    color: #fff;
+    box-shadow: 0 14px 26px rgba(15, 62, 102, 0.2);
+  }
+
+  .feedback-state {
+    display: none;
+  }
+
+  .feedback-state.active {
+    display: block;
+  }
+
+  .feedback-wheel-stage {
+    text-align: center;
+  }
+
+  .roulette-wheel-shell {
+    position: relative;
+    width: min(300px, 78vw);
+    margin: 24px auto 10px;
+  }
+
+  .roulette-pointer {
+    position: absolute;
+    top: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 16px solid transparent;
+    border-right: 16px solid transparent;
+    border-bottom: 28px solid #e39a28;
+    filter: drop-shadow(0 8px 12px rgba(113, 67, 9, 0.22));
+    z-index: 3;
+  }
+
+  .roulette-wheel {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    border: 12px solid rgba(255, 255, 255, 0.96);
+    background: conic-gradient(
+      from -90deg,
+      #f4b24c 0deg 72deg,
+      #2f9aac 72deg 144deg,
+      #68b36f 144deg 216deg,
+      #ef8a63 216deg 288deg,
+      #5d7fd8 288deg 360deg
+    );
+    box-shadow: 0 20px 38px rgba(15, 74, 82, 0.18);
+    overflow: hidden;
+    transition: transform 4.2s cubic-bezier(0.12, 0.9, 0.1, 1);
+  }
+
+  .roulette-wheel::after {
+    content: "";
+    position: absolute;
+    inset: 15%;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.88);
+    box-shadow: inset 0 0 0 1px rgba(216, 229, 224, 0.9);
+  }
+
+  .roulette-wheel-labels {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+  }
+
+  .roulette-wheel-labels span {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    color: #103c56;
+    font-size: 14px;
+    font-weight: 900;
+    transform-origin: center;
+  }
+
+  .roulette-wheel-center {
+    position: absolute;
+    inset: 34%;
+    z-index: 2;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    text-align: center;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 900;
+    line-height: 1.35;
+    background: linear-gradient(135deg, #1b8b9d, #0f3e66);
+    box-shadow: 0 12px 24px rgba(15, 62, 102, 0.18);
+  }
+
+  .feedback-chip-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    margin-top: 12px;
+  }
+
+  .feedback-chip {
+    padding: 7px 11px;
+    border-radius: 999px;
+    background: #eef7f4;
+    border: 1px solid #d3e4dc;
+    color: #1f5762;
+    font-size: 12px;
+    font-weight: 800;
+  }
+
+  .feedback-result-card {
+    margin-top: 16px;
+    text-align: left;
+  }
+
+  .feedback-result-card p:last-child,
+  .feedback-state-card p:last-child {
+    margin-bottom: 0;
+  }
+
+  .admin-discount-stack {
+    margin-top: 10px;
+    padding: 12px;
+    border-radius: 16px;
+    border: 1px solid #d7e5de;
+    background: #f8fcfa;
+  }
+
+  .admin-discount-summary {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px 12px;
+  }
+
+  .admin-discount-summary strong {
+    color: #0f3558;
+  }
+
+  .admin-discount-summary span {
+    color: #284756;
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .admin-discount-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    margin-top: 8px;
+  }
+
+  .admin-discount-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .admin-discount-badge.pending {
+    background: #fff2db;
+    color: #8e5b12;
+  }
+
+  .admin-discount-badge.success {
+    background: #e8f5ea;
+    color: #1f6d41;
+  }
+
+  .admin-discount-badge.muted {
+    background: #edf4f8;
+    color: #506976;
+  }
+
+  .admin-discount-badge.closed {
+    background: #f6eaea;
+    color: #8b3f3f;
+  }
+
+  .admin-feedback-preview {
+    margin-top: 12px;
+    padding: 10px 12px;
+    border-radius: 14px;
+    border: 1px solid #dbe8e2;
+    background: #fff;
+  }
+
+  .admin-feedback-preview p {
+    margin: 5px 0;
+    color: #274254;
+    font-size: 13px;
+    line-height: 1.55;
+  }
+
   @keyframes floatGlow {
     0%, 100% { transform: translateY(0) scale(1); }
     50% { transform: translateY(12px) scale(1.04); }
@@ -1752,7 +2532,7 @@
     }
 
     .container {
-      padding: 16px;
+      padding: 16px 16px 176px;
       border-radius: 20px;
     }
 
@@ -1765,22 +2545,395 @@
       font-size: 22px;
     }
 
-    .quote-grid {
+    .quote-head,
+    .booking-intelligence-head {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .quote-head > :last-child {
+      width: 100%;
+    }
+
+    .quote-grid,
+    .booking-summary-grid,
+    .launch-stat-grid,
+    .booking-assist-grid,
+    .booking-intelligence-grid,
+    .room-showcase-grid {
       grid-template-columns: 1fr;
     }
 
-    .booking-summary-grid {
+    .booking-summary-card {
+      position: static;
+      padding: 14px;
+    }
+
+    .quote-head {
+      padding: 14px;
+    }
+
+    .quote-body,
+    .booking-assist-card,
+    .quick-setup-card,
+    .special-event-box,
+    .catering-choices {
+      padding: 14px;
+    }
+
+    .quote-item,
+    .booking-summary-item,
+    .quote-row,
+    .payment-box,
+    .booking-checklist li,
+    .booking-success-card,
+    .guest-help-copy {
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+
+    .quote-row {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 6px;
+    }
+
+    .quote-row > :last-child {
+      text-align: left;
+    }
+
+    .quote-total h2 {
+      font-size: 20px;
+      line-height: 1.3;
+    }
+
+    .payment-box p {
+      margin: 0 0 8px;
+      line-height: 1.55;
+    }
+
+    .quote-actions,
+    .booking-success-actions {
+      flex-direction: column;
+    }
+
+    .quote-actions > *,
+    .booking-success-actions > * {
+      width: 100%;
+      margin-top: 0;
+    }
+
+    .booking-readiness-chips {
+      gap: 8px;
+    }
+
+    .booking-readiness-chip {
+      width: 100%;
+      justify-content: center;
+    }
+
+    .action-dock {
+      display: none;
+    }
+
+    .mobile-total-bar {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      padding: 12px;
+      border-radius: 18px;
+    }
+
+    .mobile-total-btn {
+      width: 100%;
+      min-width: 0;
+    }
+
+    .feedback-modal {
+      width: min(100%, 96vw);
+      padding: 20px 16px 18px;
+      border-radius: 22px;
+    }
+
+    .feedback-qr-grid,
+    .feedback-detail-grid,
+    .feedback-result-grid {
       grid-template-columns: 1fr;
     }
+
+    .feedback-action-row,
+    .admin-inline-actions {
+      flex-direction: column;
+    }
+
+    .feedback-action-row button,
+    .admin-inline-actions button,
+    .feedback-action-row .secondary-btn,
+    .admin-inline-actions .secondary-btn,
+    .feedback-action-row .primary-btn,
+    .admin-inline-actions .primary-btn {
+      width: 100%;
+    }
+
+    .roulette-wheel-shell {
+      width: min(260px, 82vw);
+    }
+
+    .admin-discount-summary {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+
+    .launch-utility-stack {
+      display: none !important;
+    }
+  }
+
+  @media (max-width: 420px) {
+    body {
+      padding: 12px;
+    }
+
+    .container {
+      padding: 14px 14px 168px;
+    }
+
+    .quote-head {
+      padding: 12px;
+    }
+
+    .quote-body {
+      padding: 12px;
+    }
+
+    .quote-total h2 {
+      font-size: 18px;
+    }
+
+    .mobile-total-bar {
+      left: 10px;
+      right: 10px;
+      bottom: 10px;
+    }
+
+    .mobile-total-kicker {
+      white-space: normal;
+    }
+
+    /* Mobile Admin Panel */
+    .admin-panel-shell {
+      padding: 8px;
+      margin: 8px;
+    }
+
+    .admin-booking-item {
+      padding: 12px;
+      margin-bottom: 12px;
+    }
+
+    .admin-detail-grid {
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+
+    .admin-booking-list {
+      gap: 12px;
+    }
+
+    /* Mobile Customer Feedback */
+    .feedback-modal {
+      margin: 8px;
+      padding: 16px;
+      max-width: calc(100% - 16px);
+    }
+
+    .feedback-form {
+      padding: 12px;
+    }
+
+    .feedback-rating-group {
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .feedback-rating-btn {
+      width: 100%;
+      padding: 12px;
+      text-align: center;
+    }
+
+    .roulette-wheel-shell {
+      transform: scale(0.8);
+      margin: -20px;
+    }
+
+    .feedback-detail-grid {
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+
+    /* Mobile QR Code */
+    .feedback-qr-grid {
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    .feedback-qr-card {
+      padding: 12px;
+    }
+
+    /* Mobile Buttons */
+    .admin-inline-actions {
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .admin-inline-actions button {
+      width: 100%;
+      padding: 12px;
+    }
+
+    .feedback-action-row {
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .feedback-action-row button {
+      width: 100%;
+      padding: 12px;
+    }
+  }
+
+  /* Additional mobile optimizations */
+  @media (max-width: 360px) {
+    .brand-head {
+      padding: 12px;
+    }
+
+    .brand-head h1 {
+      font-size: 20px;
+    }
+
+    .step-pill {
+      font-size: 10px;
+      padding: 6px 10px;
+    }
+
+    .feedback-modal {
+      margin: 4px;
+      padding: 12px;
+    }
+
+    .roulette-wheel-shell {
+      transform: scale(0.7);
+      margin: -30px;
+    }
+  }
+
+  /* Help Tooltips and Visual Indicators */
+  .help-tooltip {
+    position: relative;
+    display: inline-block;
+    cursor: help;
+  }
+
+  .help-tooltip .tooltiptext {
+    visibility: hidden;
+    width: 200px;
+    background-color: #164952;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 8px;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -100px;
+    opacity: 0;
+    transition: opacity 0.3s;
+    font-size: 12px;
+  }
+
+  .help-tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+  }
+
+  .status-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
+  .status-badge.active {
+    background: #e8f5e8;
+    color: #2e7d32;
+  }
+
+  .status-badge.pending {
+    background: #fff3e0;
+    color: #f57c00;
+  }
+
+  .status-badge.completed {
+    background: #e3f2fd;
+    color: #1976d2;
+  }
+
+  .discount-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    background: #f3e5f5;
+    border-radius: 12px;
+    font-size: 12px;
+    color: #7b1fa2;
+  }
+
+  .progress-bar {
+    width: 100%;
+    height: 8px;
+    background: #e0e0e0;
+    border-radius: 4px;
+    overflow: hidden;
+    margin: 8px 0;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #4ecdc4, #45b7d1);
+    transition: width 0.3s ease;
+  }
+
+  .loading-spinner {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #164952;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
   }
 </style>
 </head>
-<body>
+<body data-weather="tropical-sunset">
+  <div class="coconut-tree"></div>
+  <div class="coconut"></div>
   <div id="welcomeOverlay" class="welcome-overlay">
     <div class="welcome-modal">
       <span class="welcome-badge">Welcome Guest</span>
       <h2 id="welcomeGreeting">Welcome to Dekack's Private Resort and Hotel</h2>
-      <p>Before you continue to the quotation form, please enter your basic details first so we can guide your booking properly.</p>
+      <p>Before you continue, please enter your basic details first so we can guide your booking properly.</p>
       <button
         id="enterBookingBtn"
         type="button"
@@ -1811,16 +2964,16 @@
   </div>
   <div class="container">
     <div class="step-flow">
-      <div id="stepPillGuest" class="step-pill">Step 1 Guest Info</div>
-      <div id="stepPillCalendar" class="step-pill">Step 2 Pool Calendar</div>
-      <div id="stepPillForm" class="step-pill">Step 3 Booking Form</div>
-      <div id="stepPillQuote" class="step-pill">Step 4 Quotation</div>
+      <div id="stepPillGuest" class="step-pill">Step 1 Your Details</div>
+      <div id="stepPillCalendar" class="step-pill">Step 2 Check Dates</div>
+      <div id="stepPillForm" class="step-pill">Step 3 Booking Details</div>
+      <div id="stepPillQuote" class="step-pill">Step 4 Review Booking</div>
     </div>
     <div class="brand-head reveal-target">
       <img src="./logo.png" alt="Dekack logo" class="brand-logo" loading="lazy" />
       <div class="brand-text">
         <h1>Dekack's Private Resort &amp; Hotel</h1>
-        <h3>Reservation Quotation</h3>
+        <h3>Guest Booking Page</h3>
         <p class="brand-location">Adela, Rizal, Occidental Mindoro</p>
       </div>
     </div>
@@ -1828,100 +2981,50 @@
     <div id="bookingIntroSections">
     <section class="launch-hero reveal-target">
       <div class="launch-hero-copy">
-        <span class="launch-eyebrow">Motivational Bible Verse</span>
-        <h2 id="heroVerseText">I can do all things through Christ which strengtheneth me.</h2>
-        <p id="heroVerseReference">Philippians 4:13 (KJV)</p>
+        <span class="launch-eyebrow">Guest Booking Guide</span>
+        <h2 id="heroVerseText">Check dates, choose your stay, and send your booking request.</h2>
+        <p id="heroVerseReference">Fast guest booking for rooms, pool access, and special events.</p>
+        <div class="launch-hero-actions">
+          <button type="button" class="primary-btn launch-hero-btn" onclick="scrollToBookingSection('preEntryPanel')">Start Booking</button>
+          <button type="button" class="secondary-btn launch-hero-btn" onclick="scrollToBookingSection('availabilityStepPanel')">Check Dates</button>
+        </div>
       </div>
       <div class="launch-hero-side">
         <div class="launch-spotlight-card">
-          <span class="launch-spotlight-label">Live Booking Mood</span>
-          <h3 id="launchSpotlightTitle">Smooth, guided, and guest-friendly</h3>
-          <p id="launchSpotlightText">Choose a date, select a stay style, and let the page guide the guest through a more elegant resort-style reservation flow.</p>
+          <span class="launch-spotlight-label">How It Works</span>
+          <h3 id="launchSpotlightTitle">Simple, clear, and guest-friendly</h3>
+          <p id="launchSpotlightText">Start with your details, check your date, choose your setup, then review the total before sending your booking request.</p>
         </div>
         <div class="launch-stat-grid">
           <div class="launch-stat-card">
-            <strong>4-Step Flow</strong>
-            <span>Guest info to quotation</span>
+            <strong>Pool Day Tour</strong>
+            <span>Starts at PHP 4,800</span>
           </div>
           <div class="launch-stat-card">
-            <strong>Live Estimate</strong>
-            <span>Clear pricing before reserve</span>
+            <strong>Pool Overnight</strong>
+            <span>Starts at PHP 6,500</span>
           </div>
           <div class="launch-stat-card">
-            <strong>Availability First</strong>
-            <span>Calendar-led booking decisions</span>
+            <strong>Whole Day + Night</strong>
+            <span>Starts at PHP 10,000</span>
           </div>
           <div class="launch-stat-card">
-            <strong>Admin Ready</strong>
-            <span>Existing Firebase workflow preserved</span>
+            <strong>Rooms</strong>
+            <span>Add rooms based on your guest count</span>
           </div>
         </div>
       </div>
     </section>
-
-    <section class="launch-experience-band reveal-target">
-      <article class="launch-feature-card">
-        <span class="launch-feature-kicker">For Guests</span>
-        <h3>See what is available faster</h3>
-        <p>Check the schedule, choose your stay, and move through the booking steps without confusion.</p>
-      </article>
-      <article class="launch-feature-card">
-        <span class="launch-feature-kicker">Easy Booking</span>
-        <h3>Choose the setup that fits your stay</h3>
-        <p>Whether you want pool access, rooms, or a special event, the form guides you to the right option.</p>
-      </article>
-      <article class="launch-feature-card">
-        <span class="launch-feature-kicker">Before You Confirm</span>
-        <h3>Review your quotation first</h3>
-        <p>See your schedule, selected services, and estimated cost before sending your reservation request.</p>
-      </article>
-    </section>
-
-    <section class="launch-journey reveal-target">
-      <div class="launch-journey-card">
-        <span class="launch-journey-step">01</span>
-        <h3>Enter your details</h3>
-        <p>Start with your name and contact number so we can prepare your reservation correctly.</p>
-      </div>
-      <div class="launch-journey-card">
-        <span class="launch-journey-step">02</span>
-        <h3>Check available dates</h3>
-        <p>Use the calendar first so you can choose a date that matches your preferred schedule.</p>
-      </div>
-      <div class="launch-journey-card">
-        <span class="launch-journey-step">03</span>
-        <h3>Select your stay</h3>
-        <p>Pick the rooms, pool access, and extra services you want for your visit.</p>
-      </div>
-      <div class="launch-journey-card">
-        <span class="launch-journey-step">04</span>
-        <h3>Review and send</h3>
-        <p>Check your quotation, confirm the details, and submit your reservation request when ready.</p>
-      </div>
-    </section>
-
-    <div class="launch-marquee reveal-target" aria-hidden="true">
-      <div class="launch-marquee-track">
-        <span>Private Pool Luxury</span>
-        <span>Premium Booking Experience</span>
-        <span>Elegant Guest Journey</span>
-        <span>World-Class Reservation Flow</span>
-        <span>Private Pool Luxury</span>
-        <span>Premium Booking Experience</span>
-        <span>Elegant Guest Journey</span>
-        <span>World-Class Reservation Flow</span>
-      </div>
-    </div>
 
     </div>
 
     <div id="preEntryPanel" class="pre-entry-card reveal-target">
       <div class="pre-entry-head">
         <div>
-          <h3>Guest Login Panel</h3>
-          <p>Step 1 before proceeding to the quotation form</p>
+          <h3>Guest Details</h3>
+          <p>Step 1 before checking dates and filling out your booking request</p>
         </div>
-        <div style="font-size:11px;font-weight:700;">Quick Access</div>
+        <div style="font-size:11px;font-weight:700;">Step 1</div>
       </div>
       <div class="pre-entry-body">
         <div class="intro-grid">
@@ -1938,19 +3041,14 @@
             <div class="helper-note">Enter the last 9 digits only.</div>
           </div>
         </div>
-        <button type="button" class="primary-btn" onclick="proceedToQuotationForm()">Continue to Booking Form</button>
-        <div id="resortReminderCard" class="motivation-card">
-          <strong>Resort Reminder</strong>
-          <p id="motivationVerse"></p>
-          <p id="motivationVerseReference" class="motivation-reference"></p>
-        </div>
+        <button type="button" class="primary-btn" onclick="proceedToQuotationForm()">Check Available Dates</button>
       </div>
     </div>
 
     <div id="availabilityStepPanel" class="availability-step-card hidden reveal-target">
       <div class="availability-step-head">
-        <h3>View Available Dates</h3>
-        <p>Check pool availability by month before continuing to the quotation form. Rooms and other accommodation are checked separately.</p>
+        <h3>Check Available Dates</h3>
+        <p>Browse the calendar first to find a date that works for your stay. Pool availability is shown here, while room availability is checked in the next step.</p>
       </div>
       <div class="availability-step-body">
         <div class="calendar-toolbar">
@@ -1964,11 +3062,9 @@
           </div>
         </div>
         <div class="calendar-legend">
-          <span class="legend-pill legend-green">Green: Pool Available</span>
-          <span class="legend-pill legend-red">Red: Pool Not Available</span>
-          <span class="legend-pill legend-orange">Orange: Pool Pending Reservation</span>
-          <span class="legend-pill legend-mixed-rg">Half Red/Green: Pool Halfday Available</span>
-          <span class="legend-pill legend-mixed-og">Half Orange/Green: Pool Halfday Pending/Available</span>
+          <span class="legend-pill legend-green">Available</span>
+          <span class="legend-pill legend-red">Not Available</span>
+          <span class="legend-pill legend-orange">Pending</span>
         </div>
         <div class="availability-layout">
           <div class="availability-main">
@@ -1980,18 +3076,40 @@
               <p>Select a date in the calendar to view available time and accommodation details.</p>
             </div>
             <div id="availabilityBookingDetails" class="availability-booking-details" aria-live="polite" style="display:none;">
-              <h4>Management Booking Details</h4>
-              <p>Select a date to view booking details (management view only).</p>
+              <h4>Internal Booking Details</h4>
+              <p>This panel is only used for internal staff review.</p>
             </div>
           </div>
         </div>
-        <button type="button" class="primary-btn" onclick="continueToQuotationForm()">Continue to Booking Form</button>
+        <button type="button" class="primary-btn" onclick="continueToQuotationForm()">Continue to Booking Details</button>
       </div>
     </div>
 
     <div id="bookingFormPanel" class="booking-form-panel hidden reveal-target">
     <div class="booking-summary-card">
       <h3>Booking Summary</h3>
+      <div class="booking-intelligence-grid">
+        <div class="booking-intelligence-card">
+          <div class="booking-intelligence-head">
+            <div>
+              <span class="booking-intelligence-kicker">Booking Status</span>
+              <strong id="bookingReadinessLabel">Getting started</strong>
+            </div>
+            <span id="bookingReadinessScore" class="booking-readiness-score">24%</span>
+          </div>
+          <div class="booking-readiness-meter" aria-hidden="true">
+            <span id="bookingReadinessMeter"></span>
+          </div>
+          <p id="bookingReadinessNext" class="booking-intelligence-text">Complete your details and select a date to start building your booking request.</p>
+          <div class="booking-readiness-chips">
+            <span id="readinessChipGuest" class="booking-readiness-chip">Guest details</span>
+            <span id="readinessChipDate" class="booking-readiness-chip">Date selected</span>
+            <span id="readinessChipStay" class="booking-readiness-chip">Stay mode</span>
+            <span id="readinessChipRooms" class="booking-readiness-chip">Room or pool setup</span>
+            <span id="readinessChipQuote" class="booking-readiness-chip">Booking summary</span>
+          </div>
+        </div>
+      </div>
       <div id="bookingSummary" class="booking-summary-grid">
         <div class="booking-summary-item"><strong>Guest</strong>Not yet set</div>
         <div class="booking-summary-item"><strong>Date</strong>Choose a date from the calendar</div>
@@ -2019,26 +3137,22 @@
         <ul id="bookingChecklist" class="booking-checklist">
           <li class="pending"><span class="booking-check-icon">!</span><span>Enter guest details to start the form.</span></li>
           <li class="pending"><span class="booking-check-icon">!</span><span>Choose your booking date and stay type.</span></li>
-          <li class="pending"><span class="booking-check-icon">!</span><span>Select the service you need, then generate the quotation.</span></li>
+          <li class="pending"><span class="booking-check-icon">!</span><span>Select the service you need, then generate your booking summary.</span></li>
         </ul>
       </div>
     </div>
 
     <label for="date">Check-in Date:</label>
     <input type="date" id="date" onchange="checkDateAvailability()" />
-    <div class="helper-note">Tap a date from the calendar first. The form will use that date as your check-in date.</div>
-
     <label for="checkOutDatePicker">Check-out Date:</label>
     <input type="date" id="checkOutDatePicker" onchange="syncStayDaysFromDateRange(); checkDateAvailability();" />
-    <div class="helper-note">For longer bookings, choose the final check-out date here.</div>
 
-    <label for="preferStay">Prefer to Stay:</label>
+    <label for="preferStay">Stay Type:</label>
     <select id="preferStay">
       <option value="day-tour">Day</option>
       <option value="overnight">Over Night</option>
       <option value="day-night">Whole Day and Night</option>
     </select>
-    <div class="helper-note">Choose the type of stay. The time will adjust automatically.</div>
     <input type="hidden" id="stayDays" value="1" />
 
     <label for="checkInTime">Check-in From:</label>
@@ -2053,11 +3167,9 @@
 
     <label for="guests">Total Guests:</label>
     <input type="number" id="guests" min="1" value="1" />
-    <div class="helper-note">Enter everyone included in the booking, even if some will not use a room.</div>
 
     <div class="quick-setup-card">
-      <strong>Quick Booking Setup (Easy for seniors)</strong>
-      <div class="helper-note">Pick one first so the form can open only what you need.</div>
+      <strong>Quick Booking Setup</strong>
       <div class="quick-setup-buttons">
         <button type="button" class="quick-setup-btn" data-quick-mode="pool-only" onclick="applyQuickSetup('pool-only')">Pool Only</button>
         <button type="button" class="quick-setup-btn" data-quick-mode="room-only" onclick="applyQuickSetup('room-only')">Room Only</button>
@@ -2065,70 +3177,75 @@
       </div>
     </div>
 
-    <div style="margin-top:14px;padding:12px;border:1px solid #d7e4f2;border-radius:10px;background:#f8fbff;">
-      <div style="font-weight:700;color:#0f3558;font-size:13px;margin-bottom:8px;">What Would You Like to Book?</div>
-      <label style="display:flex;align-items:center;gap:8px;margin:0 0 8px;font-weight:600;cursor:pointer;">
-        <input type="checkbox" id="showRoomsCheckbox" style="width:auto;margin:0;" />
-        <span>Room Accommodation</span>
-      </label>
-      <label style="display:flex;align-items:center;gap:8px;margin:0 0 8px;font-weight:600;cursor:pointer;">
-        <input type="checkbox" id="showPoolCheckbox" style="width:auto;margin:0;" />
-        <span>Private Pool Access</span>
-      </label>
-      <label style="display:flex;align-items:center;gap:8px;margin:0 0 8px;font-weight:600;cursor:pointer;">
-        <input type="checkbox" id="showSpecialEventCheckbox" style="width:auto;margin:0;" />
-        <span>Special Event Package</span>
-      </label>
-      <label style="display:flex;align-items:center;gap:8px;margin:0;font-weight:600;cursor:pointer;">
-        <input type="checkbox" id="showServicesCheckbox" style="width:auto;margin:0;" />
-        <span>Catering and Function Hall</span>
-      </label>
+    <div>
+      <div style="font-weight:700;color:#0f3558;font-size:13px;margin-bottom:8px;">Choose what you need</div>
+      <div class="service-choice-grid">
+        <label class="service-choice-card">
+          <input type="checkbox" id="showRoomsCheckbox" />
+          <span><em class="service-choice-tag">Best for Families</em>Rooms<small>For overnight stays or added comfort</small></span>
+        </label>
+        <label class="service-choice-card">
+          <input type="checkbox" id="showPoolCheckbox" />
+          <span><em class="service-choice-tag">Most Popular</em>Pool<small>Day tour, overnight, or whole day + night</small></span>
+        </label>
+        <label class="service-choice-card">
+          <input type="checkbox" id="showSpecialEventCheckbox" />
+          <span><em class="service-choice-tag">Best for Events</em>Special Event<small>All-in setup for larger occasions</small></span>
+        </label>
+        <label class="service-choice-card">
+          <input type="checkbox" id="showServicesCheckbox" />
+          <span><em class="service-choice-tag">Optional Add-On</em>Catering + Hall<small>Add food service and function hall use</small></span>
+        </label>
+      </div>
     </div>
 
     <div id="roomSelectionSection" style="display:none;">
-      <h3>Room Accommodation (Up to 6 selections)</h3>
+      <h3>Rooms</h3>
       <div id="availabilityInfo" style="margin:8px 0 12px;color:#1f3a5f;font-weight:600;"></div>
-      <div class="helper-note">Room booking is optional. If you only want the pool, leave this section off.</div>
 
       <div class="room-showcase-grid">
         <article class="room-showcase-card" data-room-type-card="couple">
           <span class="room-showcase-kicker">Couple Room</span>
+          <span class="room-showcase-tag">Best for Couples</span>
           <h4>Compact and private</h4>
           <p>Ideal for short, quiet stays with simple comfort for two guests.</p>
           <strong>PHP 1,500 · 2 pax</strong>
         </article>
         <article class="room-showcase-card" data-room-type-card="attic">
           <span class="room-showcase-kicker">Attic Room</span>
+          <span class="room-showcase-tag">Best Value</span>
           <h4>Warm and elevated</h4>
           <p>A cozy option for small groups who want a more tucked-away room feel.</p>
           <strong>PHP 2,500 · 3 pax</strong>
         </article>
         <article class="room-showcase-card" data-room-type-card="deluxe">
           <span class="room-showcase-kicker">Deluxe Room</span>
+          <span class="room-showcase-tag">Most Popular</span>
           <h4>Balanced comfort</h4>
           <p>A polished stay option for guests who want more space with a clean premium feel.</p>
           <strong>PHP 2,500 · 3 pax</strong>
         </article>
         <article class="room-showcase-card" data-room-type-card="barkada">
           <span class="room-showcase-kicker">Barkada Room</span>
+          <span class="room-showcase-tag">Best for Groups</span>
           <h4>Group-ready setup</h4>
           <p>Best for larger groups that want one shared room arrangement close to the fun.</p>
           <strong>PHP 3,500 · 10 pax</strong>
         </article>
         <article class="room-showcase-card" data-room-type-card="vip">
           <span class="room-showcase-kicker">VIP Room</span>
+          <span class="room-showcase-tag">Premium Choice</span>
           <h4>Largest premium option</h4>
           <p>A bigger, more elevated room choice for special bookings and larger party stays.</p>
           <strong>PHP 5,500 · 12 pax</strong>
         </article>
       </div>
 
-      <label for="roomHours">Room Usage Hours (minimum 12 hours)</label>
+      <label for="roomHours">Room Hours</label>
       <input type="number" id="roomHours" min="12" step="1" value="12" />
-      <div class="helper-note">Room rate starts at 12 hours. Additional hours are computed automatically.</div>
       <div id="roomGuideInfo" class="room-guide-card">
         <strong>Room Guide</strong>
-        <p>Select the room/s you want to reserve. Capacity limit checking is disabled by request.</p>
+        <p>Select the room or room combination you want for your stay.</p>
       </div>
 
       <div class="room-slot" data-room-slot="1">
@@ -2211,8 +3328,7 @@
     </div>
 
     <div id="poolSection" style="display:none;">
-      <h3>Private Pool Access</h3>
-      <div class="helper-note">Pool booking is optional. If the pool is full, rooms may still be available.</div>
+      <h3>Pool</h3>
       <select id="pool-select">
         <option value="0">None</option>
         <option value="4800">Day Tour (8:00 AM - 5:00 PM) - PHP 4,800</option>
@@ -2240,7 +3356,7 @@
         <option value="35000">Special Event - PHP 35,000 (All rooms, pool, and function hall included for 12 hours)</option>
       </select>
 
-      <label for="specialEventCateringMode">Catering Arrangement:</label>
+      <label for="specialEventCateringMode">Catering Option</label>
       <select id="specialEventCateringMode">
         <option value="none">Without Catering</option>
         <option value="with">With Catering</option>
@@ -2252,7 +3368,7 @@
     </div>
 
     <div id="optionalServicesSection" style="display:none;">
-      <h3>Catering Services</h3>
+      <h3>Catering</h3>
       <select id="catering-select">
         <option value="0">None</option>
         <option value="290" data-package="A">Package A - PHP 290 / head</option>
@@ -2260,7 +3376,7 @@
         <option value="420" data-package="C">Package C - PHP 420 / head</option>
       </select>
 
-      <label for="cateringPersons">Number of Guests for Catering:</label>
+      <label for="cateringPersons">Catering Guests</label>
       <input type="number" id="cateringPersons" min="15" step="1" value="15" />
 
       <div style="font-size:12px;color:#5b6f83;margin-top:6px;">
@@ -2268,21 +3384,21 @@
       </div>
       <div id="cateringChoicesContainer" class="catering-choices" style="display:none;"></div>
 
-      <h3>Function Hall Rental</h3>
+      <h3>Function Hall</h3>
       <select id="hall-select">
         <option value="0">None</option>
         <option value="-1">Function Hall - Reserved (8 hours complimentary)</option>
         <option value="7500">Function Hall - PHP 7,500 (8 hours)</option>
       </select>
-      <label for="hallHours">Function Hall Rental Duration (minimum 8 hours):</label>
+      <label for="hallHours">Hall Hours</label>
       <input type="number" id="hallHours" min="8" step="1" value="8" />
       <div id="hallAutoFreeNote" style="font-size:12px;color:#5b6f83;margin-top:6px;"></div>
     </div>
 
-    <button class="primary-btn" onclick="generateQuotation()">Generate Quotation</button>
+    <button id="reviewBookingSummaryBtn" class="primary-btn" onclick="generateQuotation()">Review Booking Summary</button>
     <button class="secondary-btn" type="button" onclick="clearForm()">Clear Form</button>
-    <button class="secondary-btn btn-download" onclick="downloadPDF()" style="display:none;">Download Quote</button>
-    <button class="secondary-btn btn-messenger" onclick="bookMessenger()" style="display:none;">Book via Messenger</button>
+    <button class="secondary-btn btn-download" onclick="downloadPDF()" style="display:none;">Download Summary</button>
+    <button class="secondary-btn btn-messenger" onclick="bookMessenger()" style="display:none;">Send via Messenger</button>
 
     <div id="quotation"></div>
     </div>
@@ -2292,29 +3408,175 @@
     <div id="adminPanelContent"></div>
   </div>
 
-  <div id="bookingActionDock" class="action-dock">
-    <p class="action-dock-title">Booking Shortcuts</p>
-    <p id="bookingActionDockText" class="action-dock-text">Move faster between the calendar, booking form, and quotation.</p>
-    <div class="action-dock-buttons">
-      <button type="button" class="action-dock-btn" onclick="scrollToBookingSection('availabilityStepPanel')">Calendar</button>
-      <button type="button" class="action-dock-btn" onclick="scrollToBookingSection('bookingFormPanel')">Form</button>
-      <button type="button" class="action-dock-btn primary" onclick="scrollToBookingSection('quotation')">Quotation</button>
+    <div id="customerDiscountQrOverlay" class="feedback-overlay hidden" aria-hidden="true">
+      <div class="feedback-modal">
+        <button type="button" class="feedback-close-btn" onclick="closeCustomerDiscountQrModal()">Close</button>
+        <span class="feedback-badge">Customer Discount QR</span>
+        <h3 id="customerDiscountQrTitle">Share customer feedback QR</h3>
+        <p id="customerDiscountQrSubtitle">Let the customer scan this code, answer the feedback form, and receive a roulette-based discount on the current bill.</p>
+        <div class="feedback-qr-grid">
+          <div class="feedback-qr-card">
+            <img id="customerDiscountQrImage" alt="Customer discount QR code" />
+          </div>
+          <div class="feedback-qr-card">
+            <div class="feedback-detail-grid" style="margin-top:0;">
+              <div class="feedback-detail-card">
+                <strong>Guest</strong>
+                <span id="customerDiscountQrGuest">-</span>
+              </div>
+              <div class="feedback-detail-card">
+                <strong>Reference</strong>
+                <span id="customerDiscountQrReference">-</span>
+              </div>
+              <div class="feedback-detail-card">
+                <strong>Current Bill</strong>
+                <span id="customerDiscountQrTotal">-</span>
+              </div>
+            </div>
+            <input id="customerDiscountQrLink" class="feedback-link-input" type="text" readonly />
+            <div id="customerDiscountQrSegmentList" class="feedback-chip-row"></div>
+            <div class="feedback-action-row">
+              <button type="button" class="primary-btn" onclick="copyCustomerDiscountLink()">Copy Link</button>
+              <button type="button" class="secondary-btn" onclick="previewCustomerDiscountLink()">Preview Link</button>
+            </div>
+            <p id="customerDiscountQrStatus" class="feedback-footnote"></p>
+          </div>
+        </div>
+      </div>
     </div>
-  </div>
 
-    <button id="adminBtn" onclick="adminLogin()">Open Admin Panel</button>
+    <div id="customerFeedbackOverlay" class="feedback-overlay hidden" aria-hidden="true">
+      <div class="feedback-modal">
+        <button type="button" class="feedback-close-btn" onclick="closeCustomerFeedbackOverlay()">Close</button>
+
+        <div id="customerFeedbackLoadingState" class="feedback-state active">
+          <span class="feedback-badge">Customer Discount</span>
+          <h2>Preparing your feedback page</h2>
+          <p>Please wait while we load your booking and discount details.</p>
+        </div>
+
+        <div id="customerFeedbackErrorState" class="feedback-state">
+          <span class="feedback-badge">Unavailable</span>
+          <h2 id="customerFeedbackErrorTitle">This feedback link is not available</h2>
+          <p id="customerFeedbackErrorCopy">Please contact the booking team if you need help with your discount link.</p>
+          <div class="feedback-action-row">
+            <button type="button" class="primary-btn" onclick="closeCustomerFeedbackOverlay()">Close</button>
+          </div>
+        </div>
+
+        <div id="customerFeedbackFormState" class="feedback-state">
+          <span class="feedback-badge">Customer Discount</span>
+          <h2>Share your feedback and unlock your roulette discount</h2>
+          <p id="customerFeedbackIntro">Answer the short form below. After you submit, the wheel will spin and apply a discount to your current bill.</p>
+
+          <div class="feedback-detail-grid">
+            <div class="feedback-detail-card">
+              <strong>Guest</strong>
+              <span id="customerFeedbackGuest">-</span>
+            </div>
+            <div class="feedback-detail-card">
+              <strong>Reference</strong>
+              <span id="customerFeedbackReference">-</span>
+            </div>
+            <div class="feedback-detail-card">
+              <strong>Current Bill</strong>
+              <span id="customerFeedbackCurrentBill">-</span>
+            </div>
+          </div>
+
+          <form class="feedback-form" onsubmit="submitCustomerFeedbackForm(event)">
+            <label>How was your experience?</label>
+            <div class="feedback-rating-group" role="group" aria-label="Feedback rating">
+              <button type="button" class="feedback-rating-btn" data-rating="5" onclick="setCustomerFeedbackRating(5)">5 - Excellent</button>
+              <button type="button" class="feedback-rating-btn" data-rating="4" onclick="setCustomerFeedbackRating(4)">4 - Very Good</button>
+              <button type="button" class="feedback-rating-btn" data-rating="3" onclick="setCustomerFeedbackRating(3)">3 - Good</button>
+              <button type="button" class="feedback-rating-btn" data-rating="2" onclick="setCustomerFeedbackRating(2)">2 - Needs Work</button>
+              <button type="button" class="feedback-rating-btn" data-rating="1" onclick="setCustomerFeedbackRating(1)">1 - Poor</button>
+            </div>
+            <input id="customerFeedbackRating" type="hidden" value="0" />
+
+            <label for="customerFeedbackComment">Feedback</label>
+            <textarea id="customerFeedbackComment" placeholder="Tell us what you liked or what happened during your stay."></textarea>
+
+            <label for="customerFeedbackSuggestion">Suggestion</label>
+            <textarea id="customerFeedbackSuggestion" placeholder="Share any suggestion that can help improve our service."></textarea>
+
+            <button type="submit" class="primary-btn">Submit Feedback</button>
+            <p class="feedback-footnote">The winning roulette percentage is applied to your current bill after any management discount already set by the admin.</p>
+          </form>
+        </div>
+
+        <div id="customerFeedbackWheelState" class="feedback-state feedback-wheel-stage">
+          <span class="feedback-badge">Roulette Reward</span>
+          <h2>Spinning your customer discount</h2>
+          <p id="customerFeedbackWheelCopy">Please wait while we choose your reward.</p>
+          <div class="roulette-wheel-shell">
+            <div class="roulette-pointer"></div>
+            <div id="customerDiscountWheel" class="roulette-wheel">
+              <div id="customerDiscountWheelLabels" class="roulette-wheel-labels"></div>
+              <div class="roulette-wheel-center">Lucky Discount</div>
+            </div>
+          </div>
+          <div id="customerDiscountSegmentList" class="feedback-chip-row"></div>
+          <p class="feedback-footnote">Your result will be saved automatically after the wheel stops.</p>
+        </div>
+
+        <div id="customerFeedbackSubmittedState" class="feedback-state">
+          <span class="feedback-badge">Discount Ready</span>
+          <h2 id="customerFeedbackSubmittedTitle">Your discount has been applied</h2>
+          <p id="customerFeedbackSubmittedCopy">Thank you for your feedback. The booking bill has been updated with your roulette reward.</p>
+
+          <div class="feedback-result-grid">
+            <div class="feedback-detail-card">
+              <strong>Discount Won</strong>
+              <span id="customerFeedbackSubmittedDiscount">-</span>
+            </div>
+            <div class="feedback-detail-card">
+              <strong>Discount Value</strong>
+              <span id="customerFeedbackSubmittedAmount">-</span>
+            </div>
+            <div class="feedback-detail-card">
+              <strong>New Bill Total</strong>
+              <span id="customerFeedbackSubmittedTotal">-</span>
+            </div>
+          </div>
+
+          <div class="feedback-state-card" style="margin-top:14px;">
+            <strong>Your Feedback</strong>
+            <p id="customerFeedbackSubmittedFeedback">-</p>
+            <strong style="margin-top:12px;">Your Suggestion</strong>
+            <p id="customerFeedbackSubmittedSuggestion">-</p>
+          </div>
+
+          <div class="feedback-action-row">
+            <button type="button" class="primary-btn" onclick="closeCustomerFeedbackOverlay()">Done</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <button id="adminBtn" type="button" aria-hidden="true" tabindex="-1" onclick="adminLogin()">Open Admin Panel</button>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
   <script>
+    // Error handling for script loading
+    window.addEventListener('error', function(e) {
+      console.error('Script error:', e.error);
+      console.error('Script source:', e.filename);
+      console.error('Line:', e.lineno);
+    });
+
     const STORAGE_KEY = "bookings";
     const PENDING_STORAGE_KEY = "pendingBookings";
-    const ADMIN_PANEL_SHORTCUT = "ctrl+a";
+    const TRANSACTION_HISTORY_STORAGE_KEY = "transactionHistory";
+    const ADMIN_PANEL_SHORTCUT = "ctrl+alt+shift+a";
     const BOOKING_CALENDAR_SHORTCUT = "alt+1";
     const BOOKINGS_COLLECTION = "bookings";
     const PENDING_BOOKINGS_COLLECTION = "pendingBookings";
+    const TRANSACTION_HISTORY_COLLECTION = "transactionHistory";
     const FIREBASE_CONFIG = {
       apiKey: "AIzaSyCgAyZOZHGymGaEGCIdXl3kw5rXYmXWzDI",
       authDomain: "dekacks-booking.firebaseapp.com",
@@ -2546,6 +3808,14 @@
     let adminSelectedDate = "";
     let approvedBookingsUnsubscribe = null;
     let pendingBookingsUnsubscribe = null;
+    let transactionHistoryCache = [];
+    let transactionHistoryUnsubscribe = null;
+    let transactionArchiveSyncInProgress = false;
+    let activeCustomerDiscountQrState = null;
+    let activeCustomerFeedbackContext = null;
+    let pendingCustomerFeedbackDraft = null;
+    let customerDiscountSpinInProgress = false;
+    const CUSTOMER_DISCOUNT_SEGMENTS = [5, 8, 10, 12, 15];
 
     async function getLogoDataUrl() {
       if (logoDataCache) return logoDataCache;
@@ -2601,6 +3871,14 @@
       localStorage.setItem(PENDING_STORAGE_KEY, JSON.stringify(bookings));
     }
 
+    function getLocalTransactionHistory() {
+      return JSON.parse(localStorage.getItem(TRANSACTION_HISTORY_STORAGE_KEY)) || [];
+    }
+
+    function setLocalTransactionHistory(transactions) {
+      localStorage.setItem(TRANSACTION_HISTORY_STORAGE_KEY, JSON.stringify(transactions));
+    }
+
     function showToast(message, type = "info", duration = 3200) {
       const container = document.getElementById("toastContainer");
       if (!container) return;
@@ -2652,6 +3930,14 @@
       });
     }
 
+    function sortTransactionsByPaidAt(transactions) {
+      return [...transactions].sort((a, b) => {
+        const aTime = Date.parse(a.paidAt || a.transactionRecordedAt || a.approvedAt || a.createdAt || "") || 0;
+        const bTime = Date.parse(b.paidAt || b.transactionRecordedAt || b.approvedAt || b.createdAt || "") || 0;
+        return bTime - aTime;
+      });
+    }
+
     function getCollectionName(collectionType) {
       return collectionType === "pending" ? PENDING_BOOKINGS_COLLECTION : BOOKINGS_COLLECTION;
     }
@@ -2670,8 +3956,19 @@
       }));
     }
 
+    function normalizeSnapshotTransactions(snapshot) {
+      return sortTransactionsByPaidAt(snapshot.docs.map((doc) => {
+        const data = doc.data() || {};
+        return {
+          ...data,
+          id: data.id || doc.id,
+        };
+      }));
+    }
+
     function afterBookingCacheUpdate() {
       purgeExpiredBookings();
+      ensureCurrentFullyPaidTransactionsArchived();
       checkDateAvailability();
       renderAvailabilityCalendar();
       if (selectedAvailabilityDate) showAvailabilityDateDetails(selectedAvailabilityDate);
@@ -2702,17 +3999,23 @@
     }
 
     function initializeFirebase() {
-      if (typeof firebase === "undefined") return false;
+      if (typeof firebase === "undefined") {
+        console.error("Firebase SDK not loaded - check internet connection");
+        return false;
+      }
 
       try {
         if (!firebase.apps.length) {
+          console.log("Initializing Firebase with config:", FIREBASE_CONFIG);
           firebase.initializeApp(FIREBASE_CONFIG);
         }
         auth = firebase.auth();
         db = firebase.firestore();
+        console.log("Firebase initialized successfully");
         return true;
       } catch (error) {
         console.error("Firebase initialization failed:", error);
+        console.error("Error details:", error.message, error.code);
         auth = null;
         db = null;
         return false;
@@ -2727,10 +4030,18 @@
       pendingBookingsCache = [];
     }
 
+    function stopTransactionHistorySync() {
+      if (transactionHistoryUnsubscribe) {
+        transactionHistoryUnsubscribe();
+        transactionHistoryUnsubscribe = null;
+      }
+    }
+
     function startCloudBookingSync() {
       if (!db) {
         approvedBookingsCache = sortBookingsByCreatedAt(getLocalBookings());
         pendingBookingsCache = sortBookingsByCreatedAt(getLocalPendingBookings());
+        transactionHistoryCache = sortTransactionsByPaidAt(getLocalTransactionHistory());
         afterBookingCacheUpdate();
         setOfflineBanner(true, "Offline mode: showing cached bookings.");
         return;
@@ -2756,6 +4067,16 @@
         stopPendingBookingSync();
         afterBookingCacheUpdate();
         setOfflineBanner(true, "Connection lost. Showing cached bookings.");
+      });
+
+      stopTransactionHistorySync();
+      transactionHistoryUnsubscribe = db.collection(TRANSACTION_HISTORY_COLLECTION).onSnapshot((snapshot) => {
+        transactionHistoryCache = normalizeSnapshotTransactions(snapshot);
+        if (adminPanelOpen) viewBookings();
+      }, (error) => {
+        console.error("Transaction history sync failed:", error);
+        transactionHistoryCache = sortTransactionsByPaidAt(getLocalTransactionHistory());
+        if (adminPanelOpen) viewBookings();
       });
 
       flushOfflineQueue();
@@ -2810,6 +4131,51 @@
       }
 
       await db.collection(collectionName).doc(String(bookingId)).delete();
+    }
+
+    async function saveTransactionRecord(transaction) {
+      const normalizedTransaction = serializeBooking(transaction);
+      normalizedTransaction.id = String(normalizedTransaction.id || `transaction_${Date.now()}`);
+
+      const commitLocalCopy = () => {
+        const source = transactionHistoryCache.length > 0 ? transactionHistoryCache : getLocalTransactionHistory();
+        const next = sortTransactionsByPaidAt([
+          ...source.filter((item) => String(item.id) !== String(normalizedTransaction.id)),
+          normalizedTransaction,
+        ]);
+        transactionHistoryCache = next;
+        setLocalTransactionHistory(next);
+      };
+
+      const queueForRetry = () => {
+        offlineQueue = offlineQueue.filter((item) => !(
+          item.type === "set"
+          && item.collectionName === TRANSACTION_HISTORY_COLLECTION
+          && item.booking
+          && String(item.booking.id) === String(normalizedTransaction.id)
+        ));
+        offlineQueue.push({
+          type: "set",
+          collectionName: TRANSACTION_HISTORY_COLLECTION,
+          booking: normalizedTransaction,
+        });
+        persistOfflineQueue();
+      };
+
+      if (!db) {
+        queueForRetry();
+        commitLocalCopy();
+        return;
+      }
+
+      try {
+        await db.collection(TRANSACTION_HISTORY_COLLECTION).doc(String(normalizedTransaction.id)).set(normalizedTransaction);
+        commitLocalCopy();
+      } catch (error) {
+        console.error("Transaction history save failed:", error);
+        queueForRetry();
+        commitLocalCopy();
+      }
     }
 
     async function flushOfflineQueue() {
@@ -2902,7 +4268,12 @@
       const expireFromCollection = (collectionName, source) => {
         source
           .filter((booking) => getNormalizedCheckOutDate(booking) < todayIso)
-          .forEach((booking) => deleteBookingRecord(collectionName, booking.id));
+          .forEach((booking) => {
+            if (collectionName === BOOKINGS_COLLECTION && computeBookingTotals(booking).fullyPaid) {
+              archiveFullyPaidBooking(booking);
+            }
+            deleteBookingRecord(collectionName, booking.id);
+          });
       };
 
       expireFromCollection(BOOKINGS_COLLECTION, getBookings());
@@ -2910,7 +4281,12 @@
     }
 
     function closeWelcomePopup() {
-      document.getElementById("welcomeOverlay").classList.add("hidden");
+      const overlay = document.getElementById("welcomeOverlay");
+      if (overlay) {
+        overlay.classList.add("hidden");
+      } else {
+        console.warn("welcomeOverlay element not found");
+      }
     }
 
     function showAdminWorkspace() {
@@ -2963,7 +4339,7 @@
       const details = document.getElementById("availabilityBookingDetails");
       if (details) details.style.display = "block";
       renderAvailabilityBookingDetails(selectedAvailabilityDate || toISODate(new Date()));
-      showToast("Management calendar opened (Ctrl + 2).", "info");
+      showToast("Management calendar opened.", "info");
     }
 
     function getTimeBasedGreeting() {
@@ -2987,13 +4363,8 @@
 
       const verseEl = document.getElementById("motivationVerse");
       const verseReferenceEl = document.getElementById("motivationVerseReference");
-      const heroVerseTextEl = document.getElementById("heroVerseText");
-      const heroVerseReferenceEl = document.getElementById("heroVerseReference");
-
       if (verseEl) verseEl.textContent = verseText;
       if (verseReferenceEl) verseReferenceEl.textContent = verseReference;
-      if (heroVerseTextEl) heroVerseTextEl.textContent = verseText;
-      if (heroVerseReferenceEl) heroVerseReferenceEl.textContent = verseReference;
     }
 
     function setResortReminderVisible(isVisible) {
@@ -3349,7 +4720,7 @@
         },
         {
           done: !!pendingReservation,
-          text: pendingReservation ? "Quotation generated. You can submit the reservation now." : "Generate the quotation before tapping Reserve Now.",
+          text: pendingReservation ? "Booking summary ready. You can submit the reservation now." : "Review the booking summary before sending your booking request.",
         },
       ];
     }
@@ -3401,13 +4772,13 @@
       if (hasRooms && !hasPool) {
         return {
           title: "Room-Focused Booking",
-          text: `This setup keeps the booking simple if you only need accommodation. You can still add the pool later before generating the quotation. Current estimate: ${formatCurrencyPHP(estimate.total)}.`,
+          text: `This setup keeps the booking simple if you only need accommodation. You can still add the pool later before reviewing the booking summary. Current estimate: ${formatCurrencyPHP(estimate.total)}.`,
         };
       }
 
       return {
         title: "Balanced Setup",
-        text: `The form is ready for a standard booking. Review the checklist below, then generate the quotation when the estimate looks right at ${formatCurrencyPHP(estimate.total)}.`,
+        text: `The form is ready for a standard booking. Review the checklist below, then open the booking summary when the estimate looks right at ${formatCurrencyPHP(estimate.total)}.`,
       };
     }
 
@@ -3461,7 +4832,10 @@
     function updateActionDock() {
       const dock = document.getElementById("bookingActionDock");
       const dockText = document.getElementById("bookingActionDockText");
-      if (!dock || !dockText) return;
+      if (!dock || !dockText) {
+        updateMobileBookingBar();
+        return;
+      }
 
       const quoteReady = !!document.querySelector("#quotation .quote-card");
       const formVisible = !document.getElementById("bookingFormPanel").classList.contains("hidden");
@@ -3470,18 +4844,104 @@
       if (quoteReady) {
         dock.classList.add("visible");
         dockText.textContent = pendingReservation
-          ? "Quotation is ready. Review it, then tap Reserve Now when everything looks correct."
-          : "Your quotation is visible below. You can jump back to edit the booking anytime.";
+          ? "Your booking summary is ready. Review it, then send your booking request when everything looks correct."
+          : "Your booking summary is visible below. You can jump back to edit the booking anytime.";
+        updateMobileBookingBar();
         return;
       }
 
       if (formVisible || hasDate) {
         dock.classList.add("visible");
-        dockText.textContent = "Use these shortcuts to jump between the availability calendar, form, and quotation area.";
+        dockText.textContent = "Use these shortcuts to jump between available dates, booking details, and the summary area.";
+        updateMobileBookingBar();
         return;
       }
 
       dock.classList.remove("visible");
+      updateMobileBookingBar();
+    }
+
+    function updateMobileBookingBar() {
+      const bar = document.getElementById("mobileBookingBar");
+      const kicker = document.getElementById("mobileTotalKicker");
+      const amount = document.getElementById("mobileTotalAmount");
+      const action = document.getElementById("mobileTotalAction");
+      if (!bar || !kicker || !amount || !action) return;
+
+      const quoteReady = !!document.querySelector("#quotation .quote-card");
+      const formVisible = !document.getElementById("bookingFormPanel").classList.contains("hidden");
+      const hasDate = !!document.getElementById("date").value;
+      const estimate = getEstimatedBookingTotal();
+      const dateLabel = document.getElementById("bookingDateRangeDisplay").value || (hasDate ? formatDateLong(document.getElementById("date").value) : "Choose a date");
+      const quoteSection = document.getElementById("quotation");
+      const quoteRect = quoteSection ? quoteSection.getBoundingClientRect() : null;
+      const quoteVisibleOnMobile = window.innerWidth <= 640
+        && !!quoteRect
+        && quoteRect.top < window.innerHeight * 0.55
+        && quoteRect.bottom > window.innerHeight * 0.18;
+
+      amount.textContent = formatCurrencyPHP(estimate.total);
+
+      if (quoteReady) {
+        kicker.textContent = "Booking summary ready";
+        action.textContent = "View Summary";
+        action.dataset.target = "quotation";
+        if (quoteVisibleOnMobile) {
+          bar.classList.remove("visible");
+          return;
+        }
+        bar.classList.add("visible");
+        return;
+      }
+
+      if (formVisible) {
+        kicker.textContent = dateLabel;
+        action.textContent = "Review Booking";
+        action.dataset.target = "reviewBookingSummaryBtn";
+        bar.classList.add("visible");
+        return;
+      }
+
+      if (hasDate) {
+        kicker.textContent = dateLabel;
+        action.textContent = "Continue";
+        action.dataset.target = "bookingFormPanel";
+        bar.classList.add("visible");
+        return;
+      }
+
+      bar.classList.remove("visible");
+    }
+
+    function handleMobileBarAction() {
+      const action = document.getElementById("mobileTotalAction");
+      if (!action) return;
+      const targetId = action.dataset.target;
+      if (!targetId) return;
+      const target = document.getElementById(targetId);
+      if (!target) return;
+      target.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    function renderBookingRequestSuccess(reservationReference) {
+      const successCard = document.getElementById("bookingRequestSuccess");
+      if (!successCard) return;
+      successCard.classList.remove("hidden");
+      successCard.innerHTML = `
+        <h4>Booking request sent</h4>
+        <p>Your request is now pending review. Save your reference number and send your payment proof right away so the booking team can confirm your date faster.</p>
+        <ol class="booking-success-steps">
+          <li><strong>Reference No.:</strong> ${reservationReference}</li>
+          <li>Send your payment proof.</li>
+          <li>Include your reference number in your message.</li>
+          <li>Wait for final confirmation from the resort.</li>
+        </ol>
+        <div class="booking-success-actions">
+          <button type="button" class="secondary-btn" onclick="bookMessenger()">Message Us on Facebook</button>
+          <button type="button" class="primary-btn" onclick="downloadPDF()">Download Summary</button>
+        </div>
+      `;
+      successCard.scrollIntoView({ behavior: "smooth", block: "center" });
     }
 
     function flashQuotationCard() {
@@ -3538,7 +4998,7 @@
       if (poolValue === 4800) poolLabel = "Day Tour Pool";
       if (poolValue === 6500) poolLabel = "Overnight Pool";
       if (poolValue === 10000) poolLabel = "Whole Day and Night Pool";
-      const nextStep = pendingReservation ? "Ready to submit reservation" : "Generate quotation next";
+      const nextStep = pendingReservation ? "Ready to submit reservation" : "Review summary next";
 
       summary.innerHTML = `
         <div class="booking-summary-item"><strong>Guest</strong>${guestName}<br>${contact}</div>
@@ -3553,6 +5013,7 @@
       updateBookingAssistantPanel();
       updateStepFlowState();
       updateActionDock();
+      updateMobileBookingBar();
     }
 
     function setQuickSetupActive(mode) {
@@ -4348,6 +5809,15 @@
         hallFreeNote: hallDetails.freeNote,
         originalDownpayment: inquirySubtotal * 0.2,
         managementDiscountPercent: 0,
+        customerDiscountPercent: 0,
+        customerDiscountToken: "",
+        customerDiscountStatus: "not-issued",
+        customerDiscountIssuedAt: "",
+        customerDiscountAwardedAt: "",
+        customerFeedbackSubmittedAt: "",
+        customerFeedbackRating: 0,
+        customerFeedbackComment: "",
+        customerFeedbackSuggestion: "",
         status: "pending",
         createdAt: new Date().toISOString(),
       };
@@ -4900,7 +6370,11 @@
       const subtotal = specialEventTotal + roomTotal + poolTotal + cateringTotal + hallTotal;
       const managementDiscountPercent = Math.max(0, Number(booking.managementDiscountPercent) || 0);
       const managementDiscountAmount = subtotal * (managementDiscountPercent / 100);
-      const total = Math.max(0, subtotal - managementDiscountAmount);
+      const netAfterManagementDiscount = Math.max(0, subtotal - managementDiscountAmount);
+      const customerDiscountPercent = Math.max(0, Number(booking.customerDiscountPercent) || 0);
+      const customerDiscountAmount = netAfterManagementDiscount * (customerDiscountPercent / 100);
+      const totalDiscountAmount = managementDiscountAmount + customerDiscountAmount;
+      const total = Math.max(0, netAfterManagementDiscount - customerDiscountAmount);
       const originalDownpayment = Number(booking.originalDownpayment);
       const downpayment = Number.isFinite(originalDownpayment) && originalDownpayment > 0
         ? originalDownpayment
@@ -4916,12 +6390,215 @@
         subtotal,
         managementDiscountPercent,
         managementDiscountAmount,
+        customerDiscountPercent,
+        customerDiscountAmount,
+        totalDiscountAmount,
         originalDownpayment: downpayment,
         total,
         downpayment,
         remainingBalance,
         fullyPaid,
       };
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function formatCustomerFeedbackSnippet(text) {
+      const normalized = String(text || "").trim();
+      if (!normalized) return "No message provided.";
+      const shortened = normalized.length > 180 ? `${normalized.slice(0, 177)}...` : normalized;
+      return escapeHtml(shortened).replace(/\n/g, "<br>");
+    }
+
+    function createCustomerFeedbackToken() {
+      if (window.crypto && typeof window.crypto.getRandomValues === "function") {
+        const bytes = new Uint8Array(10);
+        window.crypto.getRandomValues(bytes);
+        return Array.from(bytes, (byte) => byte.toString(16).padStart(2, "0")).join("");
+      }
+      return `${Date.now().toString(36)}${Math.random().toString(36).slice(2, 12)}`;
+    }
+
+    function getCustomerDiscountStatus(booking) {
+      if (!booking) {
+        return { label: "Not issued yet", tone: "muted" };
+      }
+
+      if (booking.customerFeedbackSubmittedAt) {
+        return { label: "Feedback completed", tone: "success" };
+      }
+
+      if (booking.fullyPaid) {
+        return { label: "Closed after full payment", tone: "closed" };
+      }
+
+      if (booking.customerDiscountToken) {
+        return { label: "QR shared, waiting for feedback", tone: "pending" };
+      }
+
+      return { label: "Not issued yet", tone: "muted" };
+    }
+
+    function buildCustomerFeedbackUrl(booking) {
+      const url = new URL(window.location.href);
+      url.hash = "";
+      url.searchParams.delete("feedbackBooking");
+      url.searchParams.delete("feedbackToken");
+      url.searchParams.set("feedbackBooking", String(booking.id || ""));
+      url.searchParams.set("feedbackToken", String(booking.customerDiscountToken || ""));
+      return url.toString();
+    }
+
+    function buildCustomerFeedbackQrImageUrl(booking) {
+      const feedbackUrl = buildCustomerFeedbackUrl(booking);
+      return `https://api.qrserver.com/v1/create-qr-code/?size=260x260&margin=12&data=${encodeURIComponent(feedbackUrl)}`;
+    }
+
+    function clearCustomerFeedbackQueryParams() {
+      try {
+        const url = new URL(window.location.href);
+        url.searchParams.delete("feedbackBooking");
+        url.searchParams.delete("feedbackToken");
+        window.history.replaceState({}, document.title, url.toString());
+      } catch (error) {
+        console.warn("Unable to clear customer feedback query params:", error);
+      }
+    }
+
+    function renderCustomerDiscountSegmentChips(targetId) {
+      const container = document.getElementById(targetId);
+      if (!container) return;
+      container.innerHTML = CUSTOMER_DISCOUNT_SEGMENTS
+        .map((segment) => `<span class="feedback-chip">${segment}% off</span>`)
+        .join("");
+    }
+
+    function renderCustomerDiscountWheelLabels() {
+      const labels = document.getElementById("customerDiscountWheelLabels");
+      if (!labels) return;
+
+      const segmentAngle = 360 / CUSTOMER_DISCOUNT_SEGMENTS.length;
+      labels.innerHTML = CUSTOMER_DISCOUNT_SEGMENTS.map((segment, index) => {
+        const angle = index * segmentAngle;
+        return `<span style="transform: translate(-50%, -50%) rotate(${angle}deg) translateY(-118px) rotate(${-angle}deg);">${segment}%</span>`;
+      }).join("");
+    }
+
+    function showCustomerFeedbackState(stateId) {
+      [
+        "customerFeedbackLoadingState",
+        "customerFeedbackErrorState",
+        "customerFeedbackFormState",
+        "customerFeedbackWheelState",
+        "customerFeedbackSubmittedState",
+      ].forEach((id) => {
+        const element = document.getElementById(id);
+        if (element) {
+          element.classList.toggle("active", id === stateId);
+        }
+      });
+    }
+
+    function getTransactionHistory() {
+      return sortTransactionsByPaidAt(transactionHistoryCache);
+    }
+
+    function getTransactionHistoryRecordId(booking) {
+      if (booking.transactionHistoryId) return String(booking.transactionHistoryId);
+      if (booking.transactionId) return String(booking.transactionId);
+      if (String(booking.id || "").startsWith("transaction_")) return String(booking.id);
+      const bookingId = String(booking.bookingId || booking.id || booking.reservationReference || Date.now());
+      return `transaction_${bookingId}`;
+    }
+
+    function buildTransactionHistoryRecord(booking) {
+      const totals = computeBookingTotals(booking);
+      const rawId = String(booking.id || "");
+      const bookingId = String(
+        booking.bookingId
+        || booking.originalBookingId
+        || booking.sourceBookingId
+        || (!rawId.startsWith("transaction_") ? rawId : "")
+        || booking.reservationReference
+        || Date.now()
+      );
+      const paidAt = booking.paidAt || booking.transactionRecordedAt || booking.approvedAt || booking.createdAt || new Date().toISOString();
+      const checkInDate = booking.checkInDate || booking.date || "";
+      const stayDays = parseInt(booking.stayDays, 10) || 1;
+      const checkOutDate = booking.checkOutDate || (checkInDate ? addDays(checkInDate, stayDays) : "");
+      const transactionHistoryId = getTransactionHistoryRecordId(booking);
+
+      return {
+        ...serializeBooking(booking),
+        id: transactionHistoryId,
+        bookingId,
+        transactionHistoryId,
+        transactionType: "fullyPaid",
+        fullyPaid: true,
+        paidAt,
+        transactionRecordedAt: booking.transactionRecordedAt || paidAt,
+        checkInDate,
+        checkOutDate,
+        stayDays,
+        stayLabel: booking.stayLabel || getBookingStayLabel(booking),
+        snapshotTotal: Number(booking.snapshotTotal) || totals.total,
+        snapshotDownpayment: Number(booking.snapshotDownpayment) || totals.downpayment,
+        snapshotRemainingBalance: Number(booking.snapshotRemainingBalance) || totals.remainingBalance,
+        snapshotDiscountPercent: Number(booking.snapshotDiscountPercent) || totals.managementDiscountPercent,
+        snapshotManagementDiscountPercent: Number(booking.snapshotManagementDiscountPercent) || totals.managementDiscountPercent,
+        snapshotManagementDiscountAmount: Number(booking.snapshotManagementDiscountAmount) || totals.managementDiscountAmount,
+        snapshotCustomerDiscountPercent: Number(booking.snapshotCustomerDiscountPercent) || totals.customerDiscountPercent,
+        snapshotCustomerDiscountAmount: Number(booking.snapshotCustomerDiscountAmount) || totals.customerDiscountAmount,
+        snapshotTotalDiscountAmount: Number(booking.snapshotTotalDiscountAmount) || totals.totalDiscountAmount,
+        sourceStatus: booking.sourceStatus || booking.status || "approved",
+      };
+    }
+
+    async function archiveFullyPaidBooking(booking) {
+      if (!booking || !computeBookingTotals(booking).fullyPaid) return;
+      await saveTransactionRecord(buildTransactionHistoryRecord(booking));
+    }
+
+    async function ensureCurrentFullyPaidTransactionsArchived() {
+      if (transactionArchiveSyncInProgress) return;
+
+      const fullyPaidBookings = getBookings().filter((booking) => computeBookingTotals(booking).fullyPaid);
+      const existingTransactionKeys = new Set(
+        getTransactionHistory().map((entry) => String(entry.bookingId || entry.id || ""))
+      );
+      const missingBookings = fullyPaidBookings.filter((booking) => !existingTransactionKeys.has(String(booking.id || "")));
+      if (missingBookings.length === 0) return;
+
+      transactionArchiveSyncInProgress = true;
+      try {
+        for (const booking of missingBookings) {
+          await archiveFullyPaidBooking(booking);
+        }
+      } catch (error) {
+        console.error("Transaction history backfill failed:", error);
+      } finally {
+        transactionArchiveSyncInProgress = false;
+      }
+    }
+
+    function formatDateTimeLong(value) {
+      if (!value) return "N/A";
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return String(value);
+      return date.toLocaleString("en-PH", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "numeric",
+        minute: "2-digit",
+      });
     }
 
     function updateSpecialEventFields() {
@@ -5079,12 +6756,12 @@
       const stayLabel = document.getElementById("preferStay").selectedOptions[0]?.text || "Day";
 
       if (!name) {
-        alert("Please enter your name in the guest login panel.");
+        alert("Please enter your name in the guest details section.");
         return;
       }
 
       if (!contactNumber) {
-        alert("Please enter your contact number in the guest login panel.");
+        alert("Please enter your contact number in the guest details section.");
         return;
       }
 
@@ -5203,7 +6880,7 @@
               <img src="${LOGO_PATH}" alt="Dekack logo" class="quote-logo" />
               <div>
                 <p class="quote-title">Dekack's Private Resort &amp; Hotel</p>
-                <p class="quote-subtitle">Reservation Quotation</p>
+                <p class="quote-subtitle">Booking Summary</p>
               </div>
             </div>
             <div style="font-size:12px;font-weight:600;">Generated: ${new Date().toLocaleDateString("en-PH")}</div>
@@ -5278,20 +6955,19 @@
               <p>Account Number: <strong>09511720299</strong></p>
               <p>Please send your payment screenshot for confirmation and include your reference number.</p>
               <p><strong>Important:</strong> Your date is not secured until payment is made and confirmed.</p>
-              <p id="reservationStatus"><strong>Status:</strong> Quotation generated. Click "Reserve Now" to submit for admin approval.</p>
+              <p><strong>Next:</strong> After sending your booking request, message your payment proof together with your reference number.</p>
+              <p id="reservationStatus"><strong>Status:</strong> Booking summary ready. Click "Send Booking Request" to submit your reservation request.</p>
             </div>
 
             <div class="quote-actions">
-              <button type="button" class="secondary-btn" onclick="downloadPDF()">Download Quote</button>
-              <button id="reserveNowBtn" class="reserve-now-btn" onclick="saveReservation()">Reserve Now</button>
+              <button type="button" class="secondary-btn" onclick="downloadPDF()">Download Summary</button>
+              <button id="reserveNowBtn" class="reserve-now-btn" onclick="saveReservation()">Send Booking Request</button>
             </div>
+
+            <div id="bookingRequestSuccess" class="booking-success-card hidden" aria-live="polite"></div>
           </div>
         </div>
       `;
-
-      flashQuotationCard();
-      updateActionDock();
-      updateStepFlowState();
 
       pendingReservation = {
         name,
@@ -5313,14 +6989,19 @@
       };
 
       document.querySelector(".btn-messenger").style.display = "block";
+      document.querySelector(".btn-messenger").textContent = "Message Us on Facebook";
+      flashQuotationCard();
+      updateActionDock();
+      updateStepFlowState();
+      updateMobileBookingBar();
     }
 
     async function saveReservation() {
       if (!pendingReservation) {
-        alert("Please generate a quotation first.");
+        alert("Please review the booking summary first.");
         return;
       }
-      if (!confirm("Are you sure you want to book this reservation?")) {
+      if (!confirm("Are you sure you want to send this booking request?")) {
         return;
       }
       const {
@@ -5371,19 +7052,21 @@
       }
       const statusEl = document.getElementById("reservationStatus");
       if (statusEl) {
-        statusEl.innerHTML = `<strong>Status:</strong> Your reservation is pending. Reference No.: ${reservationReference}. The selected date can still be booked by others until payment is made and confirmed.`;
+        statusEl.innerHTML = `<strong>Status:</strong> Your booking request is pending. Reference No.: ${reservationReference}. Please send your payment proof right away. Your selected date can still be booked by others until payment is reviewed and confirmed.`;
       }
       const reserveBtn = document.getElementById("reserveNowBtn");
       if (reserveBtn) {
-        reserveBtn.textContent = "Submitted for Approval";
+        reserveBtn.textContent = "Booking Request Sent";
         reserveBtn.disabled = true;
       }
 
-      alert(`Your reservation is pending.\nReference No.: ${reservationReference}\nThe selected date can still be booked by others until payment is made and confirmed.`);
+      renderBookingRequestSuccess(reservationReference);
+      showToast(`Booking request sent. Reference No.: ${reservationReference}`, "success", 4200);
       pendingReservation = null;
       checkDateAvailability();
       updateActionDock();
       updateStepFlowState();
+      updateMobileBookingBar();
     }
 
     async function downloadPDF() {
@@ -5403,7 +7086,7 @@
       const roomHours = getRoomUsageHours();
 
       if (!name || !checkInDate) {
-        alert("Generate quotation first before downloading PDF.");
+        alert("Please review the booking summary first before downloading the PDF.");
         return;
       }
 
@@ -5475,7 +7158,7 @@
       doc.text("DEKACK'S PRIVATE RESORT & HOTEL", 37, 14);
       doc.setFont("helvetica", "normal");
       doc.setFontSize(10.3);
-      doc.text("RESERVATION QUOTATION", 37, 21);
+      doc.text("BOOKING SUMMARY", 37, 21);
       doc.setFontSize(8.8);
       doc.text("Adela, Rizal, Occidental Mindoro", 37, 26);
       doc.setFontSize(8.5);
@@ -5611,7 +7294,7 @@
       doc.setFont("helvetica", "italic");
       doc.setFontSize(9.2);
       doc.setTextColor(53, 77, 99);
-      const discountNote = "For possible promotional discounts, please call 09511720299.";
+      const discountNote = "For booking assistance or promotional inquiries, please call 09511720299.";
       doc.text(discountNote, 12, y + 8);
       y += 20;
 
@@ -5633,7 +7316,7 @@
       doc.line(128, y, 198, y);
       doc.setFont("helvetica", "bold");
       doc.setFontSize(9.2);
-      doc.text("Dekack's Private Resort and Hotel Management", 12, y);
+      doc.text("Dekack's Private Resort and Hotel Booking Team", 12, y);
       y += 6;
       doc.setFont("helvetica", "normal");
       doc.setFontSize(9);
@@ -5647,7 +7330,7 @@
       doc.setTextColor(82, 106, 128);
       doc.text("Thank you for choosing Dekack's Private Resort & Hotel.", 105, 286, null, null, "center");
 
-      doc.save("Dekacks_Professional_Quotation.pdf");
+      doc.save("Dekacks_Booking_Summary.pdf");
     }
 
     function bookMessenger() {
@@ -5807,7 +7490,8 @@
       const rightCardHeight = drawFieldCard("Reservation Details", [
         { label: "Check-in", value: formatAdminPdfDate(normalizedCheckIn, booking.checkInTime || "08:00") },
         { label: "Check-out", value: formatAdminPdfDate(normalizedCheckOut, booking.checkOutTime || "17:00") },
-        { label: "Discount", value: `${totals.managementDiscountPercent || 0}%` },
+        { label: "Management", value: `${totals.managementDiscountPercent || 0}%` },
+        { label: "Customer", value: `${totals.customerDiscountPercent || 0}%` },
         { label: "Payment", value: totals.fullyPaid ? "Fully Paid" : "Balance Pending" },
       ], { x: 112, y });
       y += Math.max(leftCardHeight, rightCardHeight) + 10;
@@ -5845,6 +7529,12 @@
         fill: [255, 248, 236],
         stroke: [234, 205, 144],
       }) + 3;
+      y += drawAmountRow("Customer Discount", formatAdminPdfMoney(totals.customerDiscountAmount), y, {
+        bold: true,
+        highlight: true,
+        fill: [238, 247, 255],
+        stroke: [171, 206, 231],
+      }) + 3;
       y += drawAmountRow("Net Total", formatAdminPdfMoney(totals.total), y, {
         bold: true,
         highlight: true,
@@ -5879,7 +7569,7 @@
       doc.setTextColor(84, 102, 121);
       doc.text(
         doc.splitTextToSize(
-          "Administrative copy. Management discount adjusts the net total only, while the original inquiry downpayment remains unchanged for audit reference.",
+          "Administrative copy. Management discount is applied first, then the customer roulette discount is applied to the remaining bill. The original inquiry downpayment remains unchanged for audit reference.",
           180
         ),
         12,
@@ -5910,19 +7600,411 @@
       if (adminPanelOpen) viewBookings();
     }
 
+    async function fetchApprovedBookingById(bookingId, preferRemote = false) {
+      const cachedBooking = getBookings().find((item) => String(item.id) === String(bookingId));
+      if (cachedBooking && !preferRemote) return cachedBooking;
+
+      if (!db) return cachedBooking || null;
+
+      try {
+        const doc = await db.collection(BOOKINGS_COLLECTION).doc(String(bookingId)).get();
+        if (!doc.exists) return cachedBooking || null;
+        const data = doc.data() || {};
+        return {
+          ...data,
+          id: data.id || doc.id,
+        };
+      } catch (error) {
+        console.error("Unable to load approved booking for customer discount:", error);
+        return cachedBooking || null;
+      }
+    }
+
+    function syncFeedbackOverlayBodyLock() {
+      const qrOverlay = document.getElementById("customerDiscountQrOverlay");
+      const feedbackOverlay = document.getElementById("customerFeedbackOverlay");
+      const shouldLock = (qrOverlay && !qrOverlay.classList.contains("hidden"))
+        || (feedbackOverlay && !feedbackOverlay.classList.contains("hidden"));
+      document.body.style.overflow = shouldLock ? "hidden" : "";
+    }
+
+    function closeCustomerDiscountQrModal() {
+      const overlay = document.getElementById("customerDiscountQrOverlay");
+      if (overlay) overlay.classList.add("hidden");
+      activeCustomerDiscountQrState = null;
+      syncFeedbackOverlayBodyLock();
+    }
+
+    async function openCustomerDiscountQrModal(collectionType, index) {
+      if (!requireAdminAuth()) return;
+      if (collectionType !== "approved") {
+        showToast("Customer discount QR is only available for approved bookings.", "error");
+        return;
+      }
+
+      const source = getBookings();
+      let booking = source[index];
+      if (!booking) {
+        showToast("Booking not found.", "error");
+        return;
+      }
+
+      const existingTotals = computeBookingTotals(booking);
+      if (existingTotals.fullyPaid && !booking.customerFeedbackSubmittedAt) {
+        showToast("Customer discount QR closes once the booking is marked fully paid.", "error");
+        return;
+      }
+
+      if (!booking.customerDiscountToken) {
+        booking = {
+          ...booking,
+          customerDiscountToken: createCustomerFeedbackToken(),
+          customerDiscountStatus: booking.customerFeedbackSubmittedAt ? "submitted" : "issued",
+          customerDiscountIssuedAt: booking.customerDiscountIssuedAt || new Date().toISOString(),
+        };
+        await saveBookingRecord(BOOKINGS_COLLECTION, booking);
+      }
+
+      const totals = computeBookingTotals(booking);
+      const feedbackUrl = buildCustomerFeedbackUrl(booking);
+      const status = getCustomerDiscountStatus(booking);
+
+      activeCustomerDiscountQrState = {
+        bookingId: String(booking.id || ""),
+        link: feedbackUrl,
+      };
+
+      const title = document.getElementById("customerDiscountQrTitle");
+      const subtitle = document.getElementById("customerDiscountQrSubtitle");
+      const guest = document.getElementById("customerDiscountQrGuest");
+      const reference = document.getElementById("customerDiscountQrReference");
+      const total = document.getElementById("customerDiscountQrTotal");
+      const linkInput = document.getElementById("customerDiscountQrLink");
+      const qrImage = document.getElementById("customerDiscountQrImage");
+      const statusEl = document.getElementById("customerDiscountQrStatus");
+      const overlay = document.getElementById("customerDiscountQrOverlay");
+
+      if (title) title.textContent = `Customer discount QR for ${booking.name || "Guest"}`;
+      if (subtitle) {
+        subtitle.textContent = booking.customerFeedbackSubmittedAt
+          ? "This booking already finished the feedback form. You can still open the link for reference."
+          : "Let the customer scan this QR code, answer the feedback form, and receive a roulette-based discount on the current bill.";
+      }
+      if (guest) guest.textContent = booking.name || "Guest";
+      if (reference) reference.textContent = booking.reservationReference || "N/A";
+      if (total) total.textContent = formatCurrencyPHP(totals.total);
+      if (linkInput) linkInput.value = feedbackUrl;
+      if (qrImage) qrImage.src = buildCustomerFeedbackQrImageUrl(booking);
+      if (statusEl) {
+        statusEl.textContent = `${status.label}. Winning discounts: ${CUSTOMER_DISCOUNT_SEGMENTS.join("%, ")}%. The customer roulette discount is applied after any management discount already on the bill.`;
+      }
+      renderCustomerDiscountSegmentChips("customerDiscountQrSegmentList");
+      if (overlay) overlay.classList.remove("hidden");
+      syncFeedbackOverlayBodyLock();
+    }
+
+    async function copyCustomerDiscountLink() {
+      const link = activeCustomerDiscountQrState && activeCustomerDiscountQrState.link
+        ? activeCustomerDiscountQrState.link
+        : (document.getElementById("customerDiscountQrLink") || {}).value;
+      const input = document.getElementById("customerDiscountQrLink");
+      if (!link) return;
+
+      try {
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(link);
+        } else if (input) {
+          input.focus();
+          input.select();
+          document.execCommand("copy");
+        }
+        showToast("Customer discount link copied.", "success");
+      } catch (error) {
+        console.error("Copy customer discount link failed:", error);
+        showToast("Copy failed. Please copy the link manually.", "error");
+      }
+    }
+
+    function previewCustomerDiscountLink() {
+      const link = activeCustomerDiscountQrState && activeCustomerDiscountQrState.link
+        ? activeCustomerDiscountQrState.link
+        : (document.getElementById("customerDiscountQrLink") || {}).value;
+      if (!link) return;
+      window.open(link, "_blank", "noopener");
+    }
+
+    function setCustomerFeedbackRating(value) {
+      const normalized = Math.max(0, Math.min(5, Number(value) || 0));
+      const input = document.getElementById("customerFeedbackRating");
+      if (input) input.value = String(normalized);
+      document.querySelectorAll(".feedback-rating-btn").forEach((button) => {
+        const buttonRating = Number(button.getAttribute("data-rating")) || 0;
+        button.classList.toggle("active", normalized > 0 && buttonRating === normalized);
+      });
+    }
+
+    function resetCustomerFeedbackForm() {
+      const comment = document.getElementById("customerFeedbackComment");
+      const suggestion = document.getElementById("customerFeedbackSuggestion");
+      if (comment) comment.value = "";
+      if (suggestion) suggestion.value = "";
+      setCustomerFeedbackRating(0);
+      pendingCustomerFeedbackDraft = null;
+      customerDiscountSpinInProgress = false;
+      const wheel = document.getElementById("customerDiscountWheel");
+      if (wheel) {
+        wheel.style.transition = "none";
+        wheel.style.transform = "rotate(0deg)";
+        void wheel.offsetWidth;
+        wheel.style.transition = "";
+      }
+    }
+
+    function populateCustomerFeedbackFormDetails(booking) {
+      const totals = computeBookingTotals(booking);
+      const guest = document.getElementById("customerFeedbackGuest");
+      const reference = document.getElementById("customerFeedbackReference");
+      const bill = document.getElementById("customerFeedbackCurrentBill");
+      const intro = document.getElementById("customerFeedbackIntro");
+
+      if (guest) guest.textContent = booking.name || "Guest";
+      if (reference) reference.textContent = booking.reservationReference || "N/A";
+      if (bill) bill.textContent = formatCurrencyPHP(totals.total);
+      if (intro) {
+        intro.textContent = `Answer the short form below for reference ${booking.reservationReference || "N/A"}. After you submit, the wheel will spin and apply a discount to your current bill of ${formatCurrencyPHP(totals.total)}.`;
+      }
+    }
+
+    function populateCustomerFeedbackSubmittedState(booking, isNewSubmission = false) {
+      const totals = computeBookingTotals(booking);
+      const title = document.getElementById("customerFeedbackSubmittedTitle");
+      const copy = document.getElementById("customerFeedbackSubmittedCopy");
+      const discount = document.getElementById("customerFeedbackSubmittedDiscount");
+      const amount = document.getElementById("customerFeedbackSubmittedAmount");
+      const total = document.getElementById("customerFeedbackSubmittedTotal");
+      const feedback = document.getElementById("customerFeedbackSubmittedFeedback");
+      const suggestion = document.getElementById("customerFeedbackSubmittedSuggestion");
+
+      if (title) {
+        title.textContent = isNewSubmission
+          ? "Your discount has been applied"
+          : "This discount was already applied";
+      }
+      if (copy) {
+        copy.textContent = isNewSubmission
+          ? `Thank you for your feedback. Your booking now has a ${totals.customerDiscountPercent || 0}% customer discount.`
+          : `This booking already received a ${totals.customerDiscountPercent || 0}% customer discount from the feedback form.`;
+      }
+      if (discount) discount.textContent = `${totals.customerDiscountPercent || 0}% off`;
+      if (amount) amount.textContent = formatCurrencyPHP(totals.customerDiscountAmount);
+      if (total) total.textContent = formatCurrencyPHP(totals.total);
+      if (feedback) feedback.textContent = String(booking.customerFeedbackComment || "No feedback provided.");
+      if (suggestion) suggestion.textContent = String(booking.customerFeedbackSuggestion || "No suggestion provided.");
+    }
+
+    function showCustomerFeedbackError(title, copy) {
+      const overlay = document.getElementById("customerFeedbackOverlay");
+      const titleEl = document.getElementById("customerFeedbackErrorTitle");
+      const copyEl = document.getElementById("customerFeedbackErrorCopy");
+      activeCustomerFeedbackContext = null;
+      pendingCustomerFeedbackDraft = null;
+      customerDiscountSpinInProgress = false;
+      if (titleEl) titleEl.textContent = title;
+      if (copyEl) copyEl.textContent = copy;
+      if (overlay) overlay.classList.remove("hidden");
+      showCustomerFeedbackState("customerFeedbackErrorState");
+      syncFeedbackOverlayBodyLock();
+    }
+
+    async function initializeCustomerFeedbackFromUrl() {
+      let bookingId = "";
+      let token = "";
+
+      try {
+        const url = new URL(window.location.href);
+        bookingId = url.searchParams.get("feedbackBooking") || "";
+        token = url.searchParams.get("feedbackToken") || "";
+      } catch (error) {
+        console.warn("Unable to read customer feedback query params:", error);
+        return;
+      }
+
+      if (!bookingId || !token) return;
+
+      const welcomeOverlay = document.getElementById("welcomeOverlay");
+      if (welcomeOverlay) welcomeOverlay.classList.add("hidden");
+
+      const overlay = document.getElementById("customerFeedbackOverlay");
+      if (overlay) overlay.classList.remove("hidden");
+      showCustomerFeedbackState("customerFeedbackLoadingState");
+      syncFeedbackOverlayBodyLock();
+
+      const booking = await fetchApprovedBookingById(bookingId, true);
+      if (!booking) {
+        showCustomerFeedbackError("This feedback link was not found", "Please contact the booking team so they can send a fresh QR code or link.");
+        return;
+      }
+
+      if (String(booking.customerDiscountToken || "") !== String(token)) {
+        showCustomerFeedbackError("This feedback link is invalid", "The QR code or link does not match the booking record anymore. Please request a new QR code from the admin.");
+        return;
+      }
+
+      if (booking.fullyPaid && !booking.customerFeedbackSubmittedAt) {
+        showCustomerFeedbackError("This discount wheel is closed", "This booking has already been marked as fully paid, so the customer roulette discount can no longer be applied.");
+        return;
+      }
+
+      activeCustomerFeedbackContext = {
+        bookingId: String(booking.id || ""),
+        token: String(token),
+        booking,
+      };
+
+      populateCustomerFeedbackFormDetails(booking);
+      renderCustomerDiscountSegmentChips("customerDiscountSegmentList");
+
+      if (booking.customerFeedbackSubmittedAt) {
+        populateCustomerFeedbackSubmittedState(booking, false);
+        showCustomerFeedbackState("customerFeedbackSubmittedState");
+        return;
+      }
+
+      resetCustomerFeedbackForm();
+      showCustomerFeedbackState("customerFeedbackFormState");
+    }
+
+    function closeCustomerFeedbackOverlay() {
+      const overlay = document.getElementById("customerFeedbackOverlay");
+      if (overlay) overlay.classList.add("hidden");
+      activeCustomerFeedbackContext = null;
+      pendingCustomerFeedbackDraft = null;
+      customerDiscountSpinInProgress = false;
+      resetCustomerFeedbackForm();
+      clearCustomerFeedbackQueryParams();
+      syncFeedbackOverlayBodyLock();
+    }
+
+    async function submitCustomerFeedbackForm(event) {
+      if (event) event.preventDefault();
+      if (!activeCustomerFeedbackContext || !activeCustomerFeedbackContext.booking) return;
+      if (customerDiscountSpinInProgress) return;
+
+      const rating = Number((document.getElementById("customerFeedbackRating") || {}).value) || 0;
+      const comment = String((document.getElementById("customerFeedbackComment") || {}).value || "").trim();
+      const suggestion = String((document.getElementById("customerFeedbackSuggestion") || {}).value || "").trim();
+
+      if (!rating) {
+        showToast("Please choose a rating before submitting.", "error");
+        return;
+      }
+
+      if (!comment) {
+        showToast("Please write your feedback first.", "error");
+        return;
+      }
+
+      if (!suggestion) {
+        showToast("Please add your suggestion before submitting.", "error");
+        return;
+      }
+
+      pendingCustomerFeedbackDraft = { rating, comment, suggestion };
+      const wheelCopy = document.getElementById("customerFeedbackWheelCopy");
+      if (wheelCopy) {
+        wheelCopy.textContent = "Thank you. The roulette wheel is spinning now and will save your discount automatically.";
+      }
+      showCustomerFeedbackState("customerFeedbackWheelState");
+      await spinCustomerDiscountWheel();
+    }
+
+    async function spinCustomerDiscountWheel() {
+      if (customerDiscountSpinInProgress) return;
+      if (!activeCustomerFeedbackContext || !pendingCustomerFeedbackDraft) return;
+
+      customerDiscountSpinInProgress = true;
+      const wheel = document.getElementById("customerDiscountWheel");
+      const segmentAngle = 360 / CUSTOMER_DISCOUNT_SEGMENTS.length;
+      const winningIndex = Math.floor(Math.random() * CUSTOMER_DISCOUNT_SEGMENTS.length);
+      const winningDiscount = CUSTOMER_DISCOUNT_SEGMENTS[winningIndex];
+      const landingAngle = (360 - (winningIndex * segmentAngle) - (segmentAngle / 2));
+      const rotation = (360 * 6) + landingAngle;
+
+      if (wheel) {
+        wheel.style.transition = "none";
+        wheel.style.transform = "rotate(0deg)";
+        void wheel.offsetWidth;
+        wheel.style.transition = "transform 4.2s cubic-bezier(0.12, 0.9, 0.1, 1)";
+        wheel.style.transform = `rotate(${rotation}deg)`;
+      }
+
+      await new Promise((resolve) => setTimeout(resolve, 4300));
+
+      try {
+        const latestBooking = await fetchApprovedBookingById(activeCustomerFeedbackContext.bookingId, true);
+        if (!latestBooking) {
+          showCustomerFeedbackError("This booking could not be updated", "Please contact the booking team so they can assist you manually.");
+          return;
+        }
+
+        if (String(latestBooking.customerDiscountToken || "") !== String(activeCustomerFeedbackContext.token)) {
+          showCustomerFeedbackError("This feedback link is no longer valid", "Please request a new QR code or link from the admin.");
+          return;
+        }
+
+        if (latestBooking.customerFeedbackSubmittedAt) {
+          activeCustomerFeedbackContext.booking = latestBooking;
+          populateCustomerFeedbackSubmittedState(latestBooking, false);
+          showCustomerFeedbackState("customerFeedbackSubmittedState");
+          return;
+        }
+
+        if (latestBooking.fullyPaid) {
+          showCustomerFeedbackError("This discount wheel is closed", "The booking was already marked as fully paid before the roulette result could be saved.");
+          return;
+        }
+
+        const submittedAt = new Date().toISOString();
+        const updatedBooking = {
+          ...latestBooking,
+          customerDiscountPercent: winningDiscount,
+          customerDiscountStatus: "submitted",
+          customerDiscountIssuedAt: latestBooking.customerDiscountIssuedAt || submittedAt,
+          customerDiscountAwardedAt: submittedAt,
+          customerFeedbackSubmittedAt: submittedAt,
+          customerFeedbackRating: pendingCustomerFeedbackDraft.rating,
+          customerFeedbackComment: pendingCustomerFeedbackDraft.comment,
+          customerFeedbackSuggestion: pendingCustomerFeedbackDraft.suggestion,
+        };
+
+        await saveBookingRecord(BOOKINGS_COLLECTION, updatedBooking);
+        activeCustomerFeedbackContext.booking = updatedBooking;
+        populateCustomerFeedbackSubmittedState(updatedBooking, true);
+        showCustomerFeedbackState("customerFeedbackSubmittedState");
+        showToast("Your customer discount has been applied.", "success");
+      } finally {
+        customerDiscountSpinInProgress = false;
+        pendingCustomerFeedbackDraft = null;
+      }
+    }
+
     async function markBookingFullyPaid(index) {
       if (!requireAdminAuth()) return;
 
       const bookings = getBookings();
       if (!bookings[index]) return;
 
+      const transactionHistoryId = getTransactionHistoryRecordId(bookings[index]);
       const updatedBooking = {
         ...bookings[index],
         fullyPaid: true,
         paidAt: new Date().toISOString(),
+        transactionHistoryId,
       };
 
       await saveBookingRecord(BOOKINGS_COLLECTION, updatedBooking);
+      await archiveFullyPaidBooking(updatedBooking);
+      showToast("Booking marked as fully paid and added to transaction history.", "success");
       if (adminPanelOpen) viewBookings();
     }
 
@@ -5972,6 +8054,45 @@
       return source.findIndex((item) => String(item.id) === String(bookingId));
     }
 
+    function getAdminCustomerDiscountHtml(booking, indexVal) {
+      const totals = computeBookingTotals(booking);
+      const status = getCustomerDiscountStatus(booking);
+      const canOpenQr = indexVal >= 0 && (!totals.fullyPaid || !!booking.customerFeedbackSubmittedAt);
+      const feedbackPreview = booking.customerFeedbackSubmittedAt
+        ? `
+          <div class="admin-feedback-preview">
+            <p><strong>Rating:</strong> ${Number(booking.customerFeedbackRating) || 0}/5</p>
+            <p><strong>Feedback:</strong> ${formatCustomerFeedbackSnippet(booking.customerFeedbackComment)}</p>
+            <p><strong>Suggestion:</strong> ${formatCustomerFeedbackSnippet(booking.customerFeedbackSuggestion)}</p>
+          </div>
+        `
+        : "";
+      const timingNote = booking.customerFeedbackSubmittedAt
+        ? `Feedback submitted ${formatDateTimeLong(booking.customerFeedbackSubmittedAt)}`
+        : booking.customerDiscountIssuedAt
+          ? `QR issued ${formatDateTimeLong(booking.customerDiscountIssuedAt)}`
+          : "Issue the QR code after approval so the customer can answer the feedback form.";
+
+      return `
+        <div class="admin-discount-stack">
+          <div class="admin-discount-summary">
+            <strong>Customer Discount</strong>
+            <span>${totals.customerDiscountPercent || 0}% (${formatAdminPdfMoney(totals.customerDiscountAmount)})</span>
+          </div>
+          <div class="admin-discount-meta">
+            <span class="admin-discount-badge ${status.tone}">${escapeHtml(status.label)}</span>
+            <span class="admin-discount-note">${escapeHtml(timingNote)}</span>
+          </div>
+          <div class="admin-inline-actions">
+            ${canOpenQr
+              ? `<button type="button" class="secondary-btn" style="width:auto;padding:8px 12px;" onclick="openCustomerDiscountQrModal('approved', ${indexVal})">${booking.customerFeedbackSubmittedAt ? "View QR Link" : "Customer Discount QR"}</button>`
+              : `<span class="admin-discount-note">${totals.fullyPaid ? "Customer discount QR is closed after full payment." : "Customer discount QR becomes available once the booking is approved."}</span>`}
+          </div>
+          ${feedbackPreview}
+        </div>
+      `;
+    }
+
     function getAdminCombinedBookings() {
       const pending = getPendingBookings().map((booking) => ({ collectionType: "pending", booking }));
       const approved = getBookings().map((booking) => ({ collectionType: "approved", booking }));
@@ -5988,6 +8109,103 @@
         const bCreated = Date.parse(b.booking.createdAt || b.booking.approvedAt || "") || Number(b.booking.id) || 0;
         return aCreated - bCreated;
       });
+    }
+
+    function getFullyPaidTransactionEntries() {
+      const currentFullyPaid = getBookings()
+        .filter((booking) => computeBookingTotals(booking).fullyPaid)
+        .map((booking) => buildTransactionHistoryRecord(booking));
+      const archivedTransactions = getTransactionHistory()
+        .filter((entry) => !!entry.fullyPaid)
+        .map((entry) => buildTransactionHistoryRecord(entry));
+
+      const byBookingId = new Map();
+      [...archivedTransactions, ...currentFullyPaid].forEach((entry) => {
+        const key = String(entry.bookingId || entry.reservationReference || entry.id);
+        const existing = byBookingId.get(key);
+        const entryTime = Date.parse(entry.paidAt || entry.transactionRecordedAt || "") || 0;
+        const existingTime = existing ? (Date.parse(existing.paidAt || existing.transactionRecordedAt || "") || 0) : 0;
+        if (!existing || entryTime >= existingTime) {
+          byBookingId.set(key, entry);
+        }
+      });
+
+      return sortTransactionsByPaidAt(Array.from(byBookingId.values()));
+    }
+
+    function getTransactionHistoryHtml(entries) {
+      const transactionCount = entries.length;
+      const totalRevenue = entries.reduce((sum, entry) => {
+        const totals = computeBookingTotals(entry);
+        return sum + (Number(entry.snapshotTotal) || totals.total);
+      }, 0);
+      const latestPayment = transactionCount > 0
+        ? formatDateTimeLong(entries[0].paidAt || entries[0].transactionRecordedAt || entries[0].approvedAt || entries[0].createdAt)
+        : "N/A";
+
+      let html = `
+        <div class="admin-transaction-panel">
+          <h4>Transaction History</h4>
+          <p>Showing all archived transactions that were marked as fully paid.</p>
+          <div class="admin-transaction-summary">
+            <div class="admin-transaction-stat">
+              <strong>Fully Paid Records</strong>
+              <span>${transactionCount}</span>
+            </div>
+            <div class="admin-transaction-stat">
+              <strong>Total Revenue</strong>
+              <span>${formatAdminPdfMoney(totalRevenue)}</span>
+            </div>
+            <div class="admin-transaction-stat">
+              <strong>Latest Payment</strong>
+              <span style="font-size:14px;">${latestPayment}</span>
+            </div>
+          </div>
+      `;
+
+      if (transactionCount === 0) {
+        html += `<p style="margin-top:14px;">No fully paid transactions have been archived yet.</p></div>`;
+        return html;
+      }
+
+      html += `<div class="admin-transaction-list">`;
+      entries.forEach((entry) => {
+        const totals = computeBookingTotals(entry);
+        const managementDiscountPercent = Number.isFinite(Number(entry.snapshotManagementDiscountPercent))
+          ? Number(entry.snapshotManagementDiscountPercent)
+          : totals.managementDiscountPercent;
+        const managementDiscountAmount = Number.isFinite(Number(entry.snapshotManagementDiscountAmount))
+          ? Number(entry.snapshotManagementDiscountAmount)
+          : totals.managementDiscountAmount;
+        const customerDiscountPercent = Number.isFinite(Number(entry.snapshotCustomerDiscountPercent))
+          ? Number(entry.snapshotCustomerDiscountPercent)
+          : totals.customerDiscountPercent;
+        const customerDiscountAmount = Number.isFinite(Number(entry.snapshotCustomerDiscountAmount))
+          ? Number(entry.snapshotCustomerDiscountAmount)
+          : totals.customerDiscountAmount;
+        const paidAt = formatDateTimeLong(entry.paidAt || entry.transactionRecordedAt || entry.approvedAt || entry.createdAt);
+        const checkInDate = entry.checkInDate ? formatDateLong(entry.checkInDate) : "N/A";
+        const checkOutDate = entry.checkOutDate ? formatDateLong(entry.checkOutDate) : "N/A";
+        html += `
+          <div class="admin-transaction-item">
+            <p><strong>${entry.name || "Guest"}</strong></p>
+            <p><strong>Reference:</strong> ${entry.reservationReference || "N/A"}</p>
+            <p><strong>Paid At:</strong> ${paidAt}</p>
+            <p><strong>Net Total:</strong> ${formatAdminPdfMoney(Number(entry.snapshotTotal) || totals.total)}</p>
+            <p><strong>Management Discount:</strong> ${managementDiscountPercent || 0}% (${formatAdminPdfMoney(managementDiscountAmount)})</p>
+            <p><strong>Customer Discount:</strong> ${customerDiscountPercent || 0}% (${formatAdminPdfMoney(customerDiscountAmount)})</p>
+            <p><strong>Downpayment:</strong> ${formatAdminPdfMoney(Number(entry.snapshotDownpayment) || totals.downpayment)}</p>
+            <p><strong>Remaining Balance:</strong> ${formatAdminPdfMoney(Number(entry.snapshotRemainingBalance) || totals.remainingBalance)}</p>
+            <p><strong>Stay:</strong> ${entry.stayLabel || getBookingStayLabel(entry)}</p>
+            <p><strong>Check-in:</strong> ${checkInDate}</p>
+            <p><strong>Check-out:</strong> ${checkOutDate}</p>
+            <p><strong>Package:</strong> ${getBookingPackageSummaryNoPrice(entry)}</p>
+            <span class="admin-transaction-chip">Fully Paid</span>
+          </div>
+        `;
+      });
+      html += `</div></div>`;
+      return html;
     }
 
     function ensureAdminCalendarState(combinedBookings) {
@@ -6078,11 +8296,13 @@
         const statusLabel = collectionType === "pending" ? "Pending" : "Booked";
         const indexVal = getAdminBookingIndexById(collectionType, booking.id);
         const statusColor = collectionType === "pending" ? "#b26a00" : "#1f7a3f";
+        const statusBadgeClass = collectionType === "pending" ? "pending" : "active";
+        const totals = computeBookingTotals(booking);
         const checkInDate = getNormalizedCheckInDate(booking);
         const checkOutDate = getNormalizedCheckOutDate(booking);
         const formattedCheckIn = new Date(`${checkInDate}T00:00:00`).toLocaleDateString("en-PH", { year: "numeric", month: "long", day: "numeric" });
         const formattedCheckOut = new Date(`${checkOutDate}T00:00:00`).toLocaleDateString("en-PH", { year: "numeric", month: "long", day: "numeric" });
-        const fullyPaidBtn = collectionType === "approved" && indexVal >= 0 && !computeBookingTotals(booking).fullyPaid
+        const fullyPaidBtn = collectionType === "approved" && indexVal >= 0 && !totals.fullyPaid
           ? `<button onclick="markBookingFullyPaid(${indexVal})" style="background:#2e7d32;color:#fff;width:auto;padding:8px 12px;">Fully Paid</button>`
           : "";
         const pendingActions = collectionType === "pending" && indexVal >= 0
@@ -6098,13 +8318,16 @@
                <input id="${discountInputId}" type="number" min="0" max="100" value="${booking.managementDiscountPercent || 0}" style="width:80px;padding:6px;border:1px solid #cddfe0;border-radius:8px;" />
                <button type="button" class="secondary-btn" style="width:auto;padding:8px 12px;" onclick="applyManagementDiscount('${collectionType}', ${indexVal})">Apply</button>
              </div>`;
+        const customerDiscountControl = collectionType === "approved"
+          ? getAdminCustomerDiscountHtml(booking, indexVal)
+          : "";
         const downloadBtn = indexVal >= 0
           ? `<button type="button" class="primary-btn" style="width:auto;padding:8px 12px;" onclick="downloadAdminBookingPDF('${collectionType}', ${indexVal})">Download PDF</button>`
           : "";
 
         html += `
           <div class="admin-booking-item ${collectionType}">
-            <p><strong>${booking.name || "Guest"}</strong> <span style="color:${statusColor};font-weight:700;">(${statusLabel})</span></p>
+            <p><strong>${booking.name || "Guest"}</strong> <span class="status-badge ${statusBadgeClass}">${statusLabel}</span></p>
             <p><strong>Reference:</strong> ${booking.reservationReference || "N/A"}</p>
             <p><strong>Contact Number:</strong> ${booking.contactNumber || "N/A"}</p>
             <p><strong>Package:</strong> ${getBookingPackageSummaryNoPrice(booking)}</p>
@@ -6116,7 +8339,12 @@
             <p><strong>Pool:</strong> ${stripPriceText(booking.poolBreakdown || "None")}</p>
             <p><strong>Catering:</strong> ${stripPriceText(booking.cateringPackage || "None")} ${booking.cateringPersons ? `(${booking.cateringPersons} pax)` : ""}</p>
             <p><strong>Function Hall:</strong> ${booking.hallSelected ? stripPriceText(booking.hallLabel || "Included") : "None"}</p>
+            <p><strong>Current Bill:</strong> ${formatAdminPdfMoney(totals.total)}</p>
+            ${totals.managementDiscountPercent > 0 ? 
+              `<p><strong>Management Discount:</strong> <span class="discount-indicator">-${totals.managementDiscountPercent}% (${formatAdminPdfMoney(totals.managementDiscountAmount)})</span></p>` : 
+              '<p><strong>Management Discount:</strong> None</p>'}
             ${discountControl}
+            ${customerDiscountControl}
             <button class="delete-btn" onclick="deleteBookingById('${collectionType}', '${String(booking.id)}')">Delete</button>
             ${pendingActions}
             ${fullyPaidBtn}
@@ -6136,37 +8364,56 @@
         const shell = document.getElementById("adminPanelShell");
         const content = document.getElementById("adminPanelContent");
         if (shell) shell.style.display = "block";
-        if (content) content.innerHTML = "<h3>Admin login required.</h3><p>Use Ctrl + A or the Admin button, then sign in with your Firebase admin account.</p>";
+        if (content) content.innerHTML = "<h3>Admin login required.</h3><p>Use the private admin shortcut, then sign in with your Firebase admin account.</p>";
         return;
       }
 
       const pending = getPendingBookings();
       const approved = getBookings();
       const combinedBookings = getAdminCombinedBookings();
+      const transactionEntries = getFullyPaidTransactionEntries();
 
-      if (combinedBookings.length === 0) {
-        document.getElementById("quotation").innerHTML = "<h3>No bookings yet.</h3>";
+      if (combinedBookings.length === 0 && transactionEntries.length === 0) {
+        const shell = document.getElementById("adminPanelShell");
+        const content = document.getElementById("adminPanelContent");
+        if (shell) shell.style.display = "block";
+        if (content) content.innerHTML = "<h3>No bookings or transactions yet.</h3>";
         return;
       }
+
+      ensureAdminCalendarState(combinedBookings);
 
       let output = `<h3>Management Calendar & Bookings</h3>`;
       output += `<p><strong>Signed in as:</strong> ${auth.currentUser.email || "Admin"}</p>`;
       output += `<div style="display:flex;gap:10px;flex-wrap:wrap;margin:8px 0;">
         <button onclick="adminLogout()" style="background:#455a64;color:#fff;width:auto;padding:8px 12px;">Log Out</button>
         <button onclick="downloadPDF()" style="background:#0f3e66;color:#fff;width:auto;padding:8px 12px;">Download PDF</button>
-      </div>`;
-      output += `<p><strong>Pending Approval:</strong> ${pending.length} | <strong>Approved:</strong> ${approved.length}</p>`;
-      output += `
-        <div class="admin-calendar-panel">
-          <div class="admin-calendar-header">
-            <h4>Booking Calendar</h4>
-            <input type="month" value="${adminCalendarMonth}" onchange="changeAdminCalendarMonth(this.value)" />
-            <button class="ghost-btn" style="margin-left:8px;" onclick="exportAdminPdf()">Download PDF</button>
-          </div>
-          ${getAdminCalendarHtml(combinedBookings)}
-          ${getAdminBookingListHtml(combinedBookings, adminSelectedDate)}
+        <div class="help-tooltip">
+          <button onclick="showManagementDiscount()" style="background:#ff6b6b;color:#fff;width:auto;padding:8px 12px;">Management Discount</button>
+          <span class="tooltiptext">Apply admin discount to any booking with reason</span>
         </div>
-      `;
+        <div class="help-tooltip">
+          <button onclick="generateCustomerDiscountQR()" style="background:#4ecdc4;color:#fff;width:auto;padding:8px 12px;">Generate Customer QR</button>
+          <span class="tooltiptext">Create QR for customer feedback & roulette discount</span>
+        </div>
+      </div>`;
+      output += `<p><strong>Pending Approval:</strong> ${pending.length} | <strong>Approved:</strong> ${approved.length} | <strong>Fully Paid Transactions:</strong> ${transactionEntries.length}</p>`;
+      if (combinedBookings.length > 0) {
+        output += `
+          <div class="admin-calendar-panel">
+            <div class="admin-calendar-header">
+              <h4>Booking Calendar</h4>
+              <input type="month" value="${adminCalendarMonth}" onchange="changeAdminCalendarMonth(this.value)" />
+              <button class="ghost-btn" style="margin-left:8px;" onclick="exportAdminPdf()">Download PDF</button>
+            </div>
+            ${getAdminCalendarHtml(combinedBookings)}
+            ${getAdminBookingListHtml(combinedBookings, adminSelectedDate)}
+          </div>
+        `;
+      } else {
+        output += `<div class="admin-calendar-panel"><h4>Booking Calendar</h4><p>No current pending or approved bookings. Transaction history is still available below.</p></div>`;
+      }
+      output += getTransactionHistoryHtml(transactionEntries);
 
       const shell = document.getElementById("adminPanelShell");
       const content = document.getElementById("adminPanelContent");
@@ -6608,6 +8855,203 @@
       }
     }
 
+    function showManagementDiscount() {
+      const content = document.getElementById("adminPanelContent");
+      if (!content) return;
+
+      let output = `
+        <h3>Management Discount</h3>
+        <div style="background:#fff;padding:20px;border-radius:8px;margin:10px 0;">
+          <h4>Apply Management Discount to Booking</h4>
+          <div style="margin:10px 0;">
+            <label>Booking ID/Reference:</label>
+            <input type="text" id="managementDiscountBookingId" placeholder="Enter booking reference" style="width:100%;padding:8px;margin:5px 0;">
+          </div>
+          <div style="margin:10px 0;">
+            <label>Discount Percentage (%):</label>
+            <input type="number" id="managementDiscountPercent" min="0" max="100" placeholder="Enter discount percentage" style="width:100%;padding:8px;margin:5px 0;">
+          </div>
+          <div style="margin:10px 0;">
+            <label>Reason:</label>
+            <textarea id="managementDiscountReason" placeholder="Enter discount reason" style="width:100%;padding:8px;margin:5px 0;height:80px;"></textarea>
+          </div>
+          <button onclick="applyManagementDiscount()" style="background:#ff6b6b;color:#fff;padding:10px 20px;border:none;border-radius:5px;cursor:pointer;">Apply Discount</button>
+          <button onclick="viewBookings()" style="background:#666;color:#fff;padding:10px 20px;border:none;border-radius:5px;cursor:pointer;margin-left:10px;">Back</button>
+        </div>
+        <div id="managementDiscountResult"></div>
+      `;
+
+      content.innerHTML = output;
+    }
+
+    function applyManagementDiscount() {
+      const bookingId = document.getElementById("managementDiscountBookingId")?.value?.trim();
+      const discountPercent = parseFloat(document.getElementById("managementDiscountPercent")?.value) || 0;
+      const reason = document.getElementById("managementDiscountReason")?.value?.trim();
+
+      if (!bookingId || discountPercent <= 0 || discountPercent > 100) {
+        showToast("Please enter valid booking ID and discount percentage", "error");
+        return;
+      }
+
+      if (!reason) {
+        showToast("Please provide a reason for the discount", "error");
+        return;
+      }
+
+      // Find the booking
+      const pending = getPendingBookings();
+      const approved = getBookings();
+      const allBookings = [...pending, ...approved];
+      const booking = allBookings.find(b => b.reservationReference === bookingId || b.id === bookingId);
+
+      if (!booking) {
+        showToast("Booking not found", "error");
+        return;
+      }
+
+      // Apply discount (this would normally update the database)
+      const discountAmount = (booking.totalAmount || 0) * (discountPercent / 100);
+      const newTotal = (booking.totalAmount || 0) - discountAmount;
+
+      // Update booking with discount info
+      booking.managementDiscount = {
+        percentage: discountPercent,
+        amount: discountAmount,
+        reason: reason,
+        appliedAt: new Date().toISOString(),
+        appliedBy: auth.currentUser?.email || "Admin"
+      };
+      booking.discountedTotal = newTotal;
+
+      // Save to database
+      if (db) {
+        const collectionName = booking.status === "approved" ? BOOKINGS_COLLECTION : PENDING_BOOKINGS_COLLECTION;
+        saveBookingRecord(collectionName, booking).then(() => {
+          showToast(`Management discount of ${discountPercent}% applied to booking ${bookingId}`, "success");
+          viewBookings(); // Refresh admin panel
+        }).catch(error => {
+          console.error("Failed to apply management discount:", error);
+          showToast("Failed to apply discount. Please try again.", "error");
+        });
+      } else {
+        showToast("Management discount applied locally", "success");
+        viewBookings();
+      }
+    }
+
+    function generateCustomerDiscountQR() {
+      const content = document.getElementById("adminPanelContent");
+      if (!content) return;
+
+      // Generate unique QR code ID
+      const qrId = `DISCOUNT_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      const qrUrl = `${window.location.origin}${window.location.pathname}?feedback=${qrId}`;
+
+      let output = `
+        <h3>Customer Discount QR Code</h3>
+        <div style="background:#fff;padding:20px;border-radius:8px;margin:10px 0;">
+          <h4>Generate QR Code for Customer Feedback</h4>
+          <div style="margin:10px 0;">
+            <label>QR Code ID:</label>
+            <input type="text" value="${qrId}" readonly style="width:100%;padding:8px;margin:5px 0;background:#f5f5f5;">
+          </div>
+          <div style="margin:10px 0;">
+            <label>Feedback URL:</label>
+            <input type="text" value="${qrUrl}" readonly style="width:100%;padding:8px;margin:5px 0;background:#f5f5f5;">
+          </div>
+          <div id="qrCodeDisplay" style="text-align:center;margin:20px 0;">
+            <div style="border:2px dashed #ccc;padding:40px;border-radius:8px;">
+              <p>QR Code will be displayed here</p>
+              <button onclick="renderQRCode('${qrId}')" style="background:#4ecdc4;color:#fff;padding:10px 20px;border:none;border-radius:5px;cursor:pointer;">Generate QR Code</button>
+            </div>
+          </div>
+          <div style="margin:10px 0;">
+            <label>Instructions:</label>
+            <ul style="color:#666;font-size:14px;">
+              <li>Customer scans QR code with their phone</li>
+              <li>They fill out feedback form</li>
+              <li>After submission, they get to spin the roulette wheel</li>
+              <li>Discount percentage is automatically applied to their booking</li>
+            </ul>
+          </div>
+          <button onclick="viewBookings()" style="background:#666;color:#fff;padding:10px 20px;border:none;border-radius:5px;cursor:pointer;">Back</button>
+        </div>
+      `;
+
+      content.innerHTML = output;
+    }
+
+    function renderQRCode(qrId) {
+      const qrDisplay = document.getElementById("qrCodeDisplay");
+      if (!qrDisplay) return;
+
+      // Simple QR code placeholder (in real implementation, use QR code library)
+      const qrData = `${window.location.origin}${window.location.pathname}?feedback=${qrId}`;
+      
+      qrDisplay.innerHTML = `
+        <div style="border:2px solid #4ecdc4;padding:20px;border-radius:8px;background:#fff;">
+          <h4>QR Code Generated</h4>
+          <div style="width:200px;height:200px;margin:20px auto;border:2px solid #333;display:flex;align-items:center;justify-content:center;background:#f9f9f9;">
+            <div style="text-align:center;">
+              <div style="font-size:48px;">📱</div>
+              <p style="font-size:12px;margin:5px 0;">QR Code</p>
+              <p style="font-size:10px;color:#666;">ID: ${qrId}</p>
+            </div>
+          </div>
+          <p style="font-size:12px;color:#666;margin:10px 0;">Scan this QR code for customer feedback and discount</p>
+          <button onclick="printQRCode('${qrId}')" style="background:#4ecdc4;color:#fff;padding:8px 16px;border:none;border-radius:5px;cursor:pointer;">Print QR Code</button>
+        </div>
+      `;
+    }
+
+    function printQRCode(qrId) {
+      const printWindow = window.open('', '_blank');
+      printWindow.document.write(`
+        <html>
+          <head>
+            <title>Customer Discount QR Code</title>
+            <style>
+              body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+              .qr-container { 
+                border: 2px solid #4ecdc4; 
+                padding: 30px; 
+                border-radius: 10px; 
+                width: 300px; 
+                margin: 0 auto; 
+              }
+              .qr-placeholder { 
+                width: 200px; 
+                height: 200px; 
+                border: 2px solid #333; 
+                margin: 20px auto; 
+                display: flex; 
+                align-items: center; 
+                justify-content: center; 
+                background: #f9f9f9; 
+              }
+            </style>
+          </head>
+          <body>
+            <div class="qr-container">
+              <h2>Customer Feedback & Discount</h2>
+              <div class="qr-placeholder">
+                <div>
+                  <div style="font-size: 48px;">📱</div>
+                  <p>QR Code</p>
+                  <p style="font-size: 10px;">ID: ${qrId}</p>
+                </div>
+              </div>
+              <p>Scan for feedback and discount!</p>
+              <p style="font-size: 12px; color: #666;">${window.location.origin}${window.location.pathname}?feedback=${qrId}</p>
+            </div>
+          </body>
+        </html>
+      `);
+      printWindow.document.close();
+      printWindow.print();
+    }
+
     async function adminLogout() {
       if (!auth) return;
 
@@ -6620,6 +9064,7 @@
       adminPanelOpen = false;
       managementPanelOpen = false;
       stopPendingBookingSync();
+      stopTransactionHistorySync();
       afterBookingCacheUpdate();
       const adminBtn = document.getElementById("adminBtn");
       if (adminBtn) adminBtn.style.display = "none";
@@ -6629,27 +9074,16 @@
       if (adminContent) adminContent.innerHTML = "";
     }
 
-    // Keyboard shortcuts: Ctrl + A for admin panel, Alt + 1 for booking calendar
+    // Keyboard shortcuts: private admin shortcut and Alt + 1 for booking calendar
     document.addEventListener("keydown", (event) => {
       if (event.ctrlKey && event.key.toLowerCase() === "a") {
         event.preventDefault();
-        const adminBtn = document.getElementById("adminBtn");
-        if (adminBtn) adminBtn.style.display = "block";
         adminLogin();
-        showToast("Admin panel unlocked (Ctrl + A).", "info");
+        showToast(`Admin panel opened (Ctrl+A).`, "info");
         return;
       }
 
-      if (event.ctrlKey && event.key === "1") {
-        event.preventDefault();
-        const adminBtn = document.getElementById("adminBtn");
-        if (adminBtn) adminBtn.style.display = "block";
-        adminLogin();
-        showToast("Admin panel unlocked (Ctrl + 1).", "info");
-        return;
-      }
-
-      if (event.ctrlKey && event.key === "2") {
+      if (event.ctrlKey && event.altKey && event.shiftKey && event.key === "2") {
         event.preventDefault();
         openManagementPanel();
         return;
@@ -6696,7 +9130,13 @@
       updateLiveBookingSummary();
       updateActionDock();
       updateStepFlowState();
-    document.getElementById("showRoomsCheckbox").addEventListener("change", updateAccommodationPanels);
+      renderCustomerDiscountSegmentChips("customerDiscountQrSegmentList");
+      renderCustomerDiscountSegmentChips("customerDiscountSegmentList");
+      renderCustomerDiscountWheelLabels();
+      initializeCustomerFeedbackFromUrl().catch((error) => {
+        console.error("Customer feedback initialization failed:", error);
+      });
+      document.getElementById("showRoomsCheckbox").addEventListener("change", updateAccommodationPanels);
       document.getElementById("showPoolCheckbox").addEventListener("change", updateAccommodationPanels);
       document.getElementById("showSpecialEventCheckbox").addEventListener("change", () => {
         if (!document.getElementById("showSpecialEventCheckbox").checked) {

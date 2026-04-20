@@ -64,6 +64,21 @@
     return select ? (select.selectedOptions[0]?.text || "Day") : "Day";
   }
 
+  function getFirstName() {
+    const guestName = getGuestName();
+    return guestName ? guestName.split(/\s+/)[0] : "";
+  }
+
+  function hasRoomOrPoolSelection() {
+    const hasRoom = Array.from(document.querySelectorAll(".room-select"))
+      .some((select) => (select.value || "").trim() !== "");
+    const poolSelect = getEl("pool-select");
+    const hasPool = !!(poolSelect && (poolSelect.value || "").trim());
+    const specialEventSelect = getEl("specialEventSelect");
+    const hasEvent = !!(specialEventSelect && (specialEventSelect.value || "").trim());
+    return hasRoom || hasPool || hasEvent;
+  }
+
   function getDisplayedEstimate() {
     const estimateCard = Array.from(document.querySelectorAll(".booking-summary-item"))
       .find((item) => item.textContent && item.textContent.includes("Estimated Total"));
@@ -114,8 +129,7 @@
 
       @media (max-width: 640px) {
         .launch-utility-stack {
-          left: 12px;
-          bottom: 90px;
+          display: none;
         }
       }
     `;
@@ -149,7 +163,7 @@
     stack.className = "launch-utility-stack";
     stack.innerHTML = `
       <button type="button" id="utilityTodayBtn" class="launch-utility-btn">Today</button>
-      <button type="button" id="utilityQuoteBtn" class="launch-utility-btn">Quotation</button>
+      <button type="button" id="utilityQuoteBtn" class="launch-utility-btn">Summary</button>
       <button type="button" id="utilityTopBtn" class="launch-utility-btn hidden">Top</button>
     `;
     document.body.appendChild(stack);
@@ -191,17 +205,17 @@
     const activeMood = RESORT_MOODS[document.body.dataset.weather || ""] || null;
 
     if (quoteReady) {
-      title.textContent = "Quotation ready for review";
+      title.textContent = "Booking summary ready for review";
       text.textContent = estimate
-        ? `Everything is staged for a polished guest handoff. Current displayed estimate: ${estimate}.`
-        : "Everything is staged for a polished guest handoff. Review the quotation and submit when ready.";
+        ? `Your booking details are ready. Current estimated total: ${estimate}.`
+        : "Your booking details are ready. Review the summary and submit your request when ready.";
       return;
     }
 
     if (guestName && hasDate) {
       title.textContent = `${guestName.split(" ")[0]}'s stay is taking shape`;
       text.textContent = totalGuests > 0
-        ? `${totalGuests} guest(s), ${stayLabel} stay, and a guided booking flow. Generate the quotation when the setup feels right.`
+        ? `${totalGuests} guest(s), ${stayLabel} stay, and a guided booking flow. Review the booking summary when the setup feels right.`
         : `Your guest profile and dates are in place. Continue refining the ${stayLabel.toLowerCase()} setup.`;
       return;
     }
@@ -218,8 +232,123 @@
       return;
     }
 
-    title.textContent = "Smooth, guided, and guest-friendly";
-    text.textContent = "Choose a date, select a stay style, and let the page guide the guest to the fastest complete booking.";
+    title.textContent = "Simple, clear, and guest-friendly";
+    text.textContent = "Choose a date, select your stay, and let the page guide you through a complete booking request.";
+  }
+
+  function getReadinessState() {
+    const guestName = getGuestName();
+    const contactNumber = getContactValue();
+    const hasDate = !!getEl("date")?.value;
+    const guests = getGuestCount();
+    const stayLabel = getStayModeLabel();
+    const configuredStay = !!getEl("preferStay")?.value;
+    const serviceConfigured = hasRoomOrPoolSelection();
+    const quoteReady = !!document.querySelector("#quotation .quote-card");
+
+    let score = 12;
+    if (guestName) score += 18;
+    if (contactNumber.length >= 11) score += 10;
+    if (hasDate) score += 20;
+    if (configuredStay) score += 10;
+    if (guests > 0) score += 10;
+    if (serviceConfigured) score += 20;
+    if (quoteReady) score += 20;
+    score = Math.max(0, Math.min(100, score));
+
+    let label = "Getting started";
+    let stage = "Stage 1";
+    let next = "Complete your details and select a date to start building your booking request.";
+
+    if (quoteReady) {
+      label = "Ready to review";
+      stage = "Stage 4";
+      next = "Review your booking summary, confirm the details, and submit your reservation request when everything looks correct.";
+    } else if (serviceConfigured && hasDate && guestName) {
+      label = "Configuration in progress";
+      stage = "Stage 3";
+      next = "Your core booking setup is in place. Generate the summary next so you can review everything before submitting.";
+    } else if (hasDate && guestName) {
+      label = "Planning locked in";
+      stage = "Stage 2";
+      next = "Choose the rooms, pool, or event setup so the estimate and summary become more accurate.";
+    }
+
+    return { score, label, stage, next, stayLabel, guestName, guests, hasDate, configuredStay, serviceConfigured, quoteReady, hasContact: contactNumber.length >= 11 };
+  }
+
+  function setChipState(id, ready, readyText, pendingText) {
+    const chip = getEl(id);
+    if (!chip) return;
+    chip.classList.toggle("is-ready", ready);
+    chip.textContent = ready ? readyText : pendingText;
+  }
+
+  function updateBookingIntelligence() {
+    const state = getReadinessState();
+    const greeting = getEl("commandCenterGreeting");
+    const narrative = getEl("commandCenterNarrative");
+    const confidence = getEl("commandCenterConfidence");
+    const support = getEl("commandCenterSupport");
+    const readiness = getEl("commandCenterReadiness");
+    const nextStep = getEl("commandCenterNextStep");
+    const metricScore = getEl("commandCenterMetricScore");
+    const metricStage = getEl("commandCenterMetricStage");
+    const metricMode = getEl("commandCenterMetricMode");
+    const label = getEl("bookingReadinessLabel");
+    const score = getEl("bookingReadinessScore");
+    const meter = getEl("bookingReadinessMeter");
+    const readinessNext = getEl("bookingReadinessNext");
+
+    if (greeting) {
+      greeting.textContent = state.guestName
+        ? `${getFirstName()}'s booking experience is taking shape.`
+        : "A calmer booking journey starts here.";
+    }
+
+    if (narrative) {
+      if (state.quoteReady) {
+        narrative.textContent = "Your booking is now packaged into a clear review summary before you submit your reservation request.";
+      } else if (state.serviceConfigured && state.hasDate) {
+        narrative.textContent = "Your guest details, travel date, and stay setup are already aligned. The next move is generating the booking summary for review.";
+      } else if (state.hasDate) {
+        narrative.textContent = "The selected date is now guiding the experience. Keep refining the stay so the guest sees a cleaner, more complete reservation setup.";
+      } else {
+        narrative.textContent = "Guests move through a guided booking flow with clearer decisions, simpler steps, and a more confident first impression from the first click.";
+      }
+    }
+
+    if (confidence) {
+      confidence.textContent = state.quoteReady
+        ? "Ready for confident guest review"
+        : state.score >= 60
+          ? "Booking structure is in place"
+          : "Guest booking experience";
+    }
+
+    if (support) {
+      support.textContent = state.quoteReady
+        ? "The form, estimate, and booking summary are aligned for a smoother reservation request."
+        : state.serviceConfigured
+          ? "The page already feels guided, organized, and easier for guests to review."
+          : "Clean structure, visible guidance, and a booking flow that feels easier to trust.";
+    }
+
+    if (readiness) readiness.textContent = state.label;
+    if (nextStep) nextStep.textContent = state.next;
+    if (metricScore) metricScore.textContent = `${state.score}%`;
+    if (metricStage) metricStage.textContent = state.stage;
+    if (metricMode) metricMode.textContent = state.stayLabel;
+    if (label) label.textContent = state.label;
+    if (score) score.textContent = `${state.score}%`;
+    if (meter) meter.style.width = `${state.score}%`;
+    if (readinessNext) readinessNext.textContent = state.next;
+
+    setChipState("readinessChipGuest", !!state.guestName && state.hasContact, "Guest details ready", "Guest details");
+    setChipState("readinessChipDate", state.hasDate, "Date locked in", "Date selected");
+    setChipState("readinessChipStay", state.configuredStay, `Stay mode: ${state.stayLabel}`, "Stay mode");
+    setChipState("readinessChipRooms", state.serviceConfigured, "Service setup chosen", "Room or pool setup");
+    setChipState("readinessChipQuote", state.quoteReady, "Booking summary ready", "Booking summary");
   }
 
   function pulseJourneyCards() {
@@ -254,7 +383,7 @@
       },
       {
         title: "Built for tropical hospitality",
-        text: "From guest details to quotation, the experience now feels more like a private resort concierge flow than a plain form.",
+        text: "From guest details to booking summary, the experience now feels more like a private resort booking flow than a plain form.",
       },
       {
         title: "Sunset-ready booking presentation",
@@ -281,7 +410,7 @@
       if (event.key !== "?") return;
       event.preventDefault();
 
-      const message = "Shortcuts: Alt + 1 opens booking calendar, Ctrl + A opens admin, and the floating buttons help you jump around the page.";
+      const message = "Shortcut: Alt + 1 opens the booking calendar.";
       if (typeof window.showToast === "function") {
         window.showToast(message, "info");
       } else {
@@ -347,6 +476,7 @@
 
     const update = () => {
       updateHeroSpotlight();
+      updateBookingIntelligence();
       safeCall("updateActionDock");
       safeCall("updateStepFlowState");
     };
@@ -367,9 +497,10 @@
       const observer = new MutationObserver(() => {
         const quoteBtn = getEl("utilityQuoteBtn");
         if (quoteBtn) {
-          quoteBtn.textContent = quote.querySelector(".quote-card") ? "View Quote" : "Quotation";
+          quoteBtn.textContent = quote.querySelector(".quote-card") ? "View Summary" : "Summary";
         }
         updateHeroSpotlight();
+        updateBookingIntelligence();
       });
       observer.observe(quote, { childList: true, subtree: true });
     }
@@ -417,9 +548,12 @@
   }
 
   onReady(() => {
-    injectUtilityStyles();
     createWorldProgressBar();
-    createUtilityButtons();
+    const syncMobileChrome = () => {
+      safeCall("updateMobileBookingBar");
+    };
+    window.addEventListener("scroll", syncMobileChrome, { passive: true });
+    window.addEventListener("resize", syncMobileChrome);
     attachShortcutHelp();
     enhanceGuestNameField();
     createSectionObserver();
@@ -430,6 +564,8 @@
     rotateMarqueeMood();
     syncRoomShowcaseSelection();
     updateHeroSpotlight();
+    updateBookingIntelligence();
+    syncMobileChrome();
 
     document.querySelectorAll(".room-select").forEach((select) => {
       select.addEventListener("change", syncRoomShowcaseSelection);
