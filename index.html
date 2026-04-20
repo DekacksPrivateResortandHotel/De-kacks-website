@@ -39,18 +39,22 @@
 <style>
   @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Source+Sans+3:wght@400;500;600&display=swap");
   :root {
-    --bg-1: #f0f9ff;
-    --bg-2: #e0f2fe;
-    --sea: #0ea5e9;
-    --leaf: #22c55e;
-    --sand: #fef3c7;
-    --coconut: #8b5cf6;
-    --tropical: #f97316;
-    --text: #0f172a;
-    --muted: #64748b;
-    --warn-bg: #fef3c7;
-    --warn-line: #f59e0b;
-    --shadow: 0 22px 48px rgba(14, 165, 233, 0.15);
+    --bg-1: #fdf4e4;
+    --bg-2: #d8f2eb;
+    --card: #ffffff;
+    --line: #c8e3da;
+    --primary: #0f4c5c;
+    --primary-2: #0c3847;
+    --accent: #ff8a65;
+    --accent-2: #f07045;
+    --sea: #82d0c1;
+    --leaf: #3a9c6d;
+    --sand: #ffe7c3;
+    --text: #12303a;
+    --muted: #55706a;
+    --warn-bg: #fff1dc;
+    --warn-line: #ffb86c;
+    --shadow: 0 22px 48px rgba(12, 70, 82, 0.18);
   }
 
   * {
@@ -63,7 +67,10 @@
 
   body {
     font-family: "Source Sans 3", "Segoe UI", sans-serif;
-    background: url('background.jpg') center center/cover no-repeat fixed, linear-gradient(135deg, #fef3c7, #f0f9ff);
+    background:
+      radial-gradient(circle at 14% 12%, rgba(255, 234, 196, 0.85), rgba(255, 234, 196, 0) 26%),
+      radial-gradient(circle at 86% 10%, rgba(130, 208, 193, 0.35), rgba(130, 208, 193, 0) 24%),
+      linear-gradient(135deg, var(--bg-1), var(--bg-2));
     margin: 0;
     padding: 24px;
     color: var(--text);
@@ -71,120 +78,24 @@
     min-height: 100vh;
   }
 
-  body::before {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(255, 255, 255, 0.3);
-    z-index: -1;
-  }
-
-  /* Coconut tree decorative elements */
-  .coconut-tree {
-    position: fixed;
-    top: 5%;
-    right: 3%;
-    width: 120px;
-    height: 200px;
-    z-index: -1;
-    opacity: 0.4;
-    pointer-events: none;
-  }
-
-  .coconut-tree::before {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 8px;
-    height: 120px;
-    background: linear-gradient(to bottom, #8b4513, #654321);
-    border-radius: 4px;
-  }
-
-  .coconut-tree::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 80px;
-    height: 80px;
-    background: radial-gradient(circle, var(--leaf), transparent);
-    border-radius: 50%;
-    box-shadow: 
-      -20px 10px 0 -10px var(--leaf),
-      20px 10px 0 -10px var(--leaf),
-      0 -20px 0 -5px var(--leaf),
-      -15px -15px 0 -8px var(--leaf),
-      15px -15px 0 -8px var(--leaf);
-  }
-
-  .coconut {
-    position: fixed;
-    bottom: 10%;
-    left: 5%;
-    width: 40px;
-    height: 50px;
-    background: radial-gradient(ellipse at center, #8b7355, #6b5d54);
-    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
-    z-index: -1;
-    opacity: 0.3;
-    transform: rotate(-15deg);
-  }
-
-  .coconut::before {
-    content: '';
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    width: 8px;
-    height: 8px;
-    background: #5a4a3a;
-    border-radius: 50%;
-  }
-
-  .coconut::after {
-    content: '';
-    position: absolute;
-    bottom: 15px;
-    right: 8px;
-    width: 6px;
-    height: 6px;
-    background: #5a4a3a;
-    border-radius: 50%;
-  }
-
   body[data-weather="lagoon-morning"] {
     background:
-      radial-gradient(circle at 85% 12%, rgba(249, 115, 22, 0.4), rgba(249, 115, 22, 0) 20%),
-      radial-gradient(circle at 15% 88%, rgba(34, 197, 94, 0.3), rgba(34, 197, 94, 0) 25%),
-      radial-gradient(circle at top left, rgba(254, 243, 199, 0.8), rgba(254, 243, 199, 0) 35%),
-      linear-gradient(145deg, #fef3c7, #dcfce7);
+      radial-gradient(circle at 82% 14%, rgba(255, 205, 96, 0.72), rgba(255, 205, 96, 0) 18%),
+      radial-gradient(circle at top left, rgba(255, 248, 214, 0.95), rgba(255, 248, 214, 0) 32%),
+      linear-gradient(145deg, #fff3d6, #dff6f0);
   }
 
   body[data-weather="palm-breeze"] {
     background:
-      radial-gradient(circle at 20% 15%, rgba(14, 165, 233, 0.3), rgba(14, 165, 233, 0) 25%),
-      radial-gradient(circle at 80% 85%, rgba(254, 243, 199, 0.4), rgba(254, 243, 199, 0) 30%),
-      linear-gradient(145deg, #e0f2fe, #fef3c7);
+      radial-gradient(circle at 18% 16%, rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0) 20%),
+      radial-gradient(circle at 78% 20%, rgba(232, 239, 243, 0.82), rgba(232, 239, 243, 0) 22%),
+      linear-gradient(145deg, #edf4f7, #dfece8);
   }
 
   body[data-weather="monsoon-lounge"] {
     background:
-      radial-gradient(circle at 50% 50%, rgba(139, 92, 246, 0.2), rgba(139, 92, 246, 0) 40%),
-      linear-gradient(145deg, #f0f9ff, #e0f2fe);
-  }
-
-  body[data-weather="tropical-sunset"] {
-    background:
-      radial-gradient(circle at 90% 10%, rgba(249, 115, 22, 0.5), rgba(249, 115, 22, 0) 30%),
-      radial-gradient(circle at 10% 90%, rgba(239, 68, 68, 0.3), rgba(239, 68, 68, 0) 25%),
-      linear-gradient(145deg, #fef3c7, #fee2e2);
+      linear-gradient(180deg, rgba(26, 74, 93, 0.18), rgba(26, 74, 93, 0) 24%),
+      linear-gradient(145deg, #dceaf1, #d6e4db);
   }
 
   body[data-weather="golden-dusk"] {
@@ -2159,9 +2070,16 @@
   }
 
   .feedback-qr-grid {
-    grid-template-columns: minmax(220px, 280px) minmax(0, 1fr);
-    align-items: stretch;
+    grid-template-columns: 1fr;
+    gap: 12px;
     margin-top: 16px;
+  }
+
+  @media (max-width: 768px) {
+    .feedback-qr-grid {
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
   }
 
   .feedback-detail-grid,
@@ -2698,6 +2616,37 @@
       padding: 14px 14px 168px;
     }
 
+    /* Mobile-friendly buttons */
+    button {
+      min-height: 44px;
+      padding: 12px 16px;
+      font-size: 16px;
+    }
+
+    .primary-btn, .secondary-btn {
+      min-height: 48px;
+      padding: 14px 20px;
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .client-guide {
+      margin: 15px 0;
+      padding: 15px;
+    }
+
+    .client-guide h3 {
+      font-size: 18px;
+    }
+
+    .client-guide h4 {
+      font-size: 14px;
+    }
+
+    .client-guide p {
+      font-size: 12px;
+    }
+
     .quote-head {
       padding: 12px;
     }
@@ -2719,232 +2668,11 @@
     .mobile-total-kicker {
       white-space: normal;
     }
-
-    /* Mobile Admin Panel */
-    .admin-panel-shell {
-      padding: 8px;
-      margin: 8px;
-    }
-
-    .admin-booking-item {
-      padding: 12px;
-      margin-bottom: 12px;
-    }
-
-    .admin-detail-grid {
-      grid-template-columns: 1fr;
-      gap: 8px;
-    }
-
-    .admin-booking-list {
-      gap: 12px;
-    }
-
-    /* Mobile Customer Feedback */
-    .feedback-modal {
-      margin: 8px;
-      padding: 16px;
-      max-width: calc(100% - 16px);
-    }
-
-    .feedback-form {
-      padding: 12px;
-    }
-
-    .feedback-rating-group {
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .feedback-rating-btn {
-      width: 100%;
-      padding: 12px;
-      text-align: center;
-    }
-
-    .roulette-wheel-shell {
-      transform: scale(0.8);
-      margin: -20px;
-    }
-
-    .feedback-detail-grid {
-      grid-template-columns: 1fr;
-      gap: 8px;
-    }
-
-    /* Mobile QR Code */
-    .feedback-qr-grid {
-      grid-template-columns: 1fr;
-      gap: 12px;
-    }
-
-    .feedback-qr-card {
-      padding: 12px;
-    }
-
-    /* Mobile Buttons */
-    .admin-inline-actions {
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .admin-inline-actions button {
-      width: 100%;
-      padding: 12px;
-    }
-
-    .feedback-action-row {
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .feedback-action-row button {
-      width: 100%;
-      padding: 12px;
-    }
-  }
-
-  /* Additional mobile optimizations */
-  @media (max-width: 360px) {
-    .brand-head {
-      padding: 12px;
-    }
-
-    .brand-head h1 {
-      font-size: 20px;
-    }
-
-    .step-pill {
-      font-size: 10px;
-      padding: 6px 10px;
-    }
-
-    .feedback-modal {
-      margin: 4px;
-      padding: 12px;
-    }
-
-    .roulette-wheel-shell {
-      transform: scale(0.7);
-      margin: -30px;
-    }
-  }
-
-  /* Help Tooltips and Visual Indicators */
-  .help-tooltip {
-    position: relative;
-    display: inline-block;
-    cursor: help;
-  }
-
-  .help-tooltip .tooltiptext {
-    visibility: hidden;
-    width: 200px;
-    background-color: #164952;
-    color: #fff;
-    text-align: center;
-    border-radius: 6px;
-    padding: 8px;
-    position: absolute;
-    z-index: 1;
-    bottom: 125%;
-    left: 50%;
-    margin-left: -100px;
-    opacity: 0;
-    transition: opacity 0.3s;
-    font-size: 12px;
-  }
-
-  .help-tooltip:hover .tooltiptext {
-    visibility: visible;
-    opacity: 1;
-  }
-
-  .status-badge {
-    display: inline-block;
-    padding: 4px 8px;
-    border-radius: 12px;
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
-  }
-
-  .status-badge.active {
-    background: #e8f5e8;
-    color: #2e7d32;
-  }
-
-  .status-badge.pending {
-    background: #fff3e0;
-    color: #f57c00;
-  }
-
-  .status-badge.completed {
-    background: #e3f2fd;
-    color: #1976d2;
-  }
-
-  .discount-indicator {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    padding: 4px 8px;
-    background: #f3e5f5;
-    border-radius: 12px;
-    font-size: 12px;
-    color: #7b1fa2;
-  }
-
-  .progress-bar {
-    width: 100%;
-    height: 8px;
-    background: #e0e0e0;
-    border-radius: 4px;
-    overflow: hidden;
-    margin: 8px 0;
-  }
-
-  .progress-fill {
-    height: 100%;
-    background: linear-gradient(90deg, #4ecdc4, #45b7d1);
-    transition: width 0.3s ease;
-  }
-
-  .loading-spinner {
-    display: inline-block;
-    width: 16px;
-    height: 16px;
-    border: 2px solid #f3f3f3;
-    border-top: 2px solid #164952;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-  }
-
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
   }
 </style>
 </head>
-<body data-weather="tropical-sunset">
-  <div class="coconut-tree"></div>
-  <div class="coconut"></div>
-  <div id="welcomeOverlay" class="welcome-overlay">
-    <div class="welcome-modal">
-      <span class="welcome-badge">Welcome Guest</span>
-      <h2 id="welcomeGreeting">Welcome to Dekack's Private Resort and Hotel</h2>
-      <p>Before you continue, please enter your basic details first so we can guide your booking properly.</p>
-      <button
-        id="enterBookingBtn"
-        type="button"
-        class="primary-btn"
-        onclick="document.getElementById('welcomeOverlay').classList.add('hidden');"
-      >
-        Enter Booking Panel
-      </button>
-    </div>
-  </div>
-  <script>
+<body data-weather="lagoon-morning">
+    <script>
     (function () {
       const enterBtn = document.getElementById("enterBookingBtn");
       const overlay = document.getElementById("welcomeOverlay");
@@ -2975,6 +2703,34 @@
         <h1>Dekack's Private Resort &amp; Hotel</h1>
         <h3>Guest Booking Page</h3>
         <p class="brand-location">Adela, Rizal, Occidental Mindoro</p>
+      </div>
+    </div>
+
+    <!-- Client Guide Section -->
+    <div class="client-guide" style="background: linear-gradient(135deg, var(--bg-1), var(--bg-2)); border-radius: 16px; padding: 20px; margin: 20px 0; border: 2px solid var(--line);">
+      <h3 style="color: var(--primary); margin: 0 0 15px 0;">Quick Booking Guide</h3>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+        <div style="background: white; padding: 15px; border-radius: 12px; border: 1px solid var(--line);">
+          <h4 style="color: var(--accent); margin: 0 0 8px 0;">1. Enter Details</h4>
+          <p style="margin: 0; font-size: 14px;">Your name and contact number</p>
+        </div>
+        <div style="background: white; padding: 15px; border-radius: 12px; border: 1px solid var(--line);">
+          <h4 style="color: var(--accent); margin: 0 0 8px 0;">2. Choose Dates</h4>
+          <p style="margin: 0; font-size: 14px;">Check available dates</p>
+        </div>
+        <div style="background: white; padding: 15px; border-radius: 12px; border: 1px solid var(--line);">
+          <h4 style="color: var(--accent); margin: 0 0 8px 0;">3. Select Package</h4>
+          <p style="margin: 0; font-size: 14px;">Pool, rooms, or events</p>
+        </div>
+        <div style="background: white; padding: 15px; border-radius: 12px; border: 1px solid var(--line);">
+          <h4 style="color: var(--accent); margin: 0 0 8px 0;">4. Submit Booking</h4>
+          <p style="margin: 0; font-size: 14px;">Review and send request</p>
+        </div>
+      </div>
+      <div style="margin-top: 15px; padding: 15px; background: var(--warn-bg); border-radius: 8px; border: 1px solid var(--warn-line);">
+        <p style="margin: 0; font-size: 14px; color: var(--text);">
+          <strong>Need help?</strong> Contact us at <strong>09123456789</strong> or message us on Facebook!
+        </p>
       </div>
     </div>
 
@@ -3562,17 +3318,10 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
   <script>
-    // Error handling for script loading
-    window.addEventListener('error', function(e) {
-      console.error('Script error:', e.error);
-      console.error('Script source:', e.filename);
-      console.error('Line:', e.lineno);
-    });
-
     const STORAGE_KEY = "bookings";
     const PENDING_STORAGE_KEY = "pendingBookings";
     const TRANSACTION_HISTORY_STORAGE_KEY = "transactionHistory";
-    const ADMIN_PANEL_SHORTCUT = "ctrl+alt+shift+a";
+    const ADMIN_PANEL_SHORTCUT = "ctrl+a";
     const BOOKING_CALENDAR_SHORTCUT = "alt+1";
     const BOOKINGS_COLLECTION = "bookings";
     const PENDING_BOOKINGS_COLLECTION = "pendingBookings";
@@ -3999,23 +3748,17 @@
     }
 
     function initializeFirebase() {
-      if (typeof firebase === "undefined") {
-        console.error("Firebase SDK not loaded - check internet connection");
-        return false;
-      }
+      if (typeof firebase === "undefined") return false;
 
       try {
         if (!firebase.apps.length) {
-          console.log("Initializing Firebase with config:", FIREBASE_CONFIG);
           firebase.initializeApp(FIREBASE_CONFIG);
         }
         auth = firebase.auth();
         db = firebase.firestore();
-        console.log("Firebase initialized successfully");
         return true;
       } catch (error) {
         console.error("Firebase initialization failed:", error);
-        console.error("Error details:", error.message, error.code);
         auth = null;
         db = null;
         return false;
@@ -4281,12 +4024,7 @@
     }
 
     function closeWelcomePopup() {
-      const overlay = document.getElementById("welcomeOverlay");
-      if (overlay) {
-        overlay.classList.add("hidden");
-      } else {
-        console.warn("welcomeOverlay element not found");
-      }
+      document.getElementById("welcomeOverlay").classList.add("hidden");
     }
 
     function showAdminWorkspace() {
@@ -6458,7 +6196,7 @@
 
     function buildCustomerFeedbackQrImageUrl(booking) {
       const feedbackUrl = buildCustomerFeedbackUrl(booking);
-      return `https://api.qrserver.com/v1/create-qr-code/?size=260x260&margin=12&data=${encodeURIComponent(feedbackUrl)}`;
+      return `https://api.qrserver.com/v1/create-qr-code/?size=400x400&margin=10&data=${encodeURIComponent(feedbackUrl)}`;
     }
 
     function clearCustomerFeedbackQueryParams() {
@@ -8296,7 +8034,6 @@
         const statusLabel = collectionType === "pending" ? "Pending" : "Booked";
         const indexVal = getAdminBookingIndexById(collectionType, booking.id);
         const statusColor = collectionType === "pending" ? "#b26a00" : "#1f7a3f";
-        const statusBadgeClass = collectionType === "pending" ? "pending" : "active";
         const totals = computeBookingTotals(booking);
         const checkInDate = getNormalizedCheckInDate(booking);
         const checkOutDate = getNormalizedCheckOutDate(booking);
@@ -8327,7 +8064,7 @@
 
         html += `
           <div class="admin-booking-item ${collectionType}">
-            <p><strong>${booking.name || "Guest"}</strong> <span class="status-badge ${statusBadgeClass}">${statusLabel}</span></p>
+            <p><strong>${booking.name || "Guest"}</strong> <span style="color:${statusColor};font-weight:700;">(${statusLabel})</span></p>
             <p><strong>Reference:</strong> ${booking.reservationReference || "N/A"}</p>
             <p><strong>Contact Number:</strong> ${booking.contactNumber || "N/A"}</p>
             <p><strong>Package:</strong> ${getBookingPackageSummaryNoPrice(booking)}</p>
@@ -8340,9 +8077,7 @@
             <p><strong>Catering:</strong> ${stripPriceText(booking.cateringPackage || "None")} ${booking.cateringPersons ? `(${booking.cateringPersons} pax)` : ""}</p>
             <p><strong>Function Hall:</strong> ${booking.hallSelected ? stripPriceText(booking.hallLabel || "Included") : "None"}</p>
             <p><strong>Current Bill:</strong> ${formatAdminPdfMoney(totals.total)}</p>
-            ${totals.managementDiscountPercent > 0 ? 
-              `<p><strong>Management Discount:</strong> <span class="discount-indicator">-${totals.managementDiscountPercent}% (${formatAdminPdfMoney(totals.managementDiscountAmount)})</span></p>` : 
-              '<p><strong>Management Discount:</strong> None</p>'}
+            <p><strong>Management Discount:</strong> ${totals.managementDiscountPercent || 0}% (${formatAdminPdfMoney(totals.managementDiscountAmount)})</p>
             ${discountControl}
             ${customerDiscountControl}
             <button class="delete-btn" onclick="deleteBookingById('${collectionType}', '${String(booking.id)}')">Delete</button>
@@ -8388,14 +8123,6 @@
       output += `<div style="display:flex;gap:10px;flex-wrap:wrap;margin:8px 0;">
         <button onclick="adminLogout()" style="background:#455a64;color:#fff;width:auto;padding:8px 12px;">Log Out</button>
         <button onclick="downloadPDF()" style="background:#0f3e66;color:#fff;width:auto;padding:8px 12px;">Download PDF</button>
-        <div class="help-tooltip">
-          <button onclick="showManagementDiscount()" style="background:#ff6b6b;color:#fff;width:auto;padding:8px 12px;">Management Discount</button>
-          <span class="tooltiptext">Apply admin discount to any booking with reason</span>
-        </div>
-        <div class="help-tooltip">
-          <button onclick="generateCustomerDiscountQR()" style="background:#4ecdc4;color:#fff;width:auto;padding:8px 12px;">Generate Customer QR</button>
-          <span class="tooltiptext">Create QR for customer feedback & roulette discount</span>
-        </div>
       </div>`;
       output += `<p><strong>Pending Approval:</strong> ${pending.length} | <strong>Approved:</strong> ${approved.length} | <strong>Fully Paid Transactions:</strong> ${transactionEntries.length}</p>`;
       if (combinedBookings.length > 0) {
@@ -8855,203 +8582,6 @@
       }
     }
 
-    function showManagementDiscount() {
-      const content = document.getElementById("adminPanelContent");
-      if (!content) return;
-
-      let output = `
-        <h3>Management Discount</h3>
-        <div style="background:#fff;padding:20px;border-radius:8px;margin:10px 0;">
-          <h4>Apply Management Discount to Booking</h4>
-          <div style="margin:10px 0;">
-            <label>Booking ID/Reference:</label>
-            <input type="text" id="managementDiscountBookingId" placeholder="Enter booking reference" style="width:100%;padding:8px;margin:5px 0;">
-          </div>
-          <div style="margin:10px 0;">
-            <label>Discount Percentage (%):</label>
-            <input type="number" id="managementDiscountPercent" min="0" max="100" placeholder="Enter discount percentage" style="width:100%;padding:8px;margin:5px 0;">
-          </div>
-          <div style="margin:10px 0;">
-            <label>Reason:</label>
-            <textarea id="managementDiscountReason" placeholder="Enter discount reason" style="width:100%;padding:8px;margin:5px 0;height:80px;"></textarea>
-          </div>
-          <button onclick="applyManagementDiscount()" style="background:#ff6b6b;color:#fff;padding:10px 20px;border:none;border-radius:5px;cursor:pointer;">Apply Discount</button>
-          <button onclick="viewBookings()" style="background:#666;color:#fff;padding:10px 20px;border:none;border-radius:5px;cursor:pointer;margin-left:10px;">Back</button>
-        </div>
-        <div id="managementDiscountResult"></div>
-      `;
-
-      content.innerHTML = output;
-    }
-
-    function applyManagementDiscount() {
-      const bookingId = document.getElementById("managementDiscountBookingId")?.value?.trim();
-      const discountPercent = parseFloat(document.getElementById("managementDiscountPercent")?.value) || 0;
-      const reason = document.getElementById("managementDiscountReason")?.value?.trim();
-
-      if (!bookingId || discountPercent <= 0 || discountPercent > 100) {
-        showToast("Please enter valid booking ID and discount percentage", "error");
-        return;
-      }
-
-      if (!reason) {
-        showToast("Please provide a reason for the discount", "error");
-        return;
-      }
-
-      // Find the booking
-      const pending = getPendingBookings();
-      const approved = getBookings();
-      const allBookings = [...pending, ...approved];
-      const booking = allBookings.find(b => b.reservationReference === bookingId || b.id === bookingId);
-
-      if (!booking) {
-        showToast("Booking not found", "error");
-        return;
-      }
-
-      // Apply discount (this would normally update the database)
-      const discountAmount = (booking.totalAmount || 0) * (discountPercent / 100);
-      const newTotal = (booking.totalAmount || 0) - discountAmount;
-
-      // Update booking with discount info
-      booking.managementDiscount = {
-        percentage: discountPercent,
-        amount: discountAmount,
-        reason: reason,
-        appliedAt: new Date().toISOString(),
-        appliedBy: auth.currentUser?.email || "Admin"
-      };
-      booking.discountedTotal = newTotal;
-
-      // Save to database
-      if (db) {
-        const collectionName = booking.status === "approved" ? BOOKINGS_COLLECTION : PENDING_BOOKINGS_COLLECTION;
-        saveBookingRecord(collectionName, booking).then(() => {
-          showToast(`Management discount of ${discountPercent}% applied to booking ${bookingId}`, "success");
-          viewBookings(); // Refresh admin panel
-        }).catch(error => {
-          console.error("Failed to apply management discount:", error);
-          showToast("Failed to apply discount. Please try again.", "error");
-        });
-      } else {
-        showToast("Management discount applied locally", "success");
-        viewBookings();
-      }
-    }
-
-    function generateCustomerDiscountQR() {
-      const content = document.getElementById("adminPanelContent");
-      if (!content) return;
-
-      // Generate unique QR code ID
-      const qrId = `DISCOUNT_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-      const qrUrl = `${window.location.origin}${window.location.pathname}?feedback=${qrId}`;
-
-      let output = `
-        <h3>Customer Discount QR Code</h3>
-        <div style="background:#fff;padding:20px;border-radius:8px;margin:10px 0;">
-          <h4>Generate QR Code for Customer Feedback</h4>
-          <div style="margin:10px 0;">
-            <label>QR Code ID:</label>
-            <input type="text" value="${qrId}" readonly style="width:100%;padding:8px;margin:5px 0;background:#f5f5f5;">
-          </div>
-          <div style="margin:10px 0;">
-            <label>Feedback URL:</label>
-            <input type="text" value="${qrUrl}" readonly style="width:100%;padding:8px;margin:5px 0;background:#f5f5f5;">
-          </div>
-          <div id="qrCodeDisplay" style="text-align:center;margin:20px 0;">
-            <div style="border:2px dashed #ccc;padding:40px;border-radius:8px;">
-              <p>QR Code will be displayed here</p>
-              <button onclick="renderQRCode('${qrId}')" style="background:#4ecdc4;color:#fff;padding:10px 20px;border:none;border-radius:5px;cursor:pointer;">Generate QR Code</button>
-            </div>
-          </div>
-          <div style="margin:10px 0;">
-            <label>Instructions:</label>
-            <ul style="color:#666;font-size:14px;">
-              <li>Customer scans QR code with their phone</li>
-              <li>They fill out feedback form</li>
-              <li>After submission, they get to spin the roulette wheel</li>
-              <li>Discount percentage is automatically applied to their booking</li>
-            </ul>
-          </div>
-          <button onclick="viewBookings()" style="background:#666;color:#fff;padding:10px 20px;border:none;border-radius:5px;cursor:pointer;">Back</button>
-        </div>
-      `;
-
-      content.innerHTML = output;
-    }
-
-    function renderQRCode(qrId) {
-      const qrDisplay = document.getElementById("qrCodeDisplay");
-      if (!qrDisplay) return;
-
-      // Simple QR code placeholder (in real implementation, use QR code library)
-      const qrData = `${window.location.origin}${window.location.pathname}?feedback=${qrId}`;
-      
-      qrDisplay.innerHTML = `
-        <div style="border:2px solid #4ecdc4;padding:20px;border-radius:8px;background:#fff;">
-          <h4>QR Code Generated</h4>
-          <div style="width:200px;height:200px;margin:20px auto;border:2px solid #333;display:flex;align-items:center;justify-content:center;background:#f9f9f9;">
-            <div style="text-align:center;">
-              <div style="font-size:48px;">📱</div>
-              <p style="font-size:12px;margin:5px 0;">QR Code</p>
-              <p style="font-size:10px;color:#666;">ID: ${qrId}</p>
-            </div>
-          </div>
-          <p style="font-size:12px;color:#666;margin:10px 0;">Scan this QR code for customer feedback and discount</p>
-          <button onclick="printQRCode('${qrId}')" style="background:#4ecdc4;color:#fff;padding:8px 16px;border:none;border-radius:5px;cursor:pointer;">Print QR Code</button>
-        </div>
-      `;
-    }
-
-    function printQRCode(qrId) {
-      const printWindow = window.open('', '_blank');
-      printWindow.document.write(`
-        <html>
-          <head>
-            <title>Customer Discount QR Code</title>
-            <style>
-              body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
-              .qr-container { 
-                border: 2px solid #4ecdc4; 
-                padding: 30px; 
-                border-radius: 10px; 
-                width: 300px; 
-                margin: 0 auto; 
-              }
-              .qr-placeholder { 
-                width: 200px; 
-                height: 200px; 
-                border: 2px solid #333; 
-                margin: 20px auto; 
-                display: flex; 
-                align-items: center; 
-                justify-content: center; 
-                background: #f9f9f9; 
-              }
-            </style>
-          </head>
-          <body>
-            <div class="qr-container">
-              <h2>Customer Feedback & Discount</h2>
-              <div class="qr-placeholder">
-                <div>
-                  <div style="font-size: 48px;">📱</div>
-                  <p>QR Code</p>
-                  <p style="font-size: 10px;">ID: ${qrId}</p>
-                </div>
-              </div>
-              <p>Scan for feedback and discount!</p>
-              <p style="font-size: 12px; color: #666;">${window.location.origin}${window.location.pathname}?feedback=${qrId}</p>
-            </div>
-          </body>
-        </html>
-      `);
-      printWindow.document.close();
-      printWindow.print();
-    }
-
     async function adminLogout() {
       if (!auth) return;
 
@@ -9076,10 +8606,12 @@
 
     // Keyboard shortcuts: private admin shortcut and Alt + 1 for booking calendar
     document.addEventListener("keydown", (event) => {
-      if (event.ctrlKey && event.key.toLowerCase() === "a") {
+      if (event.ctrlKey && event.altKey && event.shiftKey && event.key.toLowerCase() === "a") {
         event.preventDefault();
+        const adminBtn = document.getElementById("adminBtn");
+        if (adminBtn) adminBtn.style.display = "block";
         adminLogin();
-        showToast(`Admin panel opened (Ctrl+A).`, "info");
+        showToast(`Admin panel unlocked (${ADMIN_PANEL_SHORTCUT}).`, "info");
         return;
       }
 
