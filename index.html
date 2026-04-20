@@ -7471,6 +7471,42 @@
       window.open(link, "_blank", "noopener");
     }
 
+    function showCongratulationsMessage(discountPercent, finalTotal, guestName) {
+      const overlay = document.getElementById("customerFeedbackOverlay");
+      if (!overlay) return;
+      
+      const content = document.getElementById("customerFeedbackContent");
+      if (!content) return;
+      
+      content.innerHTML = `
+        <div style="text-align: center; padding: 20px;">
+          <h2 style="color: var(--accent); margin: 0 0 20px 0;">Congratulations ${guestName}!</h2>
+          <div style="font-size: 48px; margin: 20px 0;">${'&#127881;'.repeat(3)}</div>
+          <div style="background: linear-gradient(135deg, var(--warn-bg), #fff); padding: 20px; border-radius: 12px; border: 2px solid var(--warn-line); margin: 20px 0;">
+            <h3 style="color: var(--accent); margin: 0 0 15px 0;">You Won ${discountPercent}% Discount!</h3>
+            <div style="font-size: 24px; font-weight: bold; color: var(--primary); margin: 15px 0;">
+              Your Final Billing: ${formatCurrencyPHP(finalTotal)}
+            </div>
+            <p style="color: var(--muted); margin: 10px 0;">
+              Original total: ${formatCurrencyPHP(finalTotal / (1 - discountPercent / 100))}
+            </p>
+            <p style="color: var(--leaf); font-weight: bold; margin: 10px 0;">
+              You saved: ${formatCurrencyPHP(finalTotal / (1 - discountPercent / 100) - finalTotal)}
+            </p>
+          </div>
+          <p style="color: var(--text); margin: 20px 0;">
+            Your discount has been applied and will be visible in the admin panel.
+          </p>
+          <button type="button" class="primary-btn" onclick="closeCustomerFeedbackOverlay()" style="margin-top: 20px;">
+            Done
+          </button>
+        </div>
+      `;
+      
+      overlay.classList.remove("hidden");
+      syncFeedbackOverlayBodyLock();
+    }
+
     function setCustomerFeedbackRating(value) {
       const normalized = Math.max(0, Math.min(5, Number(value) || 0));
       const input = document.getElementById("customerFeedbackRating");
@@ -7703,6 +7739,9 @@
         }
 
         const submittedAt = new Date().toISOString();
+        const totals = computeBookingTotals(latestBooking);
+        const finalTotal = totals.total - (totals.total * winningDiscount / 100);
+        
         const updatedBooking = {
           ...latestBooking,
           customerDiscountPercent: winningDiscount,
@@ -7717,9 +7756,13 @@
 
         await saveBookingRecord(BOOKINGS_COLLECTION, updatedBooking);
         activeCustomerFeedbackContext.booking = updatedBooking;
+        
+        // Show congratulations with final billing
+        showCongratulationsMessage(winningDiscount, finalTotal, latestBooking.name || "Guest");
+        
         populateCustomerFeedbackSubmittedState(updatedBooking, true);
         showCustomerFeedbackState("customerFeedbackSubmittedState");
-        showToast("Your customer discount has been applied.", "success");
+        showToast(`Congratulations! You won ${winningDiscount}% discount!`, "success");
       } finally {
         customerDiscountSpinInProgress = false;
         pendingCustomerFeedbackDraft = null;
