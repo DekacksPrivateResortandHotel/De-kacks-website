@@ -2226,6 +2226,10 @@
   .roulette-wheel-shell {
     position: relative;
     width: min(300px, 78vw);
+    --roulette-label-radius: 118px;
+    --roulette-label-width: 48px;
+    --roulette-label-font-size: 14px;
+    --roulette-center-font-size: 14px;
     margin: 24px auto 10px;
   }
 
@@ -2281,9 +2285,17 @@
     position: absolute;
     left: 50%;
     top: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--roulette-label-width);
     color: #103c56;
-    font-size: 14px;
+    font-size: var(--roulette-label-font-size);
     font-weight: 900;
+    line-height: 1;
+    white-space: nowrap;
+    letter-spacing: -0.03em;
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.78);
     transform-origin: center;
   }
 
@@ -2298,7 +2310,7 @@
     padding: 16px;
     text-align: center;
     color: #fff;
-    font-size: 14px;
+    font-size: var(--roulette-center-font-size);
     font-weight: 900;
     line-height: 1.35;
     background: linear-gradient(135deg, #1b8b9d, #0f3e66);
@@ -2594,15 +2606,16 @@
     }
 
     .roulette-wheel-shell {
-      width: min(280px, 85vw);
+      width: min(286px, 86vw);
+      --roulette-label-radius: 102px;
+      --roulette-label-width: 42px;
+      --roulette-label-font-size: 12px;
+      --roulette-center-font-size: 12px;
       margin: 20px auto 10px;
     }
 
     .roulette-wheel-labels span {
-      font-size: 16px !important;
-      font-weight: 900 !important;
-      color: #103c56 !important;
-      text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8) !important;
+      letter-spacing: -0.04em;
     }
 
     .roulette-pointer {
@@ -2631,13 +2644,16 @@
     }
 
     .roulette-wheel-shell {
-      width: min(260px, 90vw) !important;
+      width: min(272px, 92vw) !important;
+      --roulette-label-radius: 94px;
+      --roulette-label-width: 36px;
+      --roulette-label-font-size: 11px;
+      --roulette-center-font-size: 11px;
       margin: 15px auto 8px !important;
     }
 
     .roulette-wheel-labels span {
-      font-size: 15px !important;
-      font-weight: 900 !important;
+      letter-spacing: -0.05em;
     }
 
     .roulette-pointer {
@@ -6373,7 +6389,7 @@
       const segmentAngle = 360 / CUSTOMER_DISCOUNT_SEGMENTS.length;
       labels.innerHTML = CUSTOMER_DISCOUNT_SEGMENTS.map((segment, index) => {
         const angle = index * segmentAngle;
-        return `<span style="transform: translate(-50%, -50%) rotate(${angle}deg) translateY(-118px) rotate(${-angle}deg);">${segment}%</span>`;
+        return `<span style="transform: translate(-50%, -50%) rotate(${angle}deg) translateY(calc(-1 * var(--roulette-label-radius))) rotate(${-angle}deg);">${segment}%</span>`;
       }).join("");
     }
 
