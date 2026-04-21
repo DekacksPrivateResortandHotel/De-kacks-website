@@ -2233,7 +2233,7 @@
     position: absolute;
     top: -8px;
     left: 50%;
-    transform: translateX(-50%);
+    transform: translateX(-50%) rotate(180deg);
     width: 0;
     height: 0;
     border-left: 16px solid transparent;
@@ -2594,7 +2594,21 @@
     }
 
     .roulette-wheel-shell {
-      width: min(260px, 82vw);
+      width: min(280px, 85vw);
+      margin: 20px auto 10px;
+    }
+
+    .roulette-wheel-labels span {
+      font-size: 16px !important;
+      font-weight: 900 !important;
+      color: #103c56 !important;
+      text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8) !important;
+    }
+
+    .roulette-pointer {
+      border-left-width: 14px !important;
+      border-right-width: 14px !important;
+      border-bottom-width: 24px !important;
     }
 
     .admin-discount-summary {
@@ -2614,6 +2628,22 @@
 
     .container {
       padding: 14px 14px 168px;
+    }
+
+    .roulette-wheel-shell {
+      width: min(260px, 90vw) !important;
+      margin: 15px auto 8px !important;
+    }
+
+    .roulette-wheel-labels span {
+      font-size: 15px !important;
+      font-weight: 900 !important;
+    }
+
+    .roulette-pointer {
+      border-left-width: 12px !important;
+      border-right-width: 12px !important;
+      border-bottom-width: 20px !important;
     }
 
     /* Mobile-friendly buttons */
@@ -7343,21 +7373,38 @@
     }
 
     async function fetchBookingByIdForFeedback(bookingId) {
-      // First check local cache
+      // First check local cache - both pending and approved bookings
       const cachedBooking = getBookings().find((item) => String(item.id) === String(bookingId));
       if (cachedBooking) return cachedBooking;
+      
+      const cachedPendingBooking = getPendingBookings().find((item) => String(item.id) === String(bookingId));
+      if (cachedPendingBooking) return cachedPendingBooking;
 
-      // If not in cache and database is available, fetch from database
+      // If not in cache and database is available, fetch from both collections
       if (!db) return null;
 
       try {
-        const doc = await db.collection(BOOKINGS_COLLECTION).doc(String(bookingId)).get();
-        if (!doc.exists) return null;
-        const data = doc.data() || {};
-        return {
-          ...data,
-          id: data.id || doc.id,
-        };
+        // Try approved bookings first
+        let doc = await db.collection(BOOKINGS_COLLECTION).doc(String(bookingId)).get();
+        if (doc.exists) {
+          const data = doc.data() || {};
+          return {
+            ...data,
+            id: data.id || doc.id,
+          };
+        }
+        
+        // Try pending bookings
+        doc = await db.collection(PENDING_BOOKINGS_COLLECTION).doc(String(bookingId)).get();
+        if (doc.exists) {
+          const data = doc.data() || {};
+          return {
+            ...data,
+            id: data.id || doc.id,
+          };
+        }
+        
+        return null;
       } catch (error) {
         console.error("Error fetching booking for feedback:", error);
         return null;
@@ -7787,7 +7834,9 @@
           customerFeedbackSuggestion: pendingCustomerFeedbackDraft.suggestion,
         };
 
-        await saveBookingRecord(BOOKINGS_COLLECTION, updatedBooking);
+        // Save to the correct collection based on booking status
+        const targetCollection = latestBooking.status === "pending" ? PENDING_BOOKINGS_COLLECTION : BOOKINGS_COLLECTION;
+        await saveBookingRecord(targetCollection, updatedBooking);
         activeCustomerFeedbackContext.booking = updatedBooking;
         
         // Show congratulations with final billing
