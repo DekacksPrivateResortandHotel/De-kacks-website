@@ -1932,6 +1932,14 @@
     font-size: 13px;
   }
 
+  .admin-transaction-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
   .admin-transaction-summary {
     margin-top: 14px;
     display: grid;
@@ -1995,6 +2003,13 @@
     font-weight: 800;
     letter-spacing: 0.03em;
     text-transform: uppercase;
+  }
+
+  .admin-transaction-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
   }
 
   .feedback-overlay {
@@ -2592,14 +2607,22 @@
     }
 
     .feedback-action-row,
-    .admin-inline-actions {
+    .admin-inline-actions,
+    .admin-transaction-actions {
+      flex-direction: column;
+    }
+
+    .admin-transaction-header {
+      align-items: flex-start;
       flex-direction: column;
     }
 
     .feedback-action-row button,
     .admin-inline-actions button,
+    .admin-transaction-actions button,
     .feedback-action-row .secondary-btn,
     .admin-inline-actions .secondary-btn,
+    .admin-transaction-actions .secondary-btn,
     .feedback-action-row .primary-btn,
     .admin-inline-actions .primary-btn {
       width: 100%;
@@ -4030,6 +4053,21 @@
         queueForRetry();
         commitLocalCopy();
       }
+    }
+
+    async function deleteTransactionRecord(transactionId) {
+      if (!db) {
+        offlineQueue.push({ type: "delete", collectionName: TRANSACTION_HISTORY_COLLECTION, bookingId: transactionId });
+        setOfflineBanner(true, "Offline mode: changes queued. Will sync when online.");
+        persistOfflineQueue();
+        const next = getLocalTransactionHistory().filter((item) => String(item.id) !== String(transactionId));
+        transactionHistoryCache = sortTransactionsByPaidAt(next);
+        setLocalTransactionHistory(next);
+        if (adminPanelOpen) viewBookings();
+        return;
+      }
+
+      await db.collection(TRANSACTION_HISTORY_COLLECTION).doc(String(transactionId)).delete();
     }
 
     async function flushOfflineQueue() {
@@ -6464,14 +6502,14 @@
     }
 
     async function archiveFullyPaidBooking(booking) {
-      if (!booking || !computeBookingTotals(booking).fullyPaid) return;
+      if (!booking || !computeBookingTotals(booking).fullyPaid || booking.transactionHistoryExcluded) return;
       await saveTransactionRecord(buildTransactionHistoryRecord(booking));
     }
 
     async function ensureCurrentFullyPaidTransactionsArchived() {
       if (transactionArchiveSyncInProgress) return;
 
-      const fullyPaidBookings = getBookings().filter((booking) => computeBookingTotals(booking).fullyPaid);
+      const fullyPaidBookings = getBookings().filter((booking) => computeBookingTotals(booking).fullyPaid && !booking.transactionHistoryExcluded);
       const existingTransactionKeys = new Set(
         getTransactionHistory().map((entry) => String(entry.bookingId || entry.id || ""))
       );
@@ -8131,10 +8169,10 @@
 
     function getFullyPaidTransactionEntries() {
       const currentFullyPaid = getBookings()
-        .filter((booking) => computeBookingTotals(booking).fullyPaid)
+        .filter((booking) => computeBookingTotals(booking).fullyPaid && !booking.transactionHistoryExcluded)
         .map((booking) => buildTransactionHistoryRecord(booking));
       const archivedTransactions = getTransactionHistory()
-        .filter((entry) => !!entry.fullyPaid)
+        .filter((entry) => !!entry.fullyPaid && !entry.transactionHistoryExcluded)
         .map((entry) => buildTransactionHistoryRecord(entry));
 
       const byBookingId = new Map();
@@ -8151,6 +8189,182 @@
       return sortTransactionsByPaidAt(Array.from(byBookingId.values()));
     }
 
+    async function deleteTransactionHistoryEntry(transactionId) {
+      if (!requireAdminAuth()) return;
+
+      const entry = getFullyPaidTransactionEntries().find((item) => String(item.id) === String(transactionId));
+      if (!entry) {
+        showToast("Transaction history record not found.", "error");
+        return;
+      }
+
+      if (!confirm(`Delete the fully paid history for ${entry.name || "this guest"}?`)) return;
+
+      const sourceBookingId = String(entry.bookingId || "");
+      const sourceBooking = getBookings().find((item) => String(item.id) === sourceBookingId);
+      if (sourceBooking) {
+        await saveBookingRecord(BOOKINGS_COLLECTION, {
+          ...sourceBooking,
+          transactionHistoryExcluded: true,
+          transactionHistoryExcludedAt: new Date().toISOString(),
+        });
+      }
+
+      await deleteTransactionRecord(transactionId);
+      showToast("Transaction history record deleted.", "info");
+      if (adminPanelOpen) viewBookings();
+    }
+
+    async function exportTransactionHistoryPdf(transactionId = "") {
+      const { jsPDF } = window.jspdf || window.jspdf || {};
+      if (!jsPDF) {
+        showToast("PDF library not loaded.", "error");
+        return;
+      }
+
+      const allEntries = getFullyPaidTransactionEntries();
+      const entries = transactionId
+        ? allEntries.filter((entry) => String(entry.id) === String(transactionId))
+        : allEntries;
+
+      if (entries.length === 0) {
+        showToast("No fully paid history records available for PDF.", "error");
+        return;
+      }
+
+      const dynamicLogo = await getLogoDataUrl();
+      const pdfLogo = (typeof LOGO_EMBEDDED === "string" && LOGO_EMBEDDED.startsWith("data:image"))
+        ? LOGO_EMBEDDED
+        : dynamicLogo;
+      const doc = new jsPDF();
+      const totalRevenue = entries.reduce((sum, entry) => {
+        const totals = computeBookingTotals(entry);
+        return sum + (Number(entry.snapshotTotal) || totals.total);
+      }, 0);
+      const latestPayment = entries[0]
+        ? formatDateTimeLong(entries[0].paidAt || entries[0].transactionRecordedAt || entries[0].approvedAt || entries[0].createdAt)
+        : "N/A";
+      let pageNumber = 1;
+      let y = drawAdminPdfHeader(
+        doc,
+        pdfLogo,
+        transactionId ? "FULLY PAID BOOKING RECORD" : "FULLY PAID BOOKING HISTORY",
+        transactionId ? "Single archived booking history" : "All archived bookings marked as fully paid",
+        new Date().toLocaleString("en-PH")
+      );
+
+      const drawSummaryCard = (x, title, value, fill, stroke) => {
+        doc.setFillColor(fill[0], fill[1], fill[2]);
+        doc.setDrawColor(stroke[0], stroke[1], stroke[2]);
+        doc.roundedRect(x, y, 58, 20, 3, 3, "FD");
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(8.5);
+        doc.setTextColor(80, 95, 112);
+        doc.text(title.toUpperCase(), x + 4, y + 7);
+        doc.setFontSize(14);
+        doc.setTextColor(20, 35, 52);
+        doc.text(String(value), x + 4, y + 15);
+      };
+
+      drawSummaryCard(10, "Records", entries.length, [247, 249, 252], [212, 222, 233]);
+      drawSummaryCard(74, "Revenue", formatAdminPdfMoney(totalRevenue), [232, 244, 238], [174, 209, 187]);
+      drawSummaryCard(138, "Latest", latestPayment === "N/A" ? "N/A" : latestPayment.slice(0, 16), [255, 246, 229], [233, 203, 146]);
+      y += 28;
+
+      const startNewPage = () => {
+        drawAdminPdfFooter(doc, `Page ${pageNumber}`);
+        doc.addPage();
+        pageNumber += 1;
+        y = drawAdminPdfHeader(
+          doc,
+          pdfLogo,
+          transactionId ? "FULLY PAID BOOKING RECORD" : "FULLY PAID BOOKING HISTORY",
+          transactionId ? "Single archived booking history" : "All archived bookings marked as fully paid",
+          `Page ${pageNumber}`
+        );
+      };
+
+      const ensureSpace = (neededHeight) => {
+        if (y + neededHeight <= 276) return;
+        startNewPage();
+      };
+
+      entries.forEach((entry) => {
+        const totals = computeBookingTotals(entry);
+        const managementDiscountPercent = Number.isFinite(Number(entry.snapshotManagementDiscountPercent))
+          ? Number(entry.snapshotManagementDiscountPercent)
+          : totals.managementDiscountPercent;
+        const managementDiscountAmount = Number.isFinite(Number(entry.snapshotManagementDiscountAmount))
+          ? Number(entry.snapshotManagementDiscountAmount)
+          : totals.managementDiscountAmount;
+        const customerDiscountPercent = Number.isFinite(Number(entry.snapshotCustomerDiscountPercent))
+          ? Number(entry.snapshotCustomerDiscountPercent)
+          : totals.customerDiscountPercent;
+        const customerDiscountAmount = Number.isFinite(Number(entry.snapshotCustomerDiscountAmount))
+          ? Number(entry.snapshotCustomerDiscountAmount)
+          : totals.customerDiscountAmount;
+        const rows = [
+          ["Reference", normalizeAdminPdfText(entry.reservationReference)],
+          ["Guest", normalizeAdminPdfText(entry.name, "Guest")],
+          ["Contact", normalizeAdminPdfText(entry.contactNumber)],
+          ["Paid At", normalizeAdminPdfText(formatDateTimeLong(entry.paidAt || entry.transactionRecordedAt || entry.approvedAt || entry.createdAt))],
+          ["Check-in", normalizeAdminPdfText(formatDateLong(entry.checkInDate || ""))],
+          ["Check-out", normalizeAdminPdfText(formatDateLong(entry.checkOutDate || ""))],
+          ["Stay", normalizeAdminPdfText(entry.stayLabel || getBookingStayLabel(entry))],
+          ["Package", getBookingPackageSummaryNoPrice(entry)],
+          ["Net Total", formatAdminPdfMoney(Number(entry.snapshotTotal) || totals.total)],
+          ["Downpayment", formatAdminPdfMoney(Number(entry.snapshotDownpayment) || totals.downpayment)],
+          ["Remaining Balance", formatAdminPdfMoney(Number(entry.snapshotRemainingBalance) || totals.remainingBalance)],
+          ["Management Discount", `${managementDiscountPercent || 0}% (${formatAdminPdfMoney(managementDiscountAmount)})`],
+          ["Customer Discount", `${customerDiscountPercent || 0}% (${formatAdminPdfMoney(customerDiscountAmount)})`],
+        ];
+        const valueLines = rows.map(([, value]) => doc.splitTextToSize(normalizeAdminPdfText(value), 128));
+        const contentHeight = valueLines.reduce((sum, lines) => sum + Math.max(1, lines.length) * 5.1, 0);
+        const cardHeight = Math.max(58, 20 + contentHeight);
+        ensureSpace(cardHeight + 8);
+
+        doc.setFillColor(252, 253, 255);
+        doc.setDrawColor(211, 221, 232);
+        doc.roundedRect(10, y, 190, cardHeight, 3, 3, "FD");
+
+        doc.setFillColor(232, 244, 238);
+        doc.setDrawColor(174, 209, 187);
+        doc.roundedRect(150, y + 6, 46, 10, 2.5, 2.5, "FD");
+
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(10.5);
+        doc.setTextColor(17, 45, 78);
+        doc.text(normalizeAdminPdfText(entry.name, "Guest"), 14, y + 11);
+        doc.setFontSize(8.6);
+        doc.setTextColor(29, 107, 63);
+        doc.text("FULLY PAID", 173, y + 12, null, null, "center");
+
+        doc.setDrawColor(226, 233, 241);
+        doc.line(14, y + 18, 196, y + 18);
+
+        let rowY = y + 26;
+        rows.forEach(([label], rowIndex) => {
+          doc.setFont("helvetica", "bold");
+          doc.setFontSize(8.8);
+          doc.setTextColor(51, 68, 87);
+          doc.text(`${label}:`, 14, rowY);
+          doc.setFont("helvetica", "normal");
+          doc.text(valueLines[rowIndex], 54, rowY);
+          rowY += Math.max(1, valueLines[rowIndex].length) * 5.1;
+        });
+
+        y += cardHeight + 8;
+      });
+
+      drawAdminPdfFooter(doc, `Page ${pageNumber}`);
+      doc.save(
+        transactionId && entries[0]
+          ? `Dekacks_Transaction_${sanitizeAdminPdfFilenamePart(entries[0].name)}.pdf`
+          : "Dekacks_Fully_Paid_History.pdf"
+      );
+      showToast("Transaction history PDF downloaded.", "success");
+    }
+
     function getTransactionHistoryHtml(entries) {
       const transactionCount = entries.length;
       const totalRevenue = entries.reduce((sum, entry) => {
@@ -8163,8 +8377,15 @@
 
       let html = `
         <div class="admin-transaction-panel">
-          <h4>Transaction History</h4>
-          <p>Showing all archived transactions that were marked as fully paid.</p>
+          <div class="admin-transaction-header">
+            <div>
+              <h4>Transaction History</h4>
+              <p>Showing all archived transactions that were marked as fully paid.</p>
+            </div>
+            <div class="admin-inline-actions">
+              <button type="button" class="secondary-btn" style="width:auto;padding:8px 12px;" onclick="exportTransactionHistoryPdf()">Download History PDF</button>
+            </div>
+          </div>
           <div class="admin-transaction-summary">
             <div class="admin-transaction-stat">
               <strong>Fully Paid Records</strong>
@@ -8219,6 +8440,10 @@
             <p><strong>Check-out:</strong> ${checkOutDate}</p>
             <p><strong>Package:</strong> ${getBookingPackageSummaryNoPrice(entry)}</p>
             <span class="admin-transaction-chip">Fully Paid</span>
+            <div class="admin-transaction-actions">
+              <button type="button" class="secondary-btn" style="width:auto;padding:8px 12px;" onclick="exportTransactionHistoryPdf('${String(entry.id || "")}')">Download PDF</button>
+              <button type="button" style="background:#a84332;color:#fff;width:auto;padding:8px 12px;" onclick="deleteTransactionHistoryEntry('${String(entry.id || "")}')">Delete</button>
+            </div>
           </div>
         `;
       });
