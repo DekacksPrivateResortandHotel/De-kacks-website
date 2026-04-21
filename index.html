@@ -1666,17 +1666,35 @@
   }
 
   .offline-ribbon {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    padding: 10px 14px;
-    background: #c62828;
+    position: sticky;
+    top: 12px;
+    width: min(960px, calc(100% - 24px));
+    margin: 12px auto 0;
+    padding: 12px 16px;
+    border-radius: 16px;
+    border: 1px solid rgba(169, 23, 23, 0.28);
+    background: rgba(198, 40, 40, 0.96);
     color: #fff;
     font-weight: 700;
     text-align: center;
-    z-index: 9998;
+    box-shadow: 0 18px 30px rgba(15, 74, 82, 0.14);
+    backdrop-filter: blur(8px);
+    z-index: 90;
     display: none;
+  }
+
+  .offline-ribbon.is-visible {
+    display: block;
+  }
+
+  .offline-ribbon[data-tone="warning"] {
+    background: rgba(180, 83, 9, 0.95);
+    border-color: rgba(146, 64, 14, 0.34);
+  }
+
+  .offline-ribbon[data-tone="info"] {
+    background: rgba(13, 84, 96, 0.95);
+    border-color: rgba(11, 76, 86, 0.34);
   }
 
   .toast.success {
@@ -2751,7 +2769,7 @@
     })();
   </script>
   <div id="toastContainer" class="toast-container" aria-live="polite" aria-atomic="true"></div>
-  <div id="offlineRibbon" class="offline-ribbon">Offline mode: showing cached bookings.</div>
+  <div id="offlineRibbon" class="offline-ribbon" data-tone="error" role="status" aria-live="polite" aria-hidden="true" hidden>Offline mode: showing cached bookings.</div>
   <div class="weather-scene" aria-hidden="true">
     <span class="weather-sun"></span>
     <span class="weather-cloud cloud-a"></span>
@@ -2772,34 +2790,6 @@
         <h1>Dekack's Private Resort &amp; Hotel</h1>
         <h3>Guest Booking Page</h3>
         <p class="brand-location">Adela, Rizal, Occidental Mindoro</p>
-      </div>
-    </div>
-
-    <!-- Client Guide Section -->
-    <div class="client-guide" style="background: linear-gradient(135deg, var(--bg-1), var(--bg-2)); border-radius: 16px; padding: 20px; margin: 20px 0; border: 2px solid var(--line);">
-      <h3 style="color: var(--primary); margin: 0 0 15px 0;">Quick Booking Guide</h3>
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
-        <div style="background: white; padding: 15px; border-radius: 12px; border: 1px solid var(--line);">
-          <h4 style="color: var(--accent); margin: 0 0 8px 0;">1. Enter Details</h4>
-          <p style="margin: 0; font-size: 14px;">Your name and contact number</p>
-        </div>
-        <div style="background: white; padding: 15px; border-radius: 12px; border: 1px solid var(--line);">
-          <h4 style="color: var(--accent); margin: 0 0 8px 0;">2. Choose Dates</h4>
-          <p style="margin: 0; font-size: 14px;">Check available dates</p>
-        </div>
-        <div style="background: white; padding: 15px; border-radius: 12px; border: 1px solid var(--line);">
-          <h4 style="color: var(--accent); margin: 0 0 8px 0;">3. Select Package</h4>
-          <p style="margin: 0; font-size: 14px;">Pool, rooms, or events</p>
-        </div>
-        <div style="background: white; padding: 15px; border-radius: 12px; border: 1px solid var(--line);">
-          <h4 style="color: var(--accent); margin: 0 0 8px 0;">4. Submit Booking</h4>
-          <p style="margin: 0; font-size: 14px;">Review and send request</p>
-        </div>
-      </div>
-      <div style="margin-top: 15px; padding: 15px; background: var(--warn-bg); border-radius: 8px; border: 1px solid var(--warn-line);">
-        <p style="margin: 0; font-size: 14px; color: var(--text);">
-          <strong>Need help?</strong> Contact us at <strong>09511720299</strong> or message us on Facebook!
-        </p>
       </div>
     </div>
 
@@ -2911,40 +2901,6 @@
     </div>
 
     <div id="bookingFormPanel" class="booking-form-panel hidden reveal-target">
-    <div class="booking-summary-card">
-      <h3>Booking Summary</h3>
-      <div class="booking-intelligence-grid">
-        <div class="booking-intelligence-card">
-          <div class="booking-intelligence-head">
-            <div>
-              <span class="booking-intelligence-kicker">Booking Status</span>
-              <strong id="bookingReadinessLabel">Getting started</strong>
-            </div>
-            <span id="bookingReadinessScore" class="booking-readiness-score">24%</span>
-          </div>
-          <div class="booking-readiness-meter" aria-hidden="true">
-            <span id="bookingReadinessMeter"></span>
-          </div>
-          <p id="bookingReadinessNext" class="booking-intelligence-text">Complete your details and select a date to start building your booking request.</p>
-          <div class="booking-readiness-chips">
-            <span id="readinessChipGuest" class="booking-readiness-chip">Guest details</span>
-            <span id="readinessChipDate" class="booking-readiness-chip">Date selected</span>
-            <span id="readinessChipStay" class="booking-readiness-chip">Stay mode</span>
-            <span id="readinessChipRooms" class="booking-readiness-chip">Room or pool setup</span>
-            <span id="readinessChipQuote" class="booking-readiness-chip">Booking summary</span>
-          </div>
-        </div>
-      </div>
-      <div id="bookingSummary" class="booking-summary-grid">
-        <div class="booking-summary-item"><strong>Guest</strong>Not yet set</div>
-        <div class="booking-summary-item"><strong>Date</strong>Choose a date from the calendar</div>
-        <div class="booking-summary-item"><strong>Stay</strong>Day</div>
-        <div class="booking-summary-item"><strong>Guests</strong>1 guest</div>
-        <div class="booking-summary-item"><strong>Rooms</strong>No rooms selected yet</div>
-        <div class="booking-summary-item"><strong>Pool</strong>Based on your stay preference</div>
-      </div>
-    </div>
-
     <div class="booking-assist-grid">
       <div class="booking-assist-card">
         <div class="booking-helper-kicker">Fast Booking Help</div>
@@ -3718,12 +3674,50 @@
       }, duration);
     }
 
-    function setOfflineBanner(active, message = "Offline mode: showing cached bookings.") {
+    function setOfflineBanner(active, message = "Offline mode: showing cached bookings.", tone = "error") {
       const ribbon = document.getElementById("offlineRibbon");
       if (!ribbon) return;
       offlineMode = !!active;
-      ribbon.textContent = message;
-      ribbon.style.display = active ? "block" : "none";
+      ribbon.textContent = message || "Offline mode: showing cached bookings.";
+      ribbon.dataset.tone = tone || "error";
+      ribbon.classList.toggle("is-visible", !!active);
+      ribbon.hidden = !active;
+      ribbon.setAttribute("aria-hidden", active ? "false" : "true");
+    }
+
+    function getRealtimeSyncBannerState(error, collectionName = BOOKINGS_COLLECTION) {
+      const code = String((error && error.code) || "").toLowerCase();
+
+      if (code.includes("permission-denied")) {
+        if (collectionName === BOOKINGS_COLLECTION && !isAdminAuthenticated()) {
+          return {
+            tone: "warning",
+            message: "Live booking calendar is unavailable right now. Firebase rules are blocking guest access to booking dates.",
+          };
+        }
+
+        return {
+          tone: "warning",
+          message: "Live Firebase data access was denied. Please review your Firestore rules.",
+        };
+      }
+
+      if (
+        code.includes("unavailable")
+        || code.includes("network")
+        || code.includes("offline")
+        || code.includes("failed-precondition")
+      ) {
+        return {
+          tone: "error",
+          message: "Connection lost. Showing cached bookings.",
+        };
+      }
+
+      return {
+        tone: "warning",
+        message: "Live booking sync is unavailable right now. Showing cached bookings when available.",
+      };
     }
 
     function isCustomerFeedbackModeFromUrl() {
@@ -3910,7 +3904,7 @@
         pendingBookingsCache = sortBookingsByCreatedAt(getLocalPendingBookings());
         transactionHistoryCache = sortTransactionsByPaidAt(getLocalTransactionHistory());
         afterBookingCacheUpdate();
-        setOfflineBanner(true, "Offline mode: showing cached bookings.");
+        setOfflineBanner(true, "Offline mode: showing cached bookings.", "warning");
         return;
       }
 
@@ -3921,10 +3915,13 @@
         approvedBookingsUnsubscribe = db.collection(BOOKINGS_COLLECTION).onSnapshot((snapshot) => {
           approvedBookingsCache = normalizeSnapshotBookings(snapshot);
           afterBookingCacheUpdate();
-          setOfflineBanner(false, "");
+          setOfflineBanner(false, "", "info");
         }, (error) => {
           console.error("Approved bookings sync failed:", error);
-          setOfflineBanner(true, "Connection lost. Showing cached bookings.");
+          approvedBookingsCache = sortBookingsByCreatedAt(getLocalBookings());
+          afterBookingCacheUpdate();
+          const bannerState = getRealtimeSyncBannerState(error, BOOKINGS_COLLECTION);
+          setOfflineBanner(true, bannerState.message, bannerState.tone);
         });
       }
 
@@ -3933,12 +3930,13 @@
         pendingBookingsUnsubscribe = db.collection(PENDING_BOOKINGS_COLLECTION).onSnapshot((snapshot) => {
           pendingBookingsCache = normalizeSnapshotBookings(snapshot);
           afterBookingCacheUpdate();
-          setOfflineBanner(false, "");
+          setOfflineBanner(false, "", "info");
         }, (error) => {
           console.error("Pending bookings sync failed:", error);
           stopPendingBookingSync();
           afterBookingCacheUpdate();
-          setOfflineBanner(true, "Connection lost. Showing cached bookings.");
+          const bannerState = getRealtimeSyncBannerState(error, PENDING_BOOKINGS_COLLECTION);
+          setOfflineBanner(true, bannerState.message, bannerState.tone);
         });
       }
 
@@ -3965,7 +3963,7 @@
 
       if (!db) {
         offlineQueue.push({ type: "set", collectionName, booking: normalizedBooking });
-        setOfflineBanner(true, "Offline mode: changes queued. Will sync when online.");
+        setOfflineBanner(true, "Offline mode: changes queued. Will sync when online.", "warning");
         persistOfflineQueue();
         if (collectionName === BOOKINGS_COLLECTION) {
           const next = sortBookingsByCreatedAt([
@@ -3992,7 +3990,7 @@
     async function deleteBookingRecord(collectionName, bookingId) {
       if (!db) {
         offlineQueue.push({ type: "delete", collectionName, bookingId });
-        setOfflineBanner(true, "Offline mode: changes queued. Will sync when online.");
+        setOfflineBanner(true, "Offline mode: changes queued. Will sync when online.", "warning");
         persistOfflineQueue();
         if (collectionName === BOOKINGS_COLLECTION) {
           const next = getLocalBookings().filter((item) => String(item.id) !== String(bookingId));
@@ -4058,7 +4056,7 @@
     async function deleteTransactionRecord(transactionId) {
       if (!db) {
         offlineQueue.push({ type: "delete", collectionName: TRANSACTION_HISTORY_COLLECTION, bookingId: transactionId });
-        setOfflineBanner(true, "Offline mode: changes queued. Will sync when online.");
+        setOfflineBanner(true, "Offline mode: changes queued. Will sync when online.", "warning");
         persistOfflineQueue();
         const next = getLocalTransactionHistory().filter((item) => String(item.id) !== String(transactionId));
         transactionHistoryCache = sortTransactionsByPaidAt(next);
@@ -4084,12 +4082,12 @@
           }
         }
         showToast("Queued changes synced online.", "success");
-        setOfflineBanner(false, "");
+        setOfflineBanner(false, "", "info");
       } catch (error) {
         console.error("Flush offline queue failed:", error);
         offlineQueue = queueCopy.concat(offlineQueue);
         persistOfflineQueue();
-        setOfflineBanner(true, "Still offline. Changes queued.");
+        setOfflineBanner(true, "Still offline. Changes queued.", "warning");
       }
     }
 
