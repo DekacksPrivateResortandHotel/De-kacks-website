@@ -3598,6 +3598,7 @@
     let activeCustomerFeedbackContext = null;
     let pendingCustomerFeedbackDraft = null;
     let customerDiscountSpinInProgress = false;
+    let customerFeedbackAnonymousAuthAttempted = false;
     const CUSTOMER_DISCOUNT_SEGMENTS = [5, 8, 10, 12, 15];
 
     async function getLogoDataUrl() {
@@ -3686,6 +3687,16 @@
       ribbon.style.display = active ? "block" : "none";
     }
 
+    function isCustomerFeedbackModeFromUrl() {
+      try {
+        const url = new URL(window.location.href);
+        return !!(url.searchParams.get("feedbackBooking") && url.searchParams.get("feedbackToken"));
+      } catch (error) {
+        console.warn("Unable to inspect customer feedback mode from URL:", error);
+        return false;
+      }
+    }
+
     function loadOfflineQueueFromStorage() {
       try {
         const raw = localStorage.getItem(OFFLINE_QUEUE_KEY);
@@ -3772,13 +3783,53 @@
     }
 
     function isAdminAuthenticated() {
-      return !!(auth && auth.currentUser);
+      return !!(auth && auth.currentUser && !auth.currentUser.isAnonymous);
     }
 
     function requireAdminAuth() {
       if (isAdminAuthenticated()) return true;
       showToast("Please log in with your Firebase admin account first.", "error");
       return false;
+    }
+
+    async function ensureCustomerFeedbackSession() {
+      if (!auth) {
+        return { ok: true, signedIn: false, anonymous: false };
+      }
+
+      if (isAdminAuthenticated()) {
+        return { ok: true, signedIn: true, anonymous: false };
+      }
+
+      if (auth.currentUser) {
+        return {
+          ok: true,
+          signedIn: true,
+          anonymous: !!auth.currentUser.isAnonymous,
+        };
+      }
+
+      if (customerFeedbackAnonymousAuthAttempted) {
+        return {
+          ok: !!auth.currentUser,
+          signedIn: !!auth.currentUser,
+          anonymous: !!(auth.currentUser && auth.currentUser.isAnonymous),
+        };
+      }
+
+      customerFeedbackAnonymousAuthAttempted = true;
+
+      try {
+        await auth.signInAnonymously();
+        return {
+          ok: true,
+          signedIn: !!auth.currentUser,
+          anonymous: !!(auth.currentUser && auth.currentUser.isAnonymous),
+        };
+      } catch (error) {
+        console.warn("Customer feedback anonymous auth failed:", error);
+        return { ok: false, signedIn: false, anonymous: false, error };
+      }
     }
 
     function initializeFirebase() {
@@ -3825,36 +3876,46 @@
       }
 
       if (approvedBookingsUnsubscribe) approvedBookingsUnsubscribe();
-      approvedBookingsUnsubscribe = db.collection(BOOKINGS_COLLECTION).onSnapshot((snapshot) => {
-        approvedBookingsCache = normalizeSnapshotBookings(snapshot);
-        afterBookingCacheUpdate();
-        setOfflineBanner(false, "");
-      }, (error) => {
-        console.error("Approved bookings sync failed:", error);
-        setOfflineBanner(true, "Connection lost. Showing cached bookings.");
-      });
+      if (isCustomerFeedbackModeFromUrl() && !isAdminAuthenticated()) {
+        approvedBookingsCache = sortBookingsByCreatedAt(getLocalBookings());
+      } else {
+        approvedBookingsUnsubscribe = db.collection(BOOKINGS_COLLECTION).onSnapshot((snapshot) => {
+          approvedBookingsCache = normalizeSnapshotBookings(snapshot);
+          afterBookingCacheUpdate();
+          setOfflineBanner(false, "");
+        }, (error) => {
+          console.error("Approved bookings sync failed:", error);
+          setOfflineBanner(true, "Connection lost. Showing cached bookings.");
+        });
+      }
 
       stopPendingBookingSync();
-      pendingBookingsUnsubscribe = db.collection(PENDING_BOOKINGS_COLLECTION).onSnapshot((snapshot) => {
-        pendingBookingsCache = normalizeSnapshotBookings(snapshot);
-        afterBookingCacheUpdate();
-        setOfflineBanner(false, "");
-      }, (error) => {
-        console.error("Pending bookings sync failed:", error);
-        stopPendingBookingSync();
-        afterBookingCacheUpdate();
-        setOfflineBanner(true, "Connection lost. Showing cached bookings.");
-      });
+      if (isAdminAuthenticated()) {
+        pendingBookingsUnsubscribe = db.collection(PENDING_BOOKINGS_COLLECTION).onSnapshot((snapshot) => {
+          pendingBookingsCache = normalizeSnapshotBookings(snapshot);
+          afterBookingCacheUpdate();
+          setOfflineBanner(false, "");
+        }, (error) => {
+          console.error("Pending bookings sync failed:", error);
+          stopPendingBookingSync();
+          afterBookingCacheUpdate();
+          setOfflineBanner(true, "Connection lost. Showing cached bookings.");
+        });
+      }
 
       stopTransactionHistorySync();
-      transactionHistoryUnsubscribe = db.collection(TRANSACTION_HISTORY_COLLECTION).onSnapshot((snapshot) => {
-        transactionHistoryCache = normalizeSnapshotTransactions(snapshot);
-        if (adminPanelOpen) viewBookings();
-      }, (error) => {
-        console.error("Transaction history sync failed:", error);
+      if (isAdminAuthenticated()) {
+        transactionHistoryUnsubscribe = db.collection(TRANSACTION_HISTORY_COLLECTION).onSnapshot((snapshot) => {
+          transactionHistoryCache = normalizeSnapshotTransactions(snapshot);
+          if (adminPanelOpen) viewBookings();
+        }, (error) => {
+          console.error("Transaction history sync failed:", error);
+          transactionHistoryCache = sortTransactionsByPaidAt(getLocalTransactionHistory());
+          if (adminPanelOpen) viewBookings();
+        });
+      } else {
         transactionHistoryCache = sortTransactionsByPaidAt(getLocalTransactionHistory());
-        if (adminPanelOpen) viewBookings();
-      });
+      }
 
       flushOfflineQueue();
     }
@@ -6189,6 +6250,59 @@
       return escapeHtml(shortened).replace(/\n/g, "<br>");
     }
 
+    function isLikelyLocalFeedbackHost(hostname) {
+      return hostname === "localhost"
+        || hostname === "127.0.0.1"
+        || hostname === "::1"
+        || /^10\./.test(hostname)
+        || /^192\.168\./.test(hostname)
+        || /^172\.(1[6-9]|2\d|3[0-1])\./.test(hostname)
+        || /\.local$/i.test(hostname);
+    }
+
+    function getCustomerFeedbackBaseUrl() {
+      try {
+        const currentUrl = new URL(window.location.href);
+        const currentIsPublic = ["http:", "https:"].includes(currentUrl.protocol)
+          && !isLikelyLocalFeedbackHost(currentUrl.hostname);
+        if (currentIsPublic) return currentUrl;
+
+        const canonicalHref = (document.querySelector('link[rel="canonical"]') || {}).href || "";
+        if (canonicalHref) {
+          return new URL(canonicalHref, window.location.href);
+        }
+
+        return currentUrl;
+      } catch (error) {
+        console.warn("Unable to resolve customer feedback base URL:", error);
+        return new URL(window.location.href);
+      }
+    }
+
+    function isCustomerFeedbackUsingFallbackPublicUrl() {
+      try {
+        const currentUrl = new URL(window.location.href);
+        const feedbackUrl = getCustomerFeedbackBaseUrl();
+        return currentUrl.origin !== feedbackUrl.origin || currentUrl.pathname !== feedbackUrl.pathname;
+      } catch (error) {
+        console.warn("Unable to compare customer feedback URLs:", error);
+        return false;
+      }
+    }
+
+    function getCustomerFeedbackSaveFailureMessage(error) {
+      const code = String((error && error.code) || "").toLowerCase();
+      if (code.includes("permission-denied")) {
+        return "Firestore blocked this phone from saving the roulette result. Turn on Anonymous Authentication and allow customer feedback updates on the booking document in your Firebase rules.";
+      }
+
+      if (code.includes("operation-not-allowed")) {
+        return "Anonymous Authentication is currently disabled in Firebase. Enable it first so customer phones can save the discount without an admin login.";
+      }
+
+      return "The roulette result could not be saved to Firebase right now. Please check your internet connection and Firebase settings, then try again.";
+    }
+
     function createCustomerFeedbackToken() {
       if (window.crypto && typeof window.crypto.getRandomValues === "function") {
         const bytes = new Uint8Array(10);
@@ -6219,7 +6333,7 @@
     }
 
     function buildCustomerFeedbackUrl(booking) {
-      const url = new URL(window.location.href);
+      const url = getCustomerFeedbackBaseUrl();
       url.hash = "";
       url.searchParams.delete("feedbackBooking");
       url.searchParams.delete("feedbackToken");
@@ -7372,19 +7486,18 @@
       if (adminPanelOpen) viewBookings();
     }
 
-    async function fetchBookingByIdForFeedback(bookingId) {
-      // First check local cache - both pending and approved bookings
-      const cachedBooking = getBookings().find((item) => String(item.id) === String(bookingId));
-      if (cachedBooking) return cachedBooking;
-      
-      const cachedPendingBooking = getPendingBookings().find((item) => String(item.id) === String(bookingId));
-      if (cachedPendingBooking) return cachedPendingBooking;
+    async function fetchBookingByIdForFeedback(bookingId, preferRemote = false) {
+      if (!preferRemote) {
+        const cachedBooking = getBookings().find((item) => String(item.id) === String(bookingId));
+        if (cachedBooking) return cachedBooking;
 
-      // If not in cache and database is available, fetch from both collections
+        const cachedPendingBooking = getPendingBookings().find((item) => String(item.id) === String(bookingId));
+        if (cachedPendingBooking) return cachedPendingBooking;
+      }
+
       if (!db) return null;
 
       try {
-        // Try approved bookings first
         let doc = await db.collection(BOOKINGS_COLLECTION).doc(String(bookingId)).get();
         if (doc.exists) {
           const data = doc.data() || {};
@@ -7393,8 +7506,7 @@
             id: data.id || doc.id,
           };
         }
-        
-        // Try pending bookings
+
         doc = await db.collection(PENDING_BOOKINGS_COLLECTION).doc(String(bookingId)).get();
         if (doc.exists) {
           const data = doc.data() || {};
@@ -7403,10 +7515,25 @@
             id: data.id || doc.id,
           };
         }
-        
+
+        if (preferRemote) {
+          const cachedBooking = getBookings().find((item) => String(item.id) === String(bookingId));
+          if (cachedBooking) return cachedBooking;
+
+          const cachedPendingBooking = getPendingBookings().find((item) => String(item.id) === String(bookingId));
+          if (cachedPendingBooking) return cachedPendingBooking;
+        }
+
         return null;
       } catch (error) {
         console.error("Error fetching booking for feedback:", error);
+        if (preferRemote) {
+          const cachedBooking = getBookings().find((item) => String(item.id) === String(bookingId));
+          if (cachedBooking) return cachedBooking;
+
+          const cachedPendingBooking = getPendingBookings().find((item) => String(item.id) === String(bookingId));
+          if (cachedPendingBooking) return cachedPendingBooking;
+        }
         return null;
       }
     }
@@ -7507,7 +7634,13 @@
       if (linkInput) linkInput.value = feedbackUrl;
       if (qrImage) qrImage.src = buildCustomerFeedbackQrImageUrl(booking);
       if (statusEl) {
-        statusEl.textContent = `${status.label}. Winning discounts: ${CUSTOMER_DISCOUNT_SEGMENTS.join("%, ")}%. The customer roulette discount is applied after any management discount already on the bill.`;
+        const parts = [
+          `${status.label}. Winning discounts: ${CUSTOMER_DISCOUNT_SEGMENTS.join("%, ")}%. The customer roulette discount is applied after any management discount already on the bill.`,
+        ];
+        if (isCustomerFeedbackUsingFallbackPublicUrl()) {
+          parts.push("This QR uses the public site link so it can open on other devices. Make sure the latest page version is already deployed there.");
+        }
+        statusEl.textContent = parts.join(" ");
       }
       renderCustomerDiscountSegmentChips("customerDiscountQrSegmentList");
       if (overlay) overlay.classList.remove("hidden");
@@ -7544,7 +7677,7 @@
       window.open(link, "_blank", "noopener");
     }
 
-    function showCongratulationsMessage(discountPercent, finalTotal, guestName) {
+    function showCongratulationsMessage(discountPercent, originalTotal, finalTotal, guestName) {
       const overlay = document.getElementById("customerFeedbackOverlay");
       if (!overlay) return;
       
@@ -7562,10 +7695,10 @@
               Your Final Billing: ${formatCurrencyPHP(finalTotal)}
             </div>
             <p style="color: var(--muted); margin: 10px 0;">
-              Original total: ${formatCurrencyPHP(finalTotal / (1 - discountPercent / 100))}
+              Original total: ${formatCurrencyPHP(originalTotal)}
             </p>
             <p style="color: var(--leaf); font-weight: bold; margin: 10px 0;">
-              You saved: ${formatCurrencyPHP(finalTotal / (1 - discountPercent / 100) - finalTotal)}
+              You saved: ${formatCurrencyPHP(Math.max(0, originalTotal - finalTotal))}
             </p>
           </div>
           <p style="color: var(--text); margin: 20px 0;">
@@ -7693,7 +7826,9 @@
       showCustomerFeedbackState("customerFeedbackLoadingState");
       syncFeedbackOverlayBodyLock();
 
-      const booking = await fetchBookingByIdForFeedback(bookingId);
+      await ensureCustomerFeedbackSession();
+
+      const booking = await fetchBookingByIdForFeedback(bookingId, true);
       if (!booking) {
         showCustomerFeedbackError("This feedback link was not found", "Please contact the booking team so they can send a fresh QR code or link.");
         return;
@@ -7795,7 +7930,9 @@
       await new Promise((resolve) => setTimeout(resolve, 4300));
 
       try {
-        const latestBooking = await fetchBookingByIdForFeedback(activeCustomerFeedbackContext.bookingId);
+        await ensureCustomerFeedbackSession();
+
+        const latestBooking = await fetchBookingByIdForFeedback(activeCustomerFeedbackContext.bookingId, true);
         if (!latestBooking) {
           showCustomerFeedbackError("This booking could not be updated", "Please contact the booking team so they can assist you manually.");
           return;
@@ -7834,16 +7971,18 @@
           customerFeedbackSuggestion: pendingCustomerFeedbackDraft.suggestion,
         };
 
-        // Save to the correct collection based on booking status
         const targetCollection = latestBooking.status === "pending" ? PENDING_BOOKINGS_COLLECTION : BOOKINGS_COLLECTION;
-        await saveBookingRecord(targetCollection, updatedBooking);
+        try {
+          await saveBookingRecord(targetCollection, updatedBooking);
+        } catch (error) {
+          console.error("Customer discount save failed:", error);
+          showCustomerFeedbackError("We couldn't save your discount yet", getCustomerFeedbackSaveFailureMessage(error));
+          return;
+        }
         activeCustomerFeedbackContext.booking = updatedBooking;
-        
-        // Show congratulations with final billing
-        showCongratulationsMessage(winningDiscount, finalTotal, latestBooking.name || "Guest");
-        
+
+        showCongratulationsMessage(winningDiscount, totals.total, finalTotal, latestBooking.name || "Guest");
         populateCustomerFeedbackSubmittedState(updatedBooking, true);
-        showCustomerFeedbackState("customerFeedbackSubmittedState");
         showToast(`Congratulations! You won ${winningDiscount}% discount!`, "success");
       } finally {
         customerDiscountSpinInProgress = false;
