@@ -2729,7 +2729,7 @@
       </div>
       <div style="margin-top: 15px; padding: 15px; background: var(--warn-bg); border-radius: 8px; border: 1px solid var(--warn-line);">
         <p style="margin: 0; font-size: 14px; color: var(--text);">
-          <strong>Need help?</strong> Contact us at <strong>09123456789</strong> or message us on Facebook!
+          <strong>Need help?</strong> Contact us at <strong>09511720299</strong> or message us on Facebook!
         </p>
       </div>
     </div>
@@ -3204,6 +3204,10 @@
     <div id="customerFeedbackOverlay" class="feedback-overlay hidden" aria-hidden="true">
       <div class="feedback-modal">
         <button type="button" class="feedback-close-btn" onclick="closeCustomerFeedbackOverlay()">Close</button>
+
+        <div id="customerFeedbackContent" class="feedback-state">
+          <!-- Congratulations message will be displayed here -->
+        </div>
 
         <div id="customerFeedbackLoadingState" class="feedback-state active">
           <span class="feedback-badge">Customer Discount</span>
@@ -7480,6 +7484,7 @@
       
       content.innerHTML = `
         <div style="text-align: center; padding: 20px;">
+          <span class="feedback-badge">Congratulations!</span>
           <h2 style="color: var(--accent); margin: 0 0 20px 0;">Congratulations ${guestName}!</h2>
           <div style="font-size: 48px; margin: 20px 0;">${'&#127881;'.repeat(3)}</div>
           <div style="background: linear-gradient(135deg, var(--warn-bg), #fff); padding: 20px; border-radius: 12px; border: 2px solid var(--warn-line); margin: 20px 0;">
@@ -7502,6 +7507,12 @@
           </button>
         </div>
       `;
+      
+      // Hide all other states and show congratulations
+      document.querySelectorAll('.feedback-state').forEach(state => {
+        state.classList.remove('active');
+      });
+      content.classList.add('active');
       
       overlay.classList.remove("hidden");
       syncFeedbackOverlayBodyLock();
