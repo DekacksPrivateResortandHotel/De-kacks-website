@@ -7342,6 +7342,28 @@
       if (adminPanelOpen) viewBookings();
     }
 
+    async function fetchBookingByIdForFeedback(bookingId) {
+      // First check local cache
+      const cachedBooking = getBookings().find((item) => String(item.id) === String(bookingId));
+      if (cachedBooking) return cachedBooking;
+
+      // If not in cache and database is available, fetch from database
+      if (!db) return null;
+
+      try {
+        const doc = await db.collection(BOOKINGS_COLLECTION).doc(String(bookingId)).get();
+        if (!doc.exists) return null;
+        const data = doc.data() || {};
+        return {
+          ...data,
+          id: data.id || doc.id,
+        };
+      } catch (error) {
+        console.error("Error fetching booking for feedback:", error);
+        return null;
+      }
+    }
+
     async function fetchApprovedBookingById(bookingId, preferRemote = false) {
       const cachedBooking = getBookings().find((item) => String(item.id) === String(bookingId));
       if (cachedBooking && !preferRemote) return cachedBooking;
@@ -7624,7 +7646,7 @@
       showCustomerFeedbackState("customerFeedbackLoadingState");
       syncFeedbackOverlayBodyLock();
 
-      const booking = await fetchApprovedBookingById(bookingId, true);
+      const booking = await fetchBookingByIdForFeedback(bookingId);
       if (!booking) {
         showCustomerFeedbackError("This feedback link was not found", "Please contact the booking team so they can send a fresh QR code or link.");
         return;
@@ -7726,7 +7748,7 @@
       await new Promise((resolve) => setTimeout(resolve, 4300));
 
       try {
-        const latestBooking = await fetchApprovedBookingById(activeCustomerFeedbackContext.bookingId, true);
+        const latestBooking = await fetchBookingByIdForFeedback(activeCustomerFeedbackContext.bookingId);
         if (!latestBooking) {
           showCustomerFeedbackError("This booking could not be updated", "Please contact the booking team so they can assist you manually.");
           return;
